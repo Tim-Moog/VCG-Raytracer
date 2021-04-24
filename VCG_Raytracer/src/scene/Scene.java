@@ -5,7 +5,8 @@ import utils.io.Log;
 
 public class Scene {
 
-    public Scene() {
+    public Scene() 
+    {
         Log.print(this, "Init");
     }
 }
