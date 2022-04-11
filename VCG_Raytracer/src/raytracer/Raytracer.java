@@ -55,8 +55,6 @@ public class Raytracer {
         mRenderWindow = renderWindow;
         mDebug = debugOn;
         tStart = System.currentTimeMillis();
-
-        this.exportRendering();
     }
 
     /**  Send the created window to the frame delivered by JAVA to display our result **/
@@ -82,5 +80,6 @@ public class Raytracer {
         // Later secondary rays ...
 
         // Yeeaahhh, raytracing is so much fun ...
+        this.exportRendering();
     }
 }
