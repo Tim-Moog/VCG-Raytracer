@@ -34,9 +34,9 @@ import utils.algebra.Vec3;
 
     TEAM:
 
-    1.
-    2.
-    3.
+    1. Selina Ständer
+    2. Tim Moog
+    3. Paula Schäfer
     4.
  */
 

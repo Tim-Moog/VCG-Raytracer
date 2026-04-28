@@ -73,6 +73,9 @@ public class Raytracer {
     public void renderScene(){
         Log.print(this, "Prepare rendering at " + String.valueOf(stopTime(tStart)));
 
+        // Base Color
+        
+
         // Here trace the rays ...
 
         // Primary rays ...
