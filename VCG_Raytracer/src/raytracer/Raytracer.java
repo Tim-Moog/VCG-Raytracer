@@ -75,26 +75,59 @@ public class Raytracer {
     public void renderScene(){
         Log.print(this, "Prepare rendering at " + String.valueOf(stopTime(tStart)));
 
-        // Base Color
+        // Screen Info
         int windowWidth = mBufferedImage.getWidth();
         int windowHeight = mBufferedImage.getHeight();
 
+        // Color and Position variables
+        Vec3 startPoint = new Vec3(windowWidth/2, windowHeight/2, 0);
+        Vec3 normStart = startPoint.normalize();
+        Vec3 currentPoint;
+        Vec3 direction;
+        RgbColor outputColor;
+
+
+        //this is just a helper for understanding how the numbers look in top left quadrant
         Vec2 currentPixel;
-        RgbColor currentGradiantRGB;
-        float currentGradiant;
+        System.out.println(new Vec3(10, 10, 0).sub(startPoint).normalize().toString());
 
         for(int x = 1; x < windowWidth; x++){
 
-            currentGradiant = (float) (x) / windowWidth;
-            currentGradiantRGB = new RgbColor((1f-currentGradiant), 0f, currentGradiant);
-
             for(int y = 1; y < windowHeight; y++){
-
+                //save current pixel position in a Vec2 and Vec3
                 currentPixel = new Vec2(x, y);
-                mRenderWindow.setPixel(mBufferedImage, currentGradiantRGB, currentPixel);
+                currentPoint = new Vec3(x, y, 0);
+                //setup direction vector from starting middle point to our current pixel
+                direction = currentPoint.sub(startPoint);
+                direction = direction.normalize(); 
+                
 
+                //adjust z depending on position in correlation to middlepoint
+                if(direction.x < 0 && direction.y < 0){
+                    direction.z += direction.x * -1 + direction.y *-1;
+                }else{
+                    if(direction.x < 0){
+                        direction.z += direction.x *-1;
+                    }
+                    if(direction.y < 0){
+                        direction.z += direction.y *-1;
+                    }
+                }
+
+                //readjusting offset!
+                direction.x += normStart.x;
+                direction.y += normStart.y;
+                direction = direction.normalize(); //yes 2nd .normalize is needed!
+                
+                //convert Vec3 to RgbColor
+                outputColor = new RgbColor(direction);
+
+                //set the pixel with the adjusted color :)
+                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
             }
         }
+
+
     
         
 
