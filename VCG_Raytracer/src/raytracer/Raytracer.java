@@ -16,13 +16,14 @@
 
 package raytracer;
 
+import java.awt.image.BufferedImage;
+
 import scene.Scene;
 import ui.Window;
-import utils.*;
+import utils.RgbColor;
 import utils.algebra.Vec2;
+import utils.algebra.Vec3;
 import utils.io.Log;
-
-import java.awt.image.BufferedImage;
 
 public class Raytracer {
 
@@ -76,10 +77,19 @@ public class Raytracer {
 
         // Base Color
         Vec2 currentPixel;
-        for(int x = 1; x < 800; x++){
+        RgbColor currentGradiantRGB;
+        float currentGradiant;
+
+        for(float x = 1; x < 800; x++){
+
+            currentGradiant = x/800;
+            currentGradiantRGB = new RgbColor((1f-currentGradiant), 0f, currentGradiant);
+
             for(int y = 1; y < 600; y++){
+
                 currentPixel = new Vec2(x, y);
-                mRenderWindow.setPixel(mBufferedImage, RgbColor.PURPLE, currentPixel);
+                mRenderWindow.setPixel(mBufferedImage, currentGradiantRGB, currentPixel);
+
             }
         }
     
