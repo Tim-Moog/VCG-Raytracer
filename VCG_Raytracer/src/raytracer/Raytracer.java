@@ -76,16 +76,19 @@ public class Raytracer {
         Log.print(this, "Prepare rendering at " + String.valueOf(stopTime(tStart)));
 
         // Base Color
+        int windowWidth = mBufferedImage.getWidth();
+        int windowHeight = mBufferedImage.getHeight();
+
         Vec2 currentPixel;
         RgbColor currentGradiantRGB;
         float currentGradiant;
 
-        for(float x = 1; x < 800; x++){
+        for(int x = 1; x < windowWidth; x++){
 
-            currentGradiant = x/800;
+            currentGradiant = (float) (x) / windowWidth;
             currentGradiantRGB = new RgbColor((1f-currentGradiant), 0f, currentGradiant);
 
-            for(int y = 1; y < 600; y++){
+            for(int y = 1; y < windowHeight; y++){
 
                 currentPixel = new Vec2(x, y);
                 mRenderWindow.setPixel(mBufferedImage, currentGradiantRGB, currentPixel);
