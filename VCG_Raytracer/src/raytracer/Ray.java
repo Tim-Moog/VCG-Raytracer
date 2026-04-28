@@ -1,4 +1,4 @@
-package ray;
+package raytracer;
 
 import utils.algebra.Vec3;
 
