@@ -19,6 +19,7 @@ package raytracer;
 import scene.Scene;
 import ui.Window;
 import utils.*;
+import utils.algebra.Vec2;
 import utils.io.Log;
 
 import java.awt.image.BufferedImage;
@@ -74,6 +75,14 @@ public class Raytracer {
         Log.print(this, "Prepare rendering at " + String.valueOf(stopTime(tStart)));
 
         // Base Color
+        Vec2 currentPixel;
+        for(int x = 1; x < 800; x++){
+            for(int y = 1; y < 600; y++){
+                currentPixel = new Vec2(x, y);
+                mRenderWindow.setPixel(mBufferedImage, RgbColor.PURPLE, currentPixel);
+            }
+        }
+    
         
 
         // Here trace the rays ...

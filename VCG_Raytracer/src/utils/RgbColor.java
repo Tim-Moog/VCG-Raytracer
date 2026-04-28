@@ -20,6 +20,7 @@ public class RgbColor {
     public static RgbColor BLACK = new RgbColor(0, 0, 0);
     public static RgbColor CYAN = new RgbColor(0, 1, 1);
     public static RgbColor MAGENTA = new RgbColor(1, 0, 1);
+    public static RgbColor PURPLE = new RgbColor(0.5f, 0, 0.8f);
     public static RgbColor YELLOW = new RgbColor(1, 1, 0);
     public static RgbColor GRAY = new RgbColor(0.5f, 0.5f, 0.5f);
     public static RgbColor SOFT_GRAY = new RgbColor(0.50f, 0.50f, 0.50f);
