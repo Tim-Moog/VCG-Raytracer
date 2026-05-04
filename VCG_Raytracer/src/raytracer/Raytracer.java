@@ -161,6 +161,8 @@ public class Raytracer {
                 direction.x += normStart.x;
                 direction.y += normStart.y;
                 direction = direction.normalize(); //yes 2nd .normalize is needed!
+
+                direction = direction.add(new Vec3(0.1f,0,0.2f));
                 
                 //convert Vec3 to RgbColor
                 outputColor = new RgbColor(direction);
