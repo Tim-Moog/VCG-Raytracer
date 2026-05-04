@@ -75,7 +75,50 @@ public class Raytracer {
     public void renderScene(){
         Log.print(this, "Prepare rendering at " + String.valueOf(stopTime(tStart)));
 
-        // Screen Info
+        //colorGradient();
+        colorCircle();
+
+
+    
+        
+
+        // Here trace the rays ...
+
+        // Primary rays ...
+
+        // Later secondary rays ...
+
+        // Yeeaahhh, raytracing is so much fun ...
+        this.exportRendering();
+    }
+
+
+    private void colorGradient(){
+        // Base Color
+        int windowWidth = mBufferedImage.getWidth();
+        int windowHeight = mBufferedImage.getHeight();
+
+        Vec2 currentPixel;
+        RgbColor currentGradiantRGB;
+        float currentGradiant;
+
+        for(int x = 1; x < windowWidth; x++){
+
+            currentGradiant = (float) (x) / windowWidth;
+            currentGradiantRGB = new RgbColor((1f-currentGradiant), 0f, currentGradiant);
+
+            for(int y = 1; y < windowHeight; y++){
+
+                currentPixel = new Vec2(x, y);
+                mRenderWindow.setPixel(mBufferedImage, currentGradiantRGB, currentPixel);
+
+            }
+        }
+    }
+
+
+    private void colorCircle(){
+    // Screen Info
         int windowWidth = mBufferedImage.getWidth();
         int windowHeight = mBufferedImage.getHeight();
 
@@ -126,18 +169,7 @@ public class Raytracer {
                 mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
             }
         }
-
-
-    
-        
-
-        // Here trace the rays ...
-
-        // Primary rays ...
-
-        // Later secondary rays ...
-
-        // Yeeaahhh, raytracing is so much fun ...
-        this.exportRendering();
     }
 }
+
+
