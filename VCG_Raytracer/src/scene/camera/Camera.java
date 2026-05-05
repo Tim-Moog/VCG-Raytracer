@@ -25,7 +25,7 @@ public class Camera extends SceneObject{
 
     //future method from UML
     public Vec3 calculateDestinationPoint(Vec3 targetPixel){
-        Vec3 direction
+        //Vec3 direction
         return cameraPos_P0; //remove me since this is for error avoidance
     }
 

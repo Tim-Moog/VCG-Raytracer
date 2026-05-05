@@ -19,6 +19,7 @@ package raytracer;
 import java.awt.image.BufferedImage;
 
 import scene.Scene;
+import scene.Camera.*;
 import ui.Window;
 import utils.RgbColor;
 import utils.algebra.Vec2;
@@ -85,7 +86,7 @@ public class Raytracer {
             170f
         );
 
-        
+
     
         
 
