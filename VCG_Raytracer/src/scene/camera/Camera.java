@@ -50,10 +50,24 @@ public class Camera extends SceneObject{
         float vWidth = (float) (aspectRatio * vHeight);
 
 
+        //this NEEDS to be in one line else it wont work?
         //Punkt3D = CamPos + V * focalLength + S * Xnorm *Vb/2 + U * Ynorm *Vh/2
-        Vec3 punkt3D = cameraPos_P0.add(viewVector.multScalar(focalLength));
-        punkt3D.add(sideVector.multScalar(xNorm * (vWidth/2)));
-        punkt3D.add(upVector.multScalar(yNorm * (vHeight/2)));
+        Vec3 punkt3D = cameraPos_P0.add(viewVector.multScalar(focalLength)).add(sideVector.multScalar(xNorm * (vWidth/2))).add(upVector.multScalar(yNorm * (vHeight/2)));
+        
+        //this didnt have the same result as the above code?? this always resulted in 0,0,0???
+        //Vec3 punkt3D = cameraPos_P0.add(viewVector.multScalar(focalLength));
+        //punkt3D.add(sideVector.multScalar(xNorm * (vWidth/2)));
+        //punkt3D.add(upVector.multScalar(yNorm * (vHeight/2)));
+
+        //debug info 
+        /* 
+        System.out.println("CURRENT PIXEL IS "+ targetPixel.toString());
+        System.out.println("xNorm: " +xNorm);
+        System.out.println("yNorm: " +yNorm);
+        System.out.println("Aspect Ratio: " +aspectRatio);
+        System.out.println("vHeight: "+vHeight);
+        System.out.println("vWidth: "+vWidth);
+        System.out.println("Point3D: " + punkt3D); */
 
         //Vec3 direction
         return punkt3D;

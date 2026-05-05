@@ -120,8 +120,13 @@ public class Raytracer {
 
         //this is just a helper for understanding how the numbers look in top left quadrant
         Vec2 currentPixel;
-        System.out.println(new Vec3(10, 10, 0).sub(startPoint).normalize().toString());
+        System.out.println(camera.calculateDestinationPoint(new Vec3(30, 30, 0), screensize).toString());
+        
+        System.out.println(camera.calculateDestinationPoint(new Vec3(300, 300, 0), screensize).toString());
+        
+        System.out.println(camera.calculateDestinationPoint(new Vec3(30, 30, 30), screensize).toString());
 
+        // /* temporär auskommentiert für testing
         for(int x = 1; x < screensize.x; x++){
 
             for(int y = 1; y < screensize.y; y++){
