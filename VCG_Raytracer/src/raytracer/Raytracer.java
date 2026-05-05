@@ -76,9 +76,16 @@ public class Raytracer {
         Log.print(this, "Prepare rendering at " + String.valueOf(stopTime(tStart)));
 
         //colorGradient();
-        colorCircle();
+        //colorCircle();
 
+        Camera camera = new Camera(
+            new Vec3(0, 0, 17),
+            new Vec3(0, 0, 0),
+            new Vec3(0,1,0),
+            170f
+        );
 
+        
     
         
 
