@@ -78,13 +78,8 @@ public class Raytracer {
 
         //colorGradient();
         //colorCircle();
+        raytraceV1();
 
-        Camera camera = new Camera(
-            new Vec3(0, 0, 17),
-            new Vec3(0, 0, 0),
-            new Vec3(0,1,0),
-            170f
-        );
 
 
     
@@ -101,6 +96,79 @@ public class Raytracer {
     }
 
 
+    private void raytraceV1(){
+
+        //our camera object
+        Camera camera = new Camera(
+            new Vec3(0, 0, 17),
+            new Vec3(0, 0, 0),
+            new Vec3(0,1,0),
+            170f
+        );
+        //screensize Info
+        Vec2 screensize = new Vec2(mBufferedImage.getWidth(), mBufferedImage.getHeight());
+
+
+        // Color and Position variables
+        Vec3 startPoint = new Vec3(screensize.x/2, screensize.y/2, 0);
+        Vec3 normStart = startPoint.normalize();
+        Vec3 currentPoint;
+        Vec3 direction;
+        Vec3 currentPoint3D;
+        RgbColor outputColor;
+
+
+        //this is just a helper for understanding how the numbers look in top left quadrant
+        Vec2 currentPixel;
+        System.out.println(new Vec3(10, 10, 0).sub(startPoint).normalize().toString());
+
+        for(int x = 1; x < screensize.x; x++){
+
+            for(int y = 1; y < screensize.y; y++){
+                //save current pixel position in a Vec2 and Vec3
+                currentPixel = new Vec2(x, y);
+                currentPoint = new Vec3(x, y, 0);
+
+                //get Pixel position in 3D using the camera
+                currentPoint3D = camera.calculateDestinationPoint(currentPoint, screensize);
+
+                //setup direction vector from starting middle point to our current pixel
+                direction = currentPoint3D.sub(startPoint);
+                direction = direction.normalize(); 
+                
+
+                //adjust z depending on position in correlation to middlepoint
+                if(direction.x < 0 && direction.y < 0){
+                    direction.z += direction.x * -1 + direction.y *-1;
+                }else{
+                    if(direction.x < 0){
+                        direction.z += direction.x *-1;
+                    }
+                    if(direction.y < 0){
+                        direction.z += direction.y *-1;
+                    }
+                }
+
+                //readjusting offset!
+                direction.x += normStart.x;
+                direction.y += normStart.y;
+                direction = direction.normalize(); //yes 2nd .normalize is needed!
+
+                //direction = direction.add(new Vec3(0.1f,0,0.2f));
+                
+                //convert Vec3 to RgbColor
+                outputColor = new RgbColor(direction);
+
+                //set the pixel with the adjusted color :)
+                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
+            }
+        }
+    }
+
+
+
+
+    //Below this are the methods from the first praktikum
     private void colorGradient(){
         // Base Color
         int windowWidth = mBufferedImage.getWidth();
