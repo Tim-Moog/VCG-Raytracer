@@ -59,7 +59,7 @@ public class Camera extends SceneObject{
         //punkt3D.add(sideVector.multScalar(xNorm * (vWidth/2)));
         //punkt3D.add(upVector.multScalar(yNorm * (vHeight/2)));
 
-        //debug info 
+        //debug info - wenn man das nicht auskommentiert hat dann dauerts etwas länger plus wollen ja eh keine milliarde ausgaben auf console
         /* 
         System.out.println("CURRENT PIXEL IS "+ targetPixel.toString());
         System.out.println("xNorm: " +xNorm);

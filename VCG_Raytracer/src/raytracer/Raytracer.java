@@ -120,11 +120,9 @@ public class Raytracer {
 
         //this is just a helper for understanding how the numbers look in top left quadrant
         Vec2 currentPixel;
-        System.out.println(camera.calculateDestinationPoint(new Vec3(30, 30, 0), screensize).toString());
+        System.out.println(camera.calculateDestinationPoint(new Vec3(30, 30, 0), screensize).normalize().toString());
         
-        System.out.println(camera.calculateDestinationPoint(new Vec3(300, 300, 0), screensize).toString());
-        
-        System.out.println(camera.calculateDestinationPoint(new Vec3(30, 30, 30), screensize).toString());
+        System.out.println(camera.calculateDestinationPoint(new Vec3(300, 300, 0), screensize).normalize().toString());
 
         // /* temporär auskommentiert für testing
         for(int x = 1; x < screensize.x; x++){
@@ -138,8 +136,10 @@ public class Raytracer {
                 currentPoint3D = camera.calculateDestinationPoint(currentPoint, screensize);
 
                 //setup direction vector from starting middle point to our current pixel
-                direction = currentPoint3D.sub(startPoint);
-                direction = direction.normalize(); 
+                //direction = currentPoint3D.sub(startPoint);
+                //direction = direction.normalize(); 
+                direction = currentPoint3D.normalize();
+                direction = currentPoint3D.sub(normStart);
                 
 
                 //adjust z depending on position in correlation to middlepoint
