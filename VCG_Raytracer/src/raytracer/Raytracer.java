@@ -75,6 +75,25 @@ public class Raytracer {
     public void renderScene(){
         Log.print(this, "Prepare rendering at " + String.valueOf(stopTime(tStart)));
 
+        //colorGradient();
+        colorCircle();
+
+
+    
+        
+
+        // Here trace the rays ...
+
+        // Primary rays ...
+
+        // Later secondary rays ...
+
+        // Yeeaahhh, raytracing is so much fun ...
+        this.exportRendering();
+    }
+
+
+    private void colorGradient(){
         // Base Color
         int windowWidth = mBufferedImage.getWidth();
         int windowHeight = mBufferedImage.getHeight();
@@ -95,16 +114,64 @@ public class Raytracer {
 
             }
         }
-    
-        
+    }
 
-        // Here trace the rays ...
 
-        // Primary rays ...
+    private void colorCircle(){
+    // Screen Info
+        int windowWidth = mBufferedImage.getWidth();
+        int windowHeight = mBufferedImage.getHeight();
 
-        // Later secondary rays ...
+        // Color and Position variables
+        Vec3 startPoint = new Vec3(windowWidth/2, windowHeight/2, 0);
+        Vec3 normStart = startPoint.normalize();
+        Vec3 currentPoint;
+        Vec3 direction;
+        RgbColor outputColor;
 
-        // Yeeaahhh, raytracing is so much fun ...
-        this.exportRendering();
+
+        //this is just a helper for understanding how the numbers look in top left quadrant
+        Vec2 currentPixel;
+        System.out.println(new Vec3(10, 10, 0).sub(startPoint).normalize().toString());
+
+        for(int x = 1; x < windowWidth; x++){
+
+            for(int y = 1; y < windowHeight; y++){
+                //save current pixel position in a Vec2 and Vec3
+                currentPixel = new Vec2(x, y);
+                currentPoint = new Vec3(x, y, 0);
+                //setup direction vector from starting middle point to our current pixel
+                direction = currentPoint.sub(startPoint);
+                direction = direction.normalize(); 
+                
+
+                //adjust z depending on position in correlation to middlepoint
+                if(direction.x < 0 && direction.y < 0){
+                    direction.z += direction.x * -1 + direction.y *-1;
+                }else{
+                    if(direction.x < 0){
+                        direction.z += direction.x *-1;
+                    }
+                    if(direction.y < 0){
+                        direction.z += direction.y *-1;
+                    }
+                }
+
+                //readjusting offset!
+                direction.x += normStart.x;
+                direction.y += normStart.y;
+                direction = direction.normalize(); //yes 2nd .normalize is needed!
+
+                direction = direction.add(new Vec3(0.1f,0,0.2f));
+                
+                //convert Vec3 to RgbColor
+                outputColor = new RgbColor(direction);
+
+                //set the pixel with the adjusted color :)
+                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
+            }
+        }
     }
 }
+
+
