@@ -99,7 +99,7 @@ public class Raytracer {
     private void raytraceV1(){
 
         //our camera object
-        Camera camera = new Camera(
+        Camera camera = new PerspCam(
             new Vec3(0, 0, 17),
             new Vec3(0, 0, 0),
             new Vec3(0,1,0),
@@ -107,8 +107,6 @@ public class Raytracer {
         );
         //screensize Info
         Vec2 screensize = new Vec2(mBufferedImage.getWidth(), mBufferedImage.getHeight());
-
-        Ray myRay = new Ray(new Vec3(0,0,17), null);
 
 
         // Color and Position variables

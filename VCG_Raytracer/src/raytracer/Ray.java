@@ -13,21 +13,14 @@ public class Ray {
         this.direction = _direction; //maybe das nicht hier definieren sondern
     }
 
-    public Vec3 calculateRayAt (Vec3 _direction, Vec3 viewVector, Vec3 targetPixel, Vec2 widthAndHeight) { //direction hier als param ist probably besser
-        //sodass diese methode den ray für jeden punkt ausrechnen kann von unserem camera object
-        Vec3 target;
-        target = startpoint.add(_direction);
-        //return target;
-
-
-
+    public Vec3 calculateRayAt (Vec3 _direction, Vec3 viewVector, Vec3 targetPixel, Vec2 widthAndHeight) { 
         //maybe iwas cam mäßiges als param weiterleiten
         Vec3 sideVector = new Vec3(1,0,0);
         Vec3 camUp = new Vec3(0,1,0);
         float deltaX = targetPixel.x - widthAndHeight.x/2;
         float deltaY = targetPixel.y - widthAndHeight.y/2;
-        Vec3 aim000 = viewVector.add(sideVector.multScalar(deltaX)).add(camUp.multScalar(deltaY));
-        return aim000;
+        Vec3 ourRay = viewVector.add(sideVector.multScalar(deltaX)).add(camUp.multScalar(deltaY));
+        return ourRay;
     }
 
     public void setStart(Vec3 newStart){
