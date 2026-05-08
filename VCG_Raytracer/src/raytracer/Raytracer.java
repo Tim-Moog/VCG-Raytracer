@@ -158,8 +158,8 @@ public class Raytracer {
                 }
 
                 //readjusting offset!
-                //direction.x += normStart.x;
-                //direction.y += normStart.y;
+                direction.x += normStart.x;
+                direction.y += normStart.y;
                 direction = direction.normalize(); //yes 2nd .normalize is needed!
 
                 //direction = direction.add(new Vec3(0.1f,0,0.2f));
