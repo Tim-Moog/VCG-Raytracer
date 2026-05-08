@@ -2,6 +2,7 @@ package scene.camera;
 
 import java.awt.JobAttributes.SidesType;
 
+import raytracer.Ray;
 import scene.SceneObject;
 import utils.algebra.Vec2;
 import utils.algebra.Vec3;
@@ -32,7 +33,7 @@ public class Camera extends SceneObject{
         viewAngle = alpha;
 
         viewVector = centerOfInterest_C.sub(cameraPos_P0);
-        sideVector = viewVector.cross(g);
+        sideVector = viewVector.cross(user_upVektor_g);
         upVector = sideVector.cross(viewVector);
     }
 
@@ -43,6 +44,9 @@ public class Camera extends SceneObject{
         //calc xNorm and yNorm
         float xNorm = (float) (2 * (targetPixel.x + 0.5)/widthAndHeight.x - 1);
         float yNorm = (float) (2 * (targetPixel.y + 0.5)/widthAndHeight.y - 1);
+        Vec2 pNorm = new Vec2(xNorm, yNorm);
+        pNorm = pNorm.normalize();
+
 
         //calc aspectRatio and Vhorizontal and Vwidth
         float aspectRatio = widthAndHeight.x / widthAndHeight.y;
@@ -52,12 +56,8 @@ public class Camera extends SceneObject{
 
         //this NEEDS to be in one line else it wont work?
         //Punkt3D = CamPos + V * focalLength + S * Xnorm *Vb/2 + U * Ynorm *Vh/2
-        Vec3 punkt3D = cameraPos_P0.add(viewVector.multScalar(focalLength)).add(sideVector.multScalar(xNorm * (vWidth/2))).add(upVector.multScalar(yNorm * (vHeight/2)));
-        
-        //this didnt have the same result as the above code?? this always resulted in 0,0,0???
-        //Vec3 punkt3D = cameraPos_P0.add(viewVector.multScalar(focalLength));
-        //punkt3D.add(sideVector.multScalar(xNorm * (vWidth/2)));
-        //punkt3D.add(upVector.multScalar(yNorm * (vHeight/2)));
+        //Vec3 punkt3D = cameraPos_P0.add(viewVector.multScalar(focalLength)).add(sideVector.multScalar(xNorm * (vWidth/2))).add(upVector.multScalar(yNorm * (vHeight/2)));
+        Vec3 punkt3D = cameraPos_P0.add(viewVector.multScalar(focalLength)).add(sideVector.multScalar(pNorm.x * (vWidth/2))).add(upVector.multScalar(pNorm.y * (vHeight/2)));
 
         //debug info - wenn man das nicht auskommentiert hat dann dauerts etwas länger plus wollen ja eh keine milliarde ausgaben auf console
         /* 
@@ -69,10 +69,22 @@ public class Camera extends SceneObject{
         System.out.println("vWidth: "+vWidth);
         System.out.println("Point3D: " + punkt3D); */
 
+
+        //trying ray inside----------
+        //trying to add ray stuff here
+        Ray myRay = new Ray(cameraPos_P0, punkt3D);
+        Vec3 maybeRayHit = myRay.calculateRayAt(punkt3D, viewVector, targetPixel, widthAndHeight);
+        return maybeRayHit;
+        //-----trying ray inside
+
         //Vec3 direction
-        return punkt3D;
+        //return punkt3D;
     }
 
+    /*
+    hmmmm what do i think we need
+    we prob need to calc D in here and then 
+    */
 
 
 }

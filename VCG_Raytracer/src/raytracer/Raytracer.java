@@ -108,6 +108,8 @@ public class Raytracer {
         //screensize Info
         Vec2 screensize = new Vec2(mBufferedImage.getWidth(), mBufferedImage.getHeight());
 
+        Ray myRay = new Ray(new Vec3(0,0,17), null);
+
 
         // Color and Position variables
         Vec3 startPoint = new Vec3(screensize.x/2, screensize.y/2, 0);
@@ -120,11 +122,13 @@ public class Raytracer {
 
         //this is just a helper for understanding how the numbers look in top left quadrant
         Vec2 currentPixel;
-        System.out.println(camera.calculateDestinationPoint(new Vec3(30, 30, 0), screensize).normalize().toString());
         
-        System.out.println(camera.calculateDestinationPoint(new Vec3(300, 300, 0), screensize).normalize().toString());
+        System.out.println("Breite: " + screensize.x + "| Height: "+ screensize.y);
+        System.out.println(camera.calculateDestinationPoint(new Vec3(30, 30, 0), screensize).normalize().toString());
+        System.out.println(camera.calculateDestinationPoint(new Vec3(100, 100, 0), screensize).normalize().toString());
+        System.out.println(camera.calculateDestinationPoint(new Vec3(700, 100, 0), screensize).normalize().toString());
 
-        // /* temporär auskommentiert für testing
+       // /* temporär auskommentiert für testing 
         for(int x = 1; x < screensize.x; x++){
 
             for(int y = 1; y < screensize.y; y++){
@@ -134,13 +138,12 @@ public class Raytracer {
 
                 //get Pixel position in 3D using the camera
                 currentPoint3D = camera.calculateDestinationPoint(currentPoint, screensize);
+                //currentPoint3D = myRay.calculateRayAt(currentPoint3D);
 
                 //setup direction vector from starting middle point to our current pixel
                 //direction = currentPoint3D.sub(startPoint);
                 //direction = direction.normalize(); 
                 direction = currentPoint3D.normalize();
-                direction = currentPoint3D.sub(normStart);
-                
 
                 //adjust z depending on position in correlation to middlepoint
                 if(direction.x < 0 && direction.y < 0){
@@ -155,8 +158,8 @@ public class Raytracer {
                 }
 
                 //readjusting offset!
-                direction.x += normStart.x;
-                direction.y += normStart.y;
+                //direction.x += normStart.x;
+                //direction.y += normStart.y;
                 direction = direction.normalize(); //yes 2nd .normalize is needed!
 
                 //direction = direction.add(new Vec3(0.1f,0,0.2f));
@@ -167,7 +170,7 @@ public class Raytracer {
                 //set the pixel with the adjusted color :)
                 mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
             }
-        }
+        }  //end outcomment for testing here :p
     }
 
 
