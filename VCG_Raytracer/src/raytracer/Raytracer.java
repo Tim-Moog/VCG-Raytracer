@@ -82,7 +82,6 @@ public class Raytracer {
         raytraceV2();
 
 
-
     
         
 
@@ -106,7 +105,8 @@ public class Raytracer {
 
         Vec2 screensize = new Vec2(mBufferedImage.getWidth(), mBufferedImage.getHeight());
 
-        Sphere mySphere = new Sphere(new Vec3(0, 0, 0), 1);
+        Sphere mySphere = new Sphere(new Vec3(screensize.x/2, screensize.y/2, 0), 1); //idk if local or global coords should be given
+        //like soll die kugel bei 0,0 sein oder bei der mitte unseres fensters?
 
         /*
         wir brauchen koordinaten schnittpunkt auf der kugel von camera aus
@@ -166,12 +166,24 @@ public class Raytracer {
                 currentPoint3D = cam.calculateDestinationPoint(currentPoint, screensize);
 
                 //setup direction vector from starting middle point to our current pixel
-                //direction = currentPoint3D.sub(startPoint);
-                //direction = direction.normalize(); 
+                direction = currentPoint3D.sub(startPoint);
+                direction = direction.normalize(); 
                 direction = currentPoint3D.normalize();
 
-                
 
+                //prob input sphere stuff here --------------
+                if(mySphere.intersect(direction, new Vec3(0,0,4), currentPixel)){
+                    outputColor = RgbColor.PURPLE;
+                    mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
+                }else{
+                    outputColor = RgbColor.BLACK;
+                    mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
+                }
+
+
+
+                
+                /* 
                 //readjusting offset!
                 direction.x += normStart.x;
                 direction.y += normStart.y;
@@ -183,7 +195,7 @@ public class Raytracer {
                 outputColor = new RgbColor(direction);
 
                 //set the pixel with the adjusted color :)
-                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
+                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel); */
             }
         }
 

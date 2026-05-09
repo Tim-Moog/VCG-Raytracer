@@ -20,6 +20,13 @@ public class Ray {
         float deltaX = targetPixel.x - widthAndHeight.x/2;
         float deltaY = targetPixel.y - widthAndHeight.y/2;
         Vec3 ourRay = viewVector.add(sideVector.multScalar(deltaX)).add(camUp.multScalar(deltaY));
+
+
+        //ourRay = viewVector.add(ourRay.multScalar(0.5f)); //i think this should technically be here but doesnt feel like it makes much of a difference? 
+        //will have to ask- aber t ist ja an sich unbekannt? und yea da kommen wir glaub ich erst dran über das shape object 
+        //weil t über 1 nehmen macht 0 unterschied 
+        
+
         return ourRay;
     }
 
