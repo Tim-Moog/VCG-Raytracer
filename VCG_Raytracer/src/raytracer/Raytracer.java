@@ -105,7 +105,7 @@ public class Raytracer {
 
         Vec2 screensize = new Vec2(mBufferedImage.getWidth(), mBufferedImage.getHeight());
 
-        Sphere mySphere = new Sphere(new Vec3(screensize.x/2, screensize.y/2, 0), 1); //idk if local or global coords should be given
+        Sphere mySphere = new Sphere(new Vec3(screensize.x/2, screensize.y/2, 0), 1f); //idk if local or global coords should be given
         //like soll die kugel bei 0,0 sein oder bei der mitte unseres fensters?
 
         /*
