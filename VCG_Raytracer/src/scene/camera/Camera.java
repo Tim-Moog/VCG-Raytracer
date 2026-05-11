@@ -16,13 +16,13 @@ public class Camera extends SceneObject{
     //FocalLength standard:1 distance from camera to picture
     //AspectRatio desired WindowSize of what we display
 
-    protected Vec3 cameraPos_P0;
+    public Vec3 cameraPos_P0;
     protected Vec3 centerOfInterest_C;
     protected Vec3 user_upVektor_g;
     protected Float viewAngle;
     protected Float focalLength = 1f;
 
-    protected Vec3 viewVector; // Center of Interest - Camera Position
+    public Vec3 viewVector; // Center of Interest - Camera Position
     protected Vec3 sideVector; // viewVektor X User-upVector
     protected Vec3 upVector; // viewVektor X sideVector
 

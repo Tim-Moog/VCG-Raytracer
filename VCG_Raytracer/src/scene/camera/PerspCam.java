@@ -40,11 +40,12 @@ public class PerspCam extends Camera {
         //info: this needs to be in one line, tried it in 3 seperated by the .add's and then you always get 0 0 0 as result??? so keep in one line
         Vec3 punkt3D = cameraPos_P0.add(viewVector.multScalar(focalLength)).add(sideVector.multScalar(pNorm.x * (vWidth/2))).add(upVector.multScalar(pNorm.y * (vHeight/2)));
 
+        return punkt3D;
 
         //calculate the ray from in here
-        Ray myRay = new Ray(cameraPos_P0, punkt3D); //could move this out into a IV and use setDir on each call instead of creating new object each time -> will change later
-        Vec3 pixelHitByRay = myRay.calculateRayAt(punkt3D, viewVector, targetPixel, widthAndHeight);
-        return pixelHitByRay;
+        //Ray myRay = new Ray(cameraPos_P0, punkt3D); //could move this out into a IV and use setDir on each call instead of creating new object each time -> will change later
+        //Vec3 pixelHitByRay = myRay.calculateRayAt(punkt3D, viewVector, targetPixel, widthAndHeight);
+        //return pixelHitByRay;
     }
 
 

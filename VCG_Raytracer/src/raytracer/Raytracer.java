@@ -105,7 +105,7 @@ public class Raytracer {
 
         Vec2 screensize = new Vec2(mBufferedImage.getWidth(), mBufferedImage.getHeight());
 
-        Sphere mySphere = new Sphere(new Vec3(screensize.x/2, screensize.y/2, 0), 1f); //idk if local or global coords should be given
+        Sphere mySphere = new Sphere(new Vec3(screensize.x/2, screensize.y/2, 0), 3.99f); //idk if local or global coords should be given
         //like soll die kugel bei 0,0 sein oder bei der mitte unseres fensters?
 
         /*
@@ -164,19 +164,21 @@ public class Raytracer {
 
                 //get Pixel position in 3D using the camera
                 currentPoint3D = cam.calculateDestinationPoint(currentPoint, screensize);
+                Ray eyeRay = new Ray(cam.cameraPos_P0, currentPoint3D);
+                Vec3 pixelHitByRay = eyeRay.calculateRayAt(currentPoint3D, cam.viewVector, currentPoint, screensize);
+                currentPoint3D = pixelHitByRay;
+
 
                 //setup direction vector from starting middle point to our current pixel
-                direction = currentPoint3D.sub(startPoint);
-                direction = direction.normalize(); 
                 direction = currentPoint3D.normalize();
 
 
                 //prob input sphere stuff here --------------
                 if(mySphere.intersect(direction, new Vec3(0,0,4), currentPixel)){
-                    outputColor = RgbColor.PURPLE;
+                    outputColor = RgbColor.GREEN;
                     mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
                 }else{
-                    outputColor = RgbColor.BLACK;
+                    outputColor = RgbColor.BLUE;
                     mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
                 }
 

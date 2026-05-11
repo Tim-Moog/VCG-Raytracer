@@ -37,6 +37,7 @@ public class Sphere extends Shape{
         float t1 = (float) ((-B + Math.sqrt(determinante))/2);
 
         //trying something outcommented below for this -----
+        //kleineres t ist first point of contact
         float t;
         if(t0 < t1 && t0 > 0){
             t = t0;
@@ -44,39 +45,28 @@ public class Sphere extends Shape{
             t = t1;
         }
         float calc = A * (float) Math.pow(t, 2) + B * t + C;
-        if(calc == 0){
-            return true;
-        }else{
-            return false;
-        }
+        
 
         //end of trying block ----- hmmmm same result
 
-        /* 
+        
         if(determinante < 0)
             return false;
 
-        
-        //kleineres t ist first point of contact
-        if(t0 < t1 && t0 > 0){
-            float t = t0;
-        }else{
-            float t = t1;
-        }
+
 
 
         //better to move these prints to below a conditional return false 
-        /* 
         System.out.println("current pixel pos: " + currentPixel.toString());
         System.out.println("A has the value: " + A);
         System.out.println("B has the value: " + B);
         System.out.println("C has the value: " + C);
         System.out.println("Determinante: " + determinante); 
         System.out.println("t0 has the value: " + t0);
-        System.err.println("t1 has the value: " + t1); */
+        System.err.println("t1 has the value: " + t1); 
 
 
-        //return true; 
+        return true; 
     }
     
     /*
