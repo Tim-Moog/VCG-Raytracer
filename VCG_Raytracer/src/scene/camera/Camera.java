@@ -1,6 +1,8 @@
 package scene.camera;
 
+import raytracer.Ray;
 import scene.SceneObject;
+import utils.algebra.Vec2;
 import utils.algebra.Vec3;
 
 public class Camera extends SceneObject{
@@ -12,33 +14,45 @@ public class Camera extends SceneObject{
     //FocalLength standard:1 distance from camera to picture
     //AspectRatio desired WindowSize of what we display
 
-    private Vec3 cameraPos_P0;
-    private Vec3 centerOfInterest_C;
-    private Vec3 user_upVektor_g;
-    private Float viewAngle;
-    private Float focalLength;
+    protected Vec3 cameraPos_P0;
+    protected Float viewAngle;
+    protected Float focalLength = 1f;
+    protected Float aspectRatio;
 
-    private Vec3 viewVector; // Center of Interest - Camera Position
-    private Vec3 sideVector; // viewVektor X User-upVector
-    private Vec3 upVector; // viewVektor X sideVector
+    protected Vec3 viewVector; // Center of Interest - Camera Position
+    protected Vec3 sideVector; // viewVektor X User-upVector
+    protected Vec3 upVector; // viewVektor X sideVector
 
-    public Camera(Vec3 p, Vec3 c, Vec3 g, Float alpha){
-        cameraPos_P0 = p;
-        centerOfInterest_C = c;
-        upVektor_g = g;
-        viewAngle = alpha;
+    protected Ray ray;
 
-        viewVector = centerOfInterest_C.sub(cameraPos_P0);
-        //sideVector = 
+    protected Vec2 windowSize;
+
+    public Camera(Vec3 cameraPos_P0, Vec3 centerOfInterest_C, Vec3 user_upVektor_g, Float alpha){
+        this.cameraPos_P0 = cameraPos_P0;
+        this.viewAngle = alpha;
+
+        this.viewVector = centerOfInterest_C.sub(this.cameraPos_P0);
+        this.sideVector = this.viewVector.cross(user_upVektor_g);
+        this.upVector = this.sideVector.cross(this.viewVector);
     }
 
-    // Input: 2D Pixel Plane with coordinate system with origin in the top left corner
-    // Translation into our Viewplane for Raytracer - Coordinate System with origin in the middle, size of 2 (normalized)
-    public Vec3 calculateDestinationPoint(Vec3 targetPixel){
-        //Vec3 direction
-        return cameraPos_P0; //remove me since this is for error avoidance
+    public Camera(Vec3 cameraPos_P0, Vec3 centerOfInterest_C, Vec3 user_upVektor_g, Float alpha, Vec2 windowSize) {
+        this(cameraPos_P0, centerOfInterest_C, user_upVektor_g, alpha);
+        this.aspectRatio =  windowSize.x / windowSize.y;
+        this.windowSize = windowSize;
     }
 
 
+    // Searching for: ray destination point from window to viewplane
+    public Vec2 calculateDestinationPoint_2D (Vec2 targetPixel) {
+        // Norm sides from 0...1
+        // Double as we need all quadrants -> 0...2
+        // Offset by 1 to get correct coordinates -> -1...1
+        Float p_norm_x = 2 * ((targetPixel.x + 0.5f) / this.windowSize.x) -1 ;
+        Float p_norm_y = 2 * ((targetPixel.y + 0.5f) / this.windowSize.y) -1;
+
+        Vec2 p_norm = new Vec2 (p_norm_x, p_norm_y); // x,y plane
+        return p_norm;
+    }
 
 }
