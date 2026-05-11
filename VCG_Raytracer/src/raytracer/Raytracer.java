@@ -18,6 +18,8 @@ package raytracer;
 
 import java.awt.image.BufferedImage;
 
+import org.w3c.dom.css.RGBColor;
+
 import scene.Scene;
 import scene.camera.*;
 import ui.Window;
@@ -96,58 +98,29 @@ public class Raytracer {
     }
 
     private void raytrace_backgroundOnly () {
-        int windowWidth = mBufferedImage.getWidth();
-        int windowHeight = mBufferedImage.getHeight();
 
-        Vec2 windowSize = new Vec2(windowWidth, windowHeight);
-
-        Vec3 startPoint = new Vec3(windowSize.x/2, windowSize.y/2, 0);
-        Vec3 normStart = startPoint.normalize();
+        Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
         Vec2 currentPixel;
-        Vec3 currentPoint_3D;
-        Vec3 currentPoint_RGB;
-        RgbColor outputColor;
 
-        //setup camera
-        PerspCam camera = new PerspCam(new Vec3(0,0,17), 
-                                    new Vec3(0,0,0), 
-                                    new Vec3(0,1,0), 
-                                    170f, 
-                                    windowSize
-                                );
+        PerspCam camera = new PerspCam (new Vec3(0,0,17),
+                                        new Vec3(0,0,0),
+                                        new Vec3(0,1,0),
+                                        170,
+                                        (windowSize.x/windowSize.y)
+                                        );
 
-        for(int x = 0; x < 1; x++) {
-            for(int y = 0; y < windowSize.y; y++) {
-
+        for (int y = 0; y < windowSize.y; y++) {
+            for (int x = 0; x < windowSize.x; x++) {
                 currentPixel = new Vec2(x, y);
-                System.out.println("CurrentPixel: "+currentPixel);
-                currentPoint_3D = camera.calculateDestinationPoint(currentPixel);
-                System.out.println("CurrentViewplanePoint: "+currentPoint_3D);
-                currentPoint_RGB = currentPoint_3D.normalize();
 
-                //adjust z depending on position in correlation to middlepoint
-                if(currentPoint_RGB.x < 0 && currentPoint_RGB.y < 0){
-                    currentPoint_RGB.z += currentPoint_RGB.x * -1 + currentPoint_RGB.y *-1;
-                }else{
-                    if(currentPoint_RGB.x < 0){
-                        currentPoint_RGB.z += currentPoint_RGB.x *-1;
-                    }
-                    if(currentPoint_RGB.y < 0){
-                        currentPoint_RGB.z += currentPoint_RGB.y *-1;
-                    }
-                }
-
-                //readjusting offset!
-                currentPoint_RGB.x += normStart.x;
-                currentPoint_RGB.y += normStart.y;
-                currentPoint_RGB = currentPoint_RGB.normalize(); //yes 2nd .normalize is needed!
+                Ray ray = camera.getRayForPixel(currentPixel, windowSize);
+                Vec3 ray_RGB_values = ray.ray_colorRGB();
 
                 //convert Vec3 to RgbColor
-                outputColor = new RgbColor(currentPoint_RGB);
+                RgbColor outputColor = new RgbColor(ray_RGB_values);
 
                 //set the pixel with the adjusted color :)
                 mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
-
             }
         }
     } 

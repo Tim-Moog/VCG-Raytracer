@@ -4,47 +4,27 @@ import utils.algebra.Vec3;
 
 public class Ray {
 
-    private Vec3 startpoint;
-    private Vec3 direction;
-    private Vec3 ray_vector;
+    private Vec3 startpoint_p0;
+    private Vec3 direction_D;
 
     public Ray (Vec3 _startpoint, Vec3 _direction) {
-        this.startpoint = _startpoint;
-        this.set_direction(_direction);
+        this.startpoint_p0 = _startpoint;
+        this.direction_D = _direction.normalize();
     }
-
-    public Ray (Vec3 _startpoint) {
-        this.startpoint = _startpoint;
-        set_direction(new Vec3(0,0,0));
-    }
-
-
-
-
-    public void set_direction (Vec3 _direction) {
-        this.direction = _direction;
-    }
-
-    public void set_startpoint (Vec3 _startpoint) {
-        this.startpoint = _startpoint;
-    }
-
-    public Vec3 get_normalized_ray () {
-        this.normalize();
-        return ray_vector;
-    }
-
     
-        
-    public Vec3 calculateRayAt () {
-        this.ray_vector = startpoint.add(direction);
-        this.ray_vector = ray_vector.normalize();
-        return this.ray_vector;
+    // Ray = startpoint + parameter * direction
+    // R = P0 + t * D
+    public Vec3 calculateRayAt (Float parameter_t) {
+        return startpoint_p0.add(direction_D.multScalar(parameter_t));
     }
 
-    public void normalize () {
-        this.calculateRayAt();
-        this.ray_vector.normalize();
+    // applies a color to the direction of the ray in a normalized scale [0,1]
+    public Vec3 ray_colorRGB () {
+        float red   = (direction_D.x + 1f) * 0.5f;
+        float green = (direction_D.y + 1f) * 0.5f;
+        float blue  = (direction_D.z + 1f) * 0.5f;
+
+        return new Vec3(red, green, blue);
     }
 
 }
