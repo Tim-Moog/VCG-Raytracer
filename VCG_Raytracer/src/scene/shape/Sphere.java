@@ -25,6 +25,8 @@ public class Sphere extends Shape{
     public boolean intersect(Vec3 checkRay, Vec3 camPos, Vec2 currentPixel){ //glaub das als boolean methode macht mehr sinn außer wir wollen von außen zugriff auf das Intersection object und die IV hit abfragen?
         Intersection intersectionCheck = new Intersection();
 
+        checkRay = checkRay.normalize();
+
         A = (float) Math.pow(checkRay.x, 2) + (float) Math.pow(checkRay.y, 2) + (float) Math.pow(checkRay.z, 2);
     
         B = (float) (2 * (camPos.x * checkRay.x + camPos.y * checkRay.y + camPos.z * checkRay.z));
@@ -37,6 +39,7 @@ public class Sphere extends Shape{
         float t1 = (float) ((-B + Math.sqrt(determinante))/2);
 
         //trying something outcommented below for this -----
+        //kleineres t ist first point of contact
         float t;
         if(t0 < t1 && t0 > 0){
             t = t0;
@@ -44,25 +47,15 @@ public class Sphere extends Shape{
             t = t1;
         }
         float calc = A * (float) Math.pow(t, 2) + B * t + C;
-        if(calc == 0){
-            return true;
-        }else{
-            return false;
-        }
+        
 
         //end of trying block ----- hmmmm same result
 
-        /* 
+        
         if(determinante < 0)
             return false;
 
-        
-        //kleineres t ist first point of contact
-        if(t0 < t1 && t0 > 0){
-            float t = t0;
-        }else{
-            float t = t1;
-        }
+
 
 
         //better to move these prints to below a conditional return false 
@@ -75,8 +68,7 @@ public class Sphere extends Shape{
         System.out.println("t0 has the value: " + t0);
         System.err.println("t1 has the value: " + t1); */
 
-
-        //return true; 
+        return true; 
     }
     
     /*

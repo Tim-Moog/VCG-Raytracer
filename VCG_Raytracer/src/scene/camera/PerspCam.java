@@ -6,47 +6,44 @@ import utils.algebra.Vec3;
 
 public class PerspCam extends Camera {
 
-    public PerspCam(Vec3 p, Vec3 c, Vec3 g, Float alpha){
-        super(p,c,g,alpha);
+    // side of out viewport, what camera looks at
+    private float viewport_height, viewport_width;
+
+    public PerspCam (Vec3 cameraPos_P0, Vec3 centerOfInterest_C, Vec3 userUp_g, float alphaDeg, float aspectRatio) {
+        super(cameraPos_P0, centerOfInterest_C, userUp_g, alphaDeg);
+
+        float alpha = (float) Math.toRadians(alphaDeg); // from degree to radians
+        // needed to accurately get the position of the midpoint of our pixel inside our viewport
+        // normalized after direction calculation to include camera distance in proportion
+        viewport_height =  2f * (float) Math.tan(alpha/2f); 
+        viewport_width = aspectRatio * viewport_height; 
     }
 
-    // Input: 2D Pixel Plane with coordinate system with origin in the top left corner
-    // Translation into our Viewplane for Raytracer - Coordinate System with origin in the middle, size of 2 (normalized)
+    // builds Ray in already normalized coordinate system
+    public Ray getRay(float s, float u) {
 
-    /**
-     * Input: 2D Pixel Plane with coordinate system with origin in the top left corner
-     * Translation into our Viewplane for Raytracer - Coordinate System with origin in the middle, size of 2 (normalized)
-     * 
-     * @param targetPixel the pixel we want to calculate for 
-     * @param widthAndHeight screensizes
-     * @return our point in 3D
-     */
-    public Vec3 calculateDestinationPoint(Vec3 targetPixel, Vec2 widthAndHeight){
+        //combines distance to camera with offset into x and y
+        Vec3 direction =
+                side.multScalar((s - 0.5f) * viewport_width)   
+                .add(up.multScalar((u - 0.5f) * viewport_height))
+                .add(view);                                   // viewplane distance to camera
 
-        //calc xNorm and yNorm
-        float xNorm = (float) (2 * (targetPixel.x + 0.5)/widthAndHeight.x - 1);
-        float yNorm = (float) (2 * (targetPixel.y + 0.5)/widthAndHeight.y - 1);
-        Vec2 pNorm = new Vec2(xNorm, yNorm);
-        pNorm = pNorm.normalize();
-
-
-        //calc aspectRatio and Vhorizontal and Vwidth
-        float aspectRatio = widthAndHeight.x / widthAndHeight.y;
-        float vHeight = (float) (2 * Math.tan(viewAngle/2) * widthAndHeight.y); 
-        float vWidth = (float) (aspectRatio * vHeight);
-
-
-        //Punkt3D = CamPos + V * focalLength + S * Xnorm *Vb/2 + U * Ynorm *Vh/2
-        //info: this needs to be in one line, tried it in 3 seperated by the .add's and then you always get 0 0 0 as result??? so keep in one line
-        Vec3 punkt3D = cameraPos_P0.add(viewVector.multScalar(focalLength)).add(sideVector.multScalar(pNorm.x * (vWidth/2))).add(upVector.multScalar(pNorm.y * (vHeight/2)));
-
-
-        //calculate the ray from in here
-        Ray myRay = new Ray(cameraPos_P0, punkt3D); //could move this out into a IV and use setDir on each call instead of creating new object each time -> will change later
-        Vec3 pixelHitByRay = myRay.calculateRayAt(punkt3D, viewVector, targetPixel, widthAndHeight);
-        return pixelHitByRay;
+        return new Ray(origin, direction.normalize());
     }
 
+    // Ray coordinates turned into [0,1] coordinates
+    public Ray getRayForPixel(Vec2 targetPixel, Vec2 windowSize) {
 
+        // Pixel into viewplane coordinates normed
+        float pNorm_x = (2f * (targetPixel.x + 0.5f) / (windowSize.x)) - 1f;
+        float pNorm_y = (2f * (targetPixel.y + 0.5f) / (windowSize.y)) - 1f;
+
+        // [-1,1] → [0,1]
+        float s = (pNorm_x + 1f) * 0.5f;
+        float u = (pNorm_y + 1f) * 0.5f;
+
+        return getRay(s, u);
+    }
+
+    
 }
-
