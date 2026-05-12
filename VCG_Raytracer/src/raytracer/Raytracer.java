@@ -22,6 +22,7 @@ import org.w3c.dom.css.RGBColor;
 
 import scene.Scene;
 import scene.camera.*;
+import scene.shape.Sphere;
 import ui.Window;
 import utils.RgbColor;
 import utils.algebra.Vec2;
@@ -95,6 +96,38 @@ public class Raytracer {
 
         // Yeeaahhh, raytracing is so much fun ...
         this.exportRendering();
+    }
+
+    private void circle(){
+        
+        Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
+        Vec2 currentPixel;
+
+        PerspCam camera = new PerspCam (new Vec3(0,0,17),
+                                        new Vec3(0,0,0),
+                                        new Vec3(0,1,0),
+                                        170,
+                                        (windowSize.x/windowSize.y)
+                                        );
+
+        Sphere mySphere = new Sphere(new Vec3(0,0,0), 1);
+
+        for (int y = 0; y < windowSize.y; y++) {
+            for (int x = 0; x < windowSize.x; x++) {
+                currentPixel = new Vec2(x, y);
+
+                Ray ray = camera.getRayForPixel(currentPixel, windowSize);
+                Vec3 ray_RGB_values = ray.ray_colorRGB();
+
+                //convert Vec3 to RgbColor
+                //RgbColor outputColor = new RgbColor(ray_RGB_values);
+                if(mySphere.intersect(ray))
+
+                //set the pixel with the adjusted color :)
+                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
+            }
+        }
+
     }
 
     private void raytrace_backgroundOnly () {

@@ -22,6 +22,12 @@ public class Sphere extends Shape{
         this.radius = radius;
     }
 
+    /*public void intersect(Vec3 checkRay, Intersection data,  ){
+
+    }*/
+
+    
+
     public boolean intersect(Vec3 checkRay, Vec3 camPos, Vec2 currentPixel){ //glaub das als boolean methode macht mehr sinn außer wir wollen von außen zugriff auf das Intersection object und die IV hit abfragen?
         Intersection intersectionCheck = new Intersection();
 
@@ -69,7 +75,7 @@ public class Sphere extends Shape{
         System.err.println("t1 has the value: " + t1); */
 
         return true; 
-    }
+    } 
     
     /*
         müssen dann die beiden gleichungen gleich setzen und nach t umformen
