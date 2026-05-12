@@ -1,5 +1,6 @@
 package scene.shape;
 
+import raytracer.Ray;
 import utils.algebra.Vec2;
 import utils.algebra.Vec3;
 
@@ -12,16 +13,57 @@ public class Sphere extends Shape{
     private float B;
     private float C;
     
-
-    //MAIN CURRENT ISSUE
-    // NEED TO CONVERT THE SPHERE TO NORMALIZED COORDINATE SYSTEM SINCE IT TECHNICALLY WORKS
-    // BUT THE SPHERE IS LIKE 3 PIXELS ATM DUE TO RADIUS=1 AND NO CANT JUST SCALE THAT ELSE IT BREAK 
-
     public Sphere(Vec3 pos, float radius) {
         this.centerPosition = pos;
         this.radius = radius;
     }
 
+
+    public void intersectchatti(Intersection data, Ray ray) {
+
+        Vec3 origin = ray.getOrigin();
+        Vec3 direction = ray.getDirection();
+
+        Vec3 oc = origin.sub(centerPosition);
+
+        float A = direction.scalar(direction);
+
+        float B = 2.0f * oc.scalar(direction);
+
+        float C = oc.scalar(oc) - radius * radius;
+
+        float discriminant = B * B - 4 * A * C;
+
+        data.setHit(discriminant >= 0);
+    } 
+
+    
+    public void intersect(Intersection data, Ray ray){
+        Vec3 start = ray.getOrigin();
+        Vec3 direction = ray.getDirection();
+
+        Vec3 start2end = start.sub(direction);
+
+        //A = (float) Math.pow(checkRay.x, 2) + (float) Math.pow(checkRay.y, 2) + (float) Math.pow(checkRay.z, 2);
+        //ist das selbe wie
+        A = direction.scalar(direction);
+    
+        //B = (float) (2 * (camPos.x * checkRay.x + camPos.y * checkRay.y + camPos.z * checkRay.z));
+        //ist das selbe wie
+        B = 2.0f * start2end.scalar(direction);
+
+        //C = (float) (Math.pow(camPos.x,2) + Math.pow(camPos.y,2) + Math.pow(camPos.z,2) - Math.pow(radius,2));
+        //ist das selbe wie
+        C = start2end.scalar(start2end) - radius * radius;
+
+        float diskriminante = (float) (Math.pow(B, 2) - 4 * C);
+        
+        data.setHit(diskriminante >= 0);
+    }
+
+
+    //------
+    /* 
     public boolean intersect(Vec3 checkRay, Vec3 camPos, Vec2 currentPixel){ //glaub das als boolean methode macht mehr sinn außer wir wollen von außen zugriff auf das Intersection object und die IV hit abfragen?
         Intersection intersectionCheck = new Intersection();
 
@@ -59,17 +101,17 @@ public class Sphere extends Shape{
 
 
         //better to move these prints to below a conditional return false 
-        /* 
+        
         System.out.println("current pixel pos: " + currentPixel.toString());
         System.out.println("A has the value: " + A);
         System.out.println("B has the value: " + B);
         System.out.println("C has the value: " + C);
         System.out.println("Determinante: " + determinante); 
         System.out.println("t0 has the value: " + t0);
-        System.err.println("t1 has the value: " + t1); */
+        System.err.println("t1 has the value: " + t1); 
 
         return true; 
-    }
+    }*/
     
     /*
         müssen dann die beiden gleichungen gleich setzen und nach t umformen

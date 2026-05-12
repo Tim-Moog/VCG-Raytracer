@@ -22,6 +22,7 @@ import org.w3c.dom.css.RGBColor;
 
 import scene.Scene;
 import scene.camera.*;
+import scene.shape.Intersection;
 import scene.shape.Sphere;
 import ui.Window;
 import utils.RgbColor;
@@ -82,7 +83,7 @@ public class Raytracer {
         //colorGradient();
         //colorCircle();
 
-        raytrace_backgroundOnly();
+        circle_radius1();
 
 
     
@@ -99,6 +100,50 @@ public class Raytracer {
     }
 
     
+    private void circle_radius1 () {
+
+        Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
+        Vec2 currentPixel;
+
+        PerspCam camera = new PerspCam (new Vec3(0,0,4),
+                                        new Vec3(0,0,0),
+                                        new Vec3(0,1,0),
+                                        70,
+                                        (windowSize.x/windowSize.y)
+                                        );
+        
+        Sphere mySphere = new Sphere(new Vec3(0,0,0), 1);
+        Intersection data;
+
+        for (int y = 0; y < windowSize.y; y++) {
+            for (int x = 0; x < windowSize.x; x++) {
+                currentPixel = new Vec2(x, y);
+
+                Ray ray = camera.getRayForPixel(currentPixel, windowSize);
+                Vec3 ray_RGB_values = ray.ray_colorRGB();
+
+                data = new Intersection();
+                mySphere.intersect(data, ray);
+
+                //convert Vec3 to RgbColor
+                RgbColor outputColor = new RgbColor(ray_RGB_values);
+
+                //System.err.print("before if");
+                if(data.isHit()){
+                    outputColor = RgbColor.CYAN;
+                    //System.err.println("cyan");
+                }else{
+                    outputColor = RgbColor.BLACK;
+                    //System.err.println("black");
+                }
+                
+
+
+                //set the pixel with the adjusted color :)
+                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
+            }
+        }
+    }
 
     private void raytrace_backgroundOnly () {
 

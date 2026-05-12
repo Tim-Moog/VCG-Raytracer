@@ -28,4 +28,12 @@ public class Ray {
         return new Vec3(red, green, blue);
     }
 
+    public Vec3 getOrigin() {
+        return startpoint_p0;
+    }
+
+    public Vec3 getDirection() {
+        return direction_D;
+    }
+
 }
