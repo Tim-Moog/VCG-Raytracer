@@ -98,6 +98,8 @@ public class Raytracer {
         this.exportRendering();
     }
 
+    
+
     private void raytrace_backgroundOnly () {
 
         Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
