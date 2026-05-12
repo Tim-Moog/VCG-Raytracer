@@ -82,8 +82,8 @@ public class Raytracer {
 
         //colorGradient();
         //colorCircle();
-
-        circle_radius1();
+        raytrace_backgroundOnly();
+        //circle_radius1();
 
 
     
@@ -125,16 +125,11 @@ public class Raytracer {
                 data = new Intersection();
                 mySphere.intersect(data, ray);
 
-                //convert Vec3 to RgbColor
-                RgbColor outputColor = new RgbColor(ray_RGB_values);
-
-                //System.err.print("before if");
+                RgbColor outputColor;
                 if(data.isHit()){
-                    outputColor = RgbColor.CYAN;
-                    //System.err.println("cyan");
+                    outputColor = RgbColor.GREEN;
                 }else{
-                    outputColor = RgbColor.BLACK;
-                    //System.err.println("black");
+                    outputColor = RgbColor.BLUE;
                 }
                 
 

@@ -26,6 +26,8 @@ public class RgbColor {
     public static RgbColor SOFT_GRAY = new RgbColor(0.50f, 0.50f, 0.50f);
     public static RgbColor LIGHT_GRAY = new RgbColor(0.75f, 0.75f, 0.75f);
     public static RgbColor DARK_GRAY = new RgbColor(0.1f, 0.1f, 0.1f);
+    public static RgbColor ROYAL_RED = new RgbColor(0.78f, 0.12f, 0.27f);
+    public static RgbColor ROYAL_PURPLE = new RgbColor(0.47f, 0.2f, 0.78f);
 
     public RgbColor(float r, float g, float b){
         colors = new Vec3(r, g, b);

@@ -19,24 +19,6 @@ public class Sphere extends Shape{
     }
 
 
-    public void intersectchatti(Intersection data, Ray ray) {
-
-        Vec3 origin = ray.getOrigin();
-        Vec3 direction = ray.getDirection();
-
-        Vec3 oc = origin.sub(centerPosition);
-
-        float A = direction.scalar(direction);
-
-        float B = 2.0f * oc.scalar(direction);
-
-        float C = oc.scalar(oc) - radius * radius;
-
-        float discriminant = B * B - 4 * A * C;
-
-        data.setHit(discriminant >= 0);
-    } 
-
     
     public void intersect(Intersection data, Ray ray){
         Vec3 start = ray.getOrigin();
