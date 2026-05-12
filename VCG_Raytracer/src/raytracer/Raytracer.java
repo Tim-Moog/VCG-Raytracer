@@ -98,6 +98,35 @@ public class Raytracer {
         this.exportRendering();
     }
 
+    private void raytrace_backgroundOnly () {
+
+        Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
+        Vec2 currentPixel;
+
+        PerspCam camera = new PerspCam (new Vec3(0,0,17),
+                                        new Vec3(0,0,0),
+                                        new Vec3(0,1,0),
+                                        170,
+                                        (windowSize.x/windowSize.y)
+                                        );
+
+        for (int y = 0; y < windowSize.y; y++) {
+            for (int x = 0; x < windowSize.x; x++) {
+                currentPixel = new Vec2(x, y);
+
+                Ray ray = camera.getRayForPixel(currentPixel, windowSize);
+                Vec3 ray_RGB_values = ray.ray_colorRGB();
+
+                //convert Vec3 to RgbColor
+                RgbColor outputColor = new RgbColor(ray_RGB_values);
+
+                //set the pixel with the adjusted color :)
+                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
+            }
+        }
+    }
+
+
 
     private void colorGradient(){
         // Base Color

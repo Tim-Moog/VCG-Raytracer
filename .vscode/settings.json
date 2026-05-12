@@ -1,0 +1,11 @@
+{
+    "jdk.java.completion.commit.chars": [],
+    "java.jdt.ls.java.home": "C:/Program Files/JDK/jdk-24.0.1",
+    "java.configuration.runtimes": [
+        
+            {
+                "name": "JavaSE-25",
+                "path": "C:/Program Files/JDK/jdk-24.0.1"
+            }
+    ]
+}
