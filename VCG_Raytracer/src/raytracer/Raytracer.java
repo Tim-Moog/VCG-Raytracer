@@ -99,6 +99,46 @@ public class Raytracer {
         this.exportRendering();
     }
 
+    private void a3_Beleuchtung(){
+        Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
+        Vec2 currentPixel;
+
+        PerspCam camera = new PerspCam (new Vec3(0,0,4),
+                                        new Vec3(0,0,0),
+                                        new Vec3(0,1,0),
+                                        70,
+                                        (windowSize.x/windowSize.y)
+                                        );
+        
+        Sphere mySphere = new Sphere(new Vec3(-5,3,0), 0.75f);
+        Sphere sphere2 = new Sphere(new Vec3(3,0,0), 1.25f);
+        Intersection intersectionData;
+
+        for (int y = 0; y < windowSize.y; y++) {
+            for (int x = 0; x < windowSize.x; x++) {
+                currentPixel = new Vec2(x, y);
+
+                Ray ray = camera.getRayForPixel(currentPixel, windowSize);
+
+                //get the intersection info of our sphere object
+                intersectionData = new Intersection();
+                mySphere.intersect(intersectionData, ray);
+
+
+                //check if we hit the sphere make pixel green, else make it blue
+                RgbColor outputColor;
+                if(intersectionData.isHit()){
+                    outputColor = RgbColor.GREEN;
+                }else{
+                    outputColor = RgbColor.BLUE;
+                }
+                
+
+                //set the pixel with the adjusted color :)
+                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
+            }
+        }
+    }
     
     private void circle_radius1 () {
 
