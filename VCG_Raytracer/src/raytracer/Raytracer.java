@@ -82,8 +82,8 @@ public class Raytracer {
 
         //colorGradient();
         //colorCircle();
-        raytrace_backgroundOnly();
-        //circle_radius1();
+        //raytrace_backgroundOnly();
+        circle_radius1();
 
 
     
