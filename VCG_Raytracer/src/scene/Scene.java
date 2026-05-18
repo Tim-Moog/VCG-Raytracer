@@ -20,6 +20,8 @@ public class Scene {
     {
         shapeList = new ArrayList<Shape>();
         lightList = new ArrayList<Light>();
+        createSphere(new Vec3(50,30,2), 1f);
+        createSphere(new Vec3(-30,0,0), 0f);
         Log.print(this, "Init");
     }
 

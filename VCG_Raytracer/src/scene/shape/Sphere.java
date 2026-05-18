@@ -16,11 +16,12 @@ public class Sphere extends Shape{
     public Sphere(Vec3 pos, float radius) {
         this.centerPosition = pos;
         this.radius = radius;
+        this.intersectionData = new Intersection();
+
     }
 
-
     
-    public void intersect(Intersection intersectionData, Ray ray){
+    public void intersect(Ray ray){
         Vec3 start = ray.getOrigin();
         Vec3 direction = ray.getDirection();
 
@@ -41,6 +42,65 @@ public class Sphere extends Shape{
         float diskriminante = (float) (Math.pow(B, 2) - 4 * C);
         
         intersectionData.setHit(diskriminante >= 0);
+        if(diskriminante < 0)
+            return;
+
+
+        //calculating t's
+        float t0 = (float) (- B - Math.sqrt(diskriminante))/2;
+        float t1 = (float) (- B + Math.sqrt(diskriminante))/2;
+
+        //decide which one is first point of contact in front of us 
+        float t;
+        if (diskriminante > 0){
+            if(t1 > 0 && t0 > 0){// case + +
+                //strahl trifft die kugel vor uns
+                if(t1 < t0){
+                    //case t1 is closer to cam
+                    intersectionData.setInRay(ray.calculateRayAt(t1));
+                    intersectionData.setOutRay(ray.calculateRayAt(t0));
+                }else{
+                    //case t0 is closer to cam
+                    intersectionData.setInRay(ray.calculateRayAt(t0));
+                    intersectionData.setOutRay(ray.calculateRayAt(t1));
+                }
+
+                intersectionData.setIntersectionPoint(intersectionData.getInRay());
+                Vec3 normal = (intersectionData.getInRay().sub(centerPosition)).multScalar(1/radius);
+                intersectionData.setNormal(normal);
+                
+            } else{
+                //right now this else block never gets entered?
+                if(t1 < 0 && t0 < 0) // case - -
+                    //strahl hinter der kugel
+                    System.err.println("- -");
+                if(t1 > 0 || t1 > 0)// case + - or - +
+                    //strahl in der kugel
+                    System.err.println("+ -");
+            }
+        }
+        if(diskriminante == 0){
+            //strahl tangiert die kugel demnach sollte es ja nur einen punkt geben
+            System.err.println("tangiert");
+            t = t0;
+        }
+
+
+        //calculate distance
+        //honestly dont think this is needed rn 
+        //intersectionData.setDistance(t); //prob not t but length of a the inRay vector
+
+        /* moved this up to into the if 
+        intersectionData.setIntersectionPoint(intersectionData.getInRay());
+        Vec3 normal = (intersectionData.getInRay().sub(centerPosition)).multScalar(1/radius);
+        intersectionData.setNormal(normal);
+            */
+        
+
+
     }
     
+    public Intersection getIntersectionData(){
+        return this.intersectionData;
+    }
 }

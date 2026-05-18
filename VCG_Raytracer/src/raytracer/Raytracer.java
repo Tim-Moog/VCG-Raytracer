@@ -23,6 +23,7 @@ import org.w3c.dom.css.RGBColor;
 import scene.Scene;
 import scene.camera.*;
 import scene.shape.Intersection;
+import scene.shape.Shape;
 import scene.shape.Sphere;
 import ui.Window;
 import utils.RgbColor;
@@ -83,7 +84,9 @@ public class Raytracer {
         //colorGradient();
         //colorCircle();
         //raytrace_backgroundOnly();
-        circle_radius1();
+        //circle_radius1();
+        a3_Beleuchtung();
+        System.out.println(mScene.getShapes());
 
 
     
@@ -109,30 +112,23 @@ public class Raytracer {
                                         70,
                                         (windowSize.x/windowSize.y)
                                         );
-        
-        Sphere mySphere = new Sphere(new Vec3(-5,3,0), 0.75f);
-        Sphere sphere2 = new Sphere(new Vec3(3,0,0), 1.25f);
-        Intersection intersectionData;
+        //moved sphere creation to scene & Intersection creation into each individual shape object 
 
         for (int y = 0; y < windowSize.y; y++) {
             for (int x = 0; x < windowSize.x; x++) {
                 currentPixel = new Vec2(x, y);
 
                 Ray ray = camera.getRayForPixel(currentPixel, windowSize);
+                Intersection currentIntersection;
+                RgbColor outputColor = RgbColor.BLUE;
 
-                //get the intersection info of our sphere object
-                intersectionData = new Intersection();
-                mySphere.intersect(intersectionData, ray);
-
-
-                //check if we hit the sphere make pixel green, else make it blue
-                RgbColor outputColor;
-                if(intersectionData.isHit()){
-                    outputColor = RgbColor.GREEN;
-                }else{
-                    outputColor = RgbColor.BLUE;
-                }
-                
+                //run a for each loop over our shapelist //we'll prob have another foreach loop in this or around later for all lights
+                for (Shape currentShape : mScene.getShapes()) {
+                    currentShape.intersect(ray);
+                    currentIntersection = currentShape.getIntersectionData();
+                    if(currentIntersection.isHit())
+                        outputColor = RgbColor.GREEN;
+                } 
 
                 //set the pixel with the adjusted color :)
                 mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
@@ -140,6 +136,7 @@ public class Raytracer {
         }
     }
     
+    /* auskommentiert to avoid errors from changed code in inner workings 
     private void circle_radius1 () {
 
         Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
@@ -179,7 +176,7 @@ public class Raytracer {
                 mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
             }
         }
-    }
+    } */
 
     private void raytrace_backgroundOnly () {
 
