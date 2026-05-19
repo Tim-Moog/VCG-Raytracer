@@ -13,6 +13,4 @@ public abstract class Shape extends SceneObject {
 
     public abstract Intersection getIntersectionData();
 
-    public abstract void applyTransformation(Ray _ray);
-
 }

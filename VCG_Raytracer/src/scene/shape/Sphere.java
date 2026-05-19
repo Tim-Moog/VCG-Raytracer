@@ -16,6 +16,7 @@ public class Sphere extends Shape{
     private float C;
 
     private Matrix4x4 myTransformationMatrix;
+    private Matrix4x4 myInverseMatrix;
 
     
     public Sphere(Vec3 pos, float radius) {
@@ -24,35 +25,42 @@ public class Sphere extends Shape{
         this.intersectionData = new Intersection();
         this.myTransformationMatrix = new Matrix4x4();
         this.setupMatrix(pos, radius);
+        this.myInverseMatrix = myTransformationMatrix.invert();
     }
 
     public void setupMatrix(Vec3 _pos, float _rad){
-        addInvTranslation(_pos);
+        //scale first
         addScaleUni(_rad);
+        //then translate
+        addInvTranslation(_pos);
     }
 
     public void addInvTranslation (Vec3 _pos) {
         Vec4 homoTrans = new Vec4(_pos.x, _pos.y, _pos.z, 1);
-        myTransformationMatrix = myTransformationMatrix.translateXYZW(homoTrans).invert();
+        myTransformationMatrix = myTransformationMatrix.translateXYZW(homoTrans);
     }
 
     public void addScaleUni (double _scale) {
         myTransformationMatrix = myTransformationMatrix.scale(_scale);
     }
 
-    public void applyTransformation(Ray _ray){
+    public Ray createTransformedRay(Ray _ray){
+        //richtung bleibt
         Vec3 newDirection = _ray.getDirection();
-        Vec3 newOrigin = _ray.getOrigin();
-        _ray.setDirection_D(myTransformationMatrix.multVec3(newDirection, false));
-        _ray.setStartpoint_p0(myTransformationMatrix.multVec3(newOrigin, true));
+        //müssen nur den startpunkt bearbeiten mit der inverse
+        Vec3 newOrigin = this.myInverseMatrix.multVec3(_ray.getOrigin(), true);
+
+        //return ray with modified data
+        return new Ray(newOrigin, newDirection);
     }
     //erst inverse dann schnittpunkt dann schnittpunkt berechnen
     //darauf dann die normale matrix drauf anwenden 
 
     
     public void intersect(Ray ray){
-        Vec3 start = ray.getOrigin();
-        Vec3 direction = ray.getDirection();
+        Ray transformedRay = createTransformedRay(ray);
+        Vec3 start = transformedRay.getOrigin();
+        Vec3 direction = transformedRay.getDirection();
 
         //A = (float) Math.pow(checkRay.x, 2) + (float) Math.pow(checkRay.y, 2) + (float) Math.pow(checkRay.z, 2);
         //ist das selbe wie

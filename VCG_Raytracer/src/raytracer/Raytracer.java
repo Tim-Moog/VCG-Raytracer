@@ -123,7 +123,6 @@ public class Raytracer {
                 for (Shape currentShape : mScene.getShapes()) {
                     Ray ray = camera.getRayForPixel(currentPixel, windowSize);
                     Intersection currentIntersection;
-                    currentShape.applyTransformation(ray);
                     currentShape.intersect(ray);
                     currentIntersection = currentShape.getIntersectionData();
                     if(currentIntersection.isHit())
