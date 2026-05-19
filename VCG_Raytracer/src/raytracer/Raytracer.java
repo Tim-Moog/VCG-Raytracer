@@ -129,9 +129,9 @@ public class Raytracer {
                 //check if we hit the sphere make pixel green, else make it blue
                 RgbColor outputColor;
                 if(intersectionData.isHit()){
-                    outputColor = RgbColor.GREEN;
+                    outputColor = RgbColor.MAGENTA;
                 }else{
-                    outputColor = RgbColor.BLUE;
+                    outputColor = RgbColor.ROYAL_PURPLE;
                 }
                 
 
