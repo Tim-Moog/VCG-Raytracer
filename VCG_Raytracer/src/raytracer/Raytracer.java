@@ -113,7 +113,7 @@ public class Raytracer {
                                         );
         
         Sphere mySphere = new Sphere(new Vec3(0,0,0), 1);
-        Intersection intersectionData;
+        Intersection data;
 
         for (int y = 0; y < windowSize.y; y++) {
             for (int x = 0; x < windowSize.x; x++) {
@@ -121,14 +121,13 @@ public class Raytracer {
 
                 Ray ray = camera.getRayForPixel(currentPixel, windowSize);
 
-                //get the intersection info of our sphere object
-                intersectionData = new Intersection();
-                mySphere.intersect(intersectionData, ray);
+                //create intersection data and update it based on our sphere and ray
+                data = new Intersection();
+                mySphere.intersect(data, ray);
 
-
-                //check if we hit the sphere make pixel green, else make it blue
+                //check updated intersection data and update pixel color based on hit or no hit
                 RgbColor outputColor;
-                if(intersectionData.isHit()){
+                if(data.isHit()){
                     outputColor = RgbColor.MAGENTA;
                 }else{
                     outputColor = RgbColor.ROYAL_PURPLE;
