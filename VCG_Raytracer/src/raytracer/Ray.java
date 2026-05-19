@@ -10,7 +10,7 @@ public class Ray {
 
     public Ray (Vec3 _startpoint, Vec3 _direction) {
         this.startpoint_p0 = _startpoint;
-        this.direction_D = _direction.normalize();
+        this.direction_D = _direction.normalize(); // just to be safe :P
     }
     
     // Ray = startpoint + parameter * direction
