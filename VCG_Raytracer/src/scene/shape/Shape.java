@@ -9,9 +9,7 @@ public abstract class Shape extends SceneObject {
     protected Intersection intersectionData;
     
     //prob another place for polymorphism
-    public void intersect(Ray checkRay){
-        System.err.println("PLEASE USE SUBCLASS NOT SUPERCLASS SHAPE");
-    };
+    public abstract void intersect(Ray checkRay);
 
     public abstract Intersection getIntersectionData();
 
