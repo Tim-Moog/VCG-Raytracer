@@ -6,7 +6,7 @@ import utils.algebra.Vec3;
 
 public class PerspCam extends Camera {
 
-    // side of out viewport, what camera looks at
+    // side of our viewport, what camera looks at
     private float viewport_height, viewport_width;
 
     public PerspCam (Vec3 cameraPos_P0, Vec3 centerOfInterest_C, Vec3 userUp_g, float alphaDeg, float aspectRatio) {
