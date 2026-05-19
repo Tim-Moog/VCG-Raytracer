@@ -36,7 +36,7 @@ public class PerspCam extends Camera {
 
         // Pixel into viewplane coordinates normed
         float pNorm_x = (2f * (targetPixel.x + 0.5f) / (windowSize.x)) - 1f;
-        float pNorm_y = (2f * (targetPixel.y + 0.5f) / (windowSize.y)) - 1f;
+        float pNorm_y = - (2f * (targetPixel.y + 0.5f) / (windowSize.y)) + 1f;
 
         // [-1,1] → [0,1]
         float s = (pNorm_x + 1f) * 0.5f;
