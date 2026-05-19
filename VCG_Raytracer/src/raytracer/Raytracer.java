@@ -122,17 +122,18 @@ public class Raytracer {
                 Ray ray = camera.getRayForPixel(currentPixel, windowSize);
                 Vec3 ray_RGB_values = ray.ray_colorRGB();
 
+                //create intersection data and update it based on our sphere and ray
                 data = new Intersection();
                 mySphere.intersect(data, ray);
 
-                RgbColor outputColor;
-                if(data.isHit()){
-                    outputColor = RgbColor.GREEN;
-                }else{
-                    outputColor = RgbColor.BLUE;
-                }
-                
+                //set background color as default
+                RgbColor outputColor = RgbColor.BLUE;
 
+                //check updated intersection data
+                if(data.isHit()){
+                    //if we hit the circle change to circle color
+                    outputColor = RgbColor.GREEN;
+                }
 
                 //set the pixel with the adjusted color :)
                 mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
@@ -156,6 +157,7 @@ public class Raytracer {
             for (int x = 0; x < windowSize.x; x++) {
                 currentPixel = new Vec2(x, y);
 
+                //calculate color for current pixel
                 Ray ray = camera.getRayForPixel(currentPixel, windowSize);
                 Vec3 ray_RGB_values = ray.ray_colorRGB();
 
