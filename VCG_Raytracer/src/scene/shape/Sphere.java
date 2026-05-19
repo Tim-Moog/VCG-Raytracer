@@ -1,8 +1,10 @@
 package scene.shape;
 
 import raytracer.Ray;
+import utils.algebra.Matrix4x4;
 import utils.algebra.Vec2;
 import utils.algebra.Vec3;
+import utils.algebra.Vec4;
 
 public class Sphere extends Shape{
 
@@ -12,13 +14,40 @@ public class Sphere extends Shape{
     private float A;
     private float B;
     private float C;
+
+    private Matrix4x4 myTransformationMatrix;
+
     
     public Sphere(Vec3 pos, float radius) {
-        this.centerPosition = pos;
-        this.radius = radius;
+        this.centerPosition = new Vec3(0,0,0);
+        this.radius = 1;
         this.intersectionData = new Intersection();
-
+        this.myTransformationMatrix = new Matrix4x4();
+        this.setupMatrix(pos, radius);
     }
+
+    public void setupMatrix(Vec3 _pos, float _rad){
+        addInvTranslation(_pos);
+        addScaleUni(_rad);
+    }
+
+    public void addInvTranslation (Vec3 _pos) {
+        Vec4 homoTrans = new Vec4(_pos.x, _pos.y, _pos.z, 1);
+        myTransformationMatrix = myTransformationMatrix.translateXYZW(homoTrans).invert();
+    }
+
+    public void addScaleUni (double _scale) {
+        myTransformationMatrix = myTransformationMatrix.scale(_scale);
+    }
+
+    public void applyTransformation(Ray _ray){
+        Vec3 newDirection = _ray.getDirection();
+        Vec3 newOrigin = _ray.getOrigin();
+        _ray.setDirection_D(myTransformationMatrix.multVec3(newDirection, false));
+        _ray.setStartpoint_p0(myTransformationMatrix.multVec3(newOrigin, true));
+    }
+    //erst inverse dann schnittpunkt dann schnittpunkt berechnen
+    //darauf dann die normale matrix drauf anwenden 
 
     
     public void intersect(Ray ray){
@@ -69,17 +98,17 @@ public class Sphere extends Shape{
                 
             } else{
                 //right now this else block never gets entered?
-                if(t1 < 0 && t0 < 0) // case - -
+                //if(t1 < 0 && t0 < 0) // case - -
                     //strahl hinter der kugel
-                    System.err.println("- -");
-                if(t1 > 0 || t1 > 0)// case + - or - +
+                    //System.err.println("- -");
+                //if(t1 > 0 || t1 > 0)// case + - or - +
                     //strahl in der kugel
-                    System.err.println("+ -");
+                    //System.err.println("+ -");
             }
         }
         if(diskriminante == 0){
             //strahl tangiert die kugel demnach sollte es ja nur einen punkt geben
-            System.err.println("tangiert");
+            //System.err.println("tangiert");
             t = t0;
         }
 

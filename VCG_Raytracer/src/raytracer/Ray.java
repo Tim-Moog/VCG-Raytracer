@@ -36,4 +36,12 @@ public class Ray {
         return direction_D;
     }
 
+    public void setStartpoint_p0(Vec3 startpoint_p0) {
+        this.startpoint_p0 = startpoint_p0;
+    }
+
+    public void setDirection_D(Vec3 direction_D) {
+        this.direction_D = direction_D;
+    }
+
 }

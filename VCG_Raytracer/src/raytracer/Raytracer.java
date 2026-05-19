@@ -117,13 +117,13 @@ public class Raytracer {
         for (int y = 0; y < windowSize.y; y++) {
             for (int x = 0; x < windowSize.x; x++) {
                 currentPixel = new Vec2(x, y);
-
-                Ray ray = camera.getRayForPixel(currentPixel, windowSize);
-                Intersection currentIntersection;
                 RgbColor outputColor = RgbColor.BLUE;
 
                 //run a for each loop over our shapelist //we'll prob have another foreach loop in this or around later for all lights
                 for (Shape currentShape : mScene.getShapes()) {
+                    Ray ray = camera.getRayForPixel(currentPixel, windowSize);
+                    Intersection currentIntersection;
+                    currentShape.applyTransformation(ray);
                     currentShape.intersect(ray);
                     currentIntersection = currentShape.getIntersectionData();
                     if(currentIntersection.isHit())

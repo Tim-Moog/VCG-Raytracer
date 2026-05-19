@@ -20,13 +20,16 @@ public class Scene {
     {
         shapeList = new ArrayList<Shape>();
         lightList = new ArrayList<Light>();
-        createSphere(new Vec3(1,3,0), 1.25f);
-        createSphere(new Vec3(0,0,0), 0.75f);
+        createSphere(new Vec3(0.2f,0.5f,0), 1.25f);
+        createSphere(new Vec3(-0.5f,0,0), 0.75f);
         Log.print(this, "Init");
     }
 
     public void createSphere(Vec3 _pos, float _radius){
+        //first create a 1-1 standardkreis 
+        //angaben werden eher als 4x4 matrix 
         Sphere newSphere = new Sphere(_pos, _radius);
+        
         shapeList.add(newSphere);
     }
 
