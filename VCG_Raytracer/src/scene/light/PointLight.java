@@ -1,5 +1,24 @@
 package scene.light;
 
+import utils.RgbColor;
+import utils.algebra.Vec3;
+
 public class PointLight extends Light {
+
+    protected Vec3 position;
+    protected RgbColor color;
     
+    public PointLight (Vec3 _position, RgbColor _color) {
+        this.position = _position;
+        this.color = _color;
+    }
+    
+    public RgbColor getColor() {
+        return this.color;
+    }
+
+    public Vec3 getPosition() {
+        return this.position;
+    }
+
 }
