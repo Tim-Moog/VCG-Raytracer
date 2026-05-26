@@ -17,7 +17,7 @@ public class Intersection { //for now ive just added basic setters and getters f
 
     public Intersection () {
         this.hit = false;
-        this.t = 0;
+        this.t = Float.POSITIVE_INFINITY; // Every Sphere could only be closer to the camera than the default
     }
 
     // ---- GETTER SETTER ----

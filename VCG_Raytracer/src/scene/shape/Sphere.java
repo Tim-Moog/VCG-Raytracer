@@ -7,12 +7,10 @@ import utils.algebra.Vec3;
 public class Sphere extends Shape{
 
     private float radius;
-    private Material material;
 
     public Sphere(Vec3 _position, float _radius, Material _material) {
-        super(_position);
+        super(_position, _material);
         this.radius = _radius;
-        this.material = _material;
     }
 
     public Intersection intersect (Ray ray) {
@@ -37,7 +35,7 @@ public class Sphere extends Shape{
         intersection.setHit(diskriminante >= 0);
         // Stop if we did not hit, or hit is behind camera
         if(diskriminante < 0)
-            return null;
+            return intersection;
 
         //calculating t's
         float t0 = (float) (- b - Math.sqrt(diskriminante))/2;
@@ -64,6 +62,10 @@ public class Sphere extends Shape{
         intersection.setInRay(ray.calculateRayAt(t)); // primary Ray
 
         return intersection;
+    }
+
+    public Material getMaterial () {
+        return this.material;
     }
     
 }

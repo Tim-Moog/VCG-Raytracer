@@ -8,11 +8,11 @@ import utils.algebra.Vec3;
 public class Lambert extends Material {
 
     // diffuse factor is set on instantiation
-    public Lambert (Vec3 _diffuseFactor_kd) {
-        super(_diffuseFactor_kd);
+    public Lambert (RgbColor _diffuse_k) {
+        super(_diffuse_k);
     }
     
-    public RgbColor getColor(Vec3 _position, Vec3 _normal, Vec3 _surfaceColor, PointLight _light){
+    public RgbColor getColor(Vec3 _position, Vec3 _normal, PointLight _light){
 
         // We use the Light Object for the Parameter to ease changes (fewer places to add or remove values)
         Vec3 lightPosition = _light.getPosition();
@@ -34,9 +34,9 @@ public class Lambert extends Material {
             return new RgbColor(0,0,0);
         } else {
             // I * kd * (N x L)
-            r = lightColor.red() * diffuseK.x * scalar_normal_light;
-            g = lightColor.green() * diffuseK.y * scalar_normal_light;
-            b = lightColor.blue() * diffuseK.z * scalar_normal_light;
+            r = lightColor.red() * diffuseK.red() * scalar_normal_light;
+            g = lightColor.green() * diffuseK.green() * scalar_normal_light;
+            b = lightColor.blue() * diffuseK.blue() * scalar_normal_light;
 
             return new RgbColor(r,g,b);
         }

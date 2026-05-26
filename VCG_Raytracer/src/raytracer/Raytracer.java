@@ -18,12 +18,10 @@ package raytracer;
 
 import java.awt.image.BufferedImage;
 
-import org.w3c.dom.css.RGBColor;
-
 import scene.Scene;
-import scene.camera.*;
+import scene.camera.PerspCam;
+import scene.material.Material;
 import scene.shape.Intersection;
-import scene.shape.Sphere;
 import ui.Window;
 import utils.RgbColor;
 import utils.algebra.Vec2;
@@ -83,7 +81,7 @@ public class Raytracer {
         //colorGradient();
         //colorCircle();
         //raytrace_backgroundOnly();
-        circle_radius1();
+        task3();
 
 
     
@@ -100,20 +98,20 @@ public class Raytracer {
     }
 
     
-    private void circle_radius1 () {
+    private void task3 () {
 
         Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
         Vec2 currentPixel;
 
-        PerspCam camera = new PerspCam (new Vec3(0,0,4),
+        Scene scene_3 = new Scene(new PerspCam (new Vec3(0,0,4),
                                         new Vec3(0,0,0),
                                         new Vec3(0,1,0),
                                         70,
                                         (windowSize.x/windowSize.y)
-                                        );
-        
-        Sphere mySphere = new Sphere(new Vec3(0,0,0), 1);
-        Intersection data;
+                                        ));
+        PerspCam camera = scene_3.getPerspectiveCamera();
+
+        Intersection clostest_intersection;
 
         for (int y = 0; y < windowSize.y; y++) {
             for (int x = 0; x < windowSize.x; x++) {
@@ -122,23 +120,24 @@ public class Raytracer {
                 Ray ray = camera.getRayForPixel(currentPixel, windowSize);
 
                 //create intersection data and update it based on our sphere and ray
-                data = new Intersection();
-                mySphere.intersect(data, ray);
-
-                //check updated intersection data and update pixel color based on hit or no hit
-                RgbColor outputColor;
-                if(data.isHit()){
-                    outputColor = RgbColor.MAGENTA;
-                }else{
-                    outputColor = RgbColor.ROYAL_PURPLE;
-                }
+                clostest_intersection = scene_3.findClosestIntersection(ray);
                 
+
+                RgbColor outputColor;
+                if (clostest_intersection.isHit()) {
+                    System.out.println("SHAPE HIT");
+                    outputColor = scene_3.shade(clostest_intersection);
+                } else {
+                    outputColor = scene_3.getAmbientFactor();
+                }
 
                 //set the pixel with the adjusted color :)
                 mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
             }
         }
     }
+
+    
 
     private void raytrace_backgroundOnly () {
 
