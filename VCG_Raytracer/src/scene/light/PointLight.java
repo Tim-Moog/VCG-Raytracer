@@ -3,6 +3,7 @@ package scene.light;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 
+// Light that eminates from a single point
 public class PointLight extends Light {
 
     protected Vec3 position;

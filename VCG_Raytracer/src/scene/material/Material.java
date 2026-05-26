@@ -4,6 +4,7 @@ import scene.light.PointLight;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 
+// Abstract class for all Materials, only knows the light Factors (k's)
 public abstract class Material {
 
     protected Vec3 diffuseK = new Vec3 (0,0,0);

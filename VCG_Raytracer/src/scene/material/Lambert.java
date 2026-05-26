@@ -4,35 +4,41 @@ import scene.light.PointLight;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 
+// Calculates the Diffuse Aspect of Lighting
 public class Lambert extends Material {
 
+    // diffuse factor is set on instantiation
     public Lambert (Vec3 _diffuseFactor_kd) {
         super(_diffuseFactor_kd);
     }
     
     public RgbColor getColor(Vec3 _position, Vec3 _normal, Vec3 _surfaceColor, PointLight _light){
-        // DIFFUSE: I = kd * (N * L)
-        // Light = diffuseFactor * (normal . light)
 
+        // We use the Light Object for the Parameter to ease changes (fewer places to add or remove values)
         Vec3 lightPosition = _light.getPosition();
         RgbColor lightColor = _light.getColor();
 
+        // Variables later on inserted into our RgbColor output
+        // Better for calculating the indiviual light components
         Float r,g,b;
 
+        // Calculating the necessary Vectors for diffuse light component:
+        // I * kd * (N x L) <- [(N x L)]
         Vec3 normal = _normal.normalize();
         Vec3 vec_light = _position.sub(lightPosition).normalize();
         Float scalar_normal_light = normal.scalar(vec_light);
 
         // Scalarproduct has to be above 0, else Light doesn't hit this point
         if(scalar_normal_light <= 0) {
-            return null;
+            // Face is looking away from Light; doesn't get any values added
+            return new RgbColor(0,0,0);
         } else {
-            r = lightColor.red() * (diffuseK.x * scalar_normal_light);
-            g = lightColor.green() * (diffuseK.y * scalar_normal_light);
-            b = lightColor.blue() * (diffuseK.z * scalar_normal_light);
+            // I * kd * (N x L)
+            r = lightColor.red() * diffuseK.x * scalar_normal_light;
+            g = lightColor.green() * diffuseK.y * scalar_normal_light;
+            b = lightColor.blue() * diffuseK.z * scalar_normal_light;
 
-            RgbColor outColor = new RgbColor(r,g,b);
-            return outColor;
+            return new RgbColor(r,g,b);
         }
     }
 
