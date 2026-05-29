@@ -26,7 +26,7 @@ public class Lambert extends Material {
         // Calculating the necessary Vectors for diffuse light component:
         // I * kd * (N x L) <- [(N x L)]
         Vec3 normal = _normal.normalize();
-        Vec3 vec_light = _position.sub(lightPosition).normalize();
+        Vec3 vec_light = lightPosition.sub(_position).normalize();
         Float scalar_normal_light = normal.scalar(vec_light);
 
         // Scalarproduct has to be above 0, else Light doesn't hit this point

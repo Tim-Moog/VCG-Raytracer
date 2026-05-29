@@ -20,6 +20,7 @@ public abstract class Shape extends SceneObject {
     
     //prob another place for polymorphism
     public abstract void intersect(Ray checkRay);
+    public abstract Intersection intersect(Ray checkRay, int filler);
 
     public abstract Intersection getIntersectionData();
 

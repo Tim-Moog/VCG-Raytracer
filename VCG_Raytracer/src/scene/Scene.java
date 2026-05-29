@@ -29,13 +29,18 @@ public class Scene {
         lightList = new ArrayList<PointLight>();
         Log.print(this, "Init");
 
-        Material mat_lambert = new Lambert(new RgbColor(0.8f,0.8f,0.8f));
-        //createSphere(new Vec3(0,0,0), 1, mat_lambert);
+        //create materials
+        Material mat_lambert = new Lambert(new RgbColor(0.9f,0.2f,0.5f));
+        Material mat_lambert2 = new Lambert(new RgbColor(0.8f,0.8f,0.8f));
+
+        //create spheres
         createSphere(new Vec3(1.5f,1,0), 1.25f, mat_lambert);
-        //createSphere(new Vec3(-1f,0,0), 0.75f);
-        createPointLight(new Vec3 (0.8f,0.8f,0), RgbColor.PURPLE);
-        createPointLight(new Vec3 (-0.8f,-0.8f,0), RgbColor.RED);
-        createPointLight(new Vec3(0, 0, 0), RgbColor.GREEN);
+        createSphere(new Vec3(-1.5f,-0.5f,0), 0.75f, mat_lambert2);
+
+        //create lights
+        createPointLight(new Vec3 (3f,3f,0), RgbColor.PURPLE);
+        createPointLight(new Vec3 (0f,0f,1), RgbColor.RED);
+        createPointLight(new Vec3(-2, -3, -2), RgbColor.YELLOW);
         ambient_k = new RgbColor(0.1f,0.1f,0.1f);
     }
 
@@ -87,8 +92,8 @@ public class Scene {
         return lightList.getFirst();
     }
 
-    public ArrayList<Shape> getShapes(){
-        return this.shapeList;
+    public static ArrayList<Shape> getShapes(){
+        return shapeList;
     }
     
     public static ArrayList<PointLight> getLights(){
@@ -96,32 +101,39 @@ public class Scene {
     }
 
     public static RgbColor shade (Intersection _intersection) {
-        RgbColor pointColor = ambient_k;
+        RgbColor pointColor = new RgbColor(
+                                    ambient_k.red(),
+                                    ambient_k.green(),
+                                    ambient_k.blue()
+                                );
 
         for(Light currentLight : getLights()){
             Material material = _intersection.getShape().getMaterial();
             RgbColor diffuse = material.getColor(_intersection.getIntersectionPoint(), 
                                                 _intersection.getNormal(), 
                                                 currentLight);
+            
+            //we prob need to grab the light position and compare to our intersection point
+            float distance = currentLight.getPosition()
+                            .sub(_intersection.getIntersectionPoint())
+                            .length();
+            diffuse = diffuse.multScalar(distance * 0.25f); // *0.25 due to else impact either too big or too smol 
+            //value just depends on light distance which makes sense as you want further lights to have less impact....
+            //but for this surely there has to be a better way to make it seem balanced no?
 
             //System.out.println("DIFFUSE COLOR: " + diffuse);
             pointColor.add(diffuse.red(), diffuse.green(), diffuse.blue());
             //System.out.println("SHAPE COLOR: " + pointColor);
         }
 
-        pointColor = new RgbColor(pointColor.red()/getLights().size(), pointColor.green()/getLights().size(), pointColor.blue()/getLights().size());
-        
-                                            
-        
-
         return pointColor;
     }
 
-    /* 
+    
     public Intersection findClosestIntersection(Ray ray) {
         Intersection closest = new Intersection();
         for (Shape shape : shapeList) {
-            Intersection temp = shape.intersect(ray);
+            Intersection temp = shape.intersect(ray, 0); //added 2nd param for testing
             System.out.println(temp.isHit());
             if (temp.isHit() && temp.getDistance() < closest.getDistance()) {
                 System.out.println("SHAPE HIT");
@@ -129,6 +141,6 @@ public class Scene {
             }
         }
         return closest;
-    }*/
+    }
 
 }

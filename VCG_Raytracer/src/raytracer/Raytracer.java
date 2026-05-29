@@ -86,7 +86,7 @@ public class Raytracer {
         //raytrace_backgroundOnly();
         //circle_radius1();
         a3_Beleuchtung();
-        System.out.println(mScene.getShapes());
+        System.out.println(mScene.getShapes().size());
 
 
     
