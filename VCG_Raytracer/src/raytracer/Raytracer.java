@@ -106,13 +106,12 @@ public class Raytracer {
         Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
         Vec2 currentPixel;
 
-        PerspCam camera = new PerspCam (new Vec3(0,0,4),
+        PerspCam camera = new PerspCam (new Vec3(0,0,5),
                                         new Vec3(0,0,0),
                                         new Vec3(0,1,0),
                                         70,
-                                        (windowSize.x/windowSize.y)
-                                        );
-        //moved sphere creation to scene & Intersection creation into each individual shape object 
+                                        (windowSize.x/windowSize.y));
+
 
         for (int y = 0; y < windowSize.y; y++) {
             for (int x = 0; x < windowSize.x; x++) {
@@ -126,7 +125,7 @@ public class Raytracer {
                     currentShape.intersect(ray);
                     currentIntersection = currentShape.getIntersectionData();
                     if(currentIntersection.isHit())
-                        outputColor = RgbColor.GREEN;
+                        outputColor = Scene.shade(currentIntersection); //shade method instead
                 } 
 
                 //set the pixel with the adjusted color :)

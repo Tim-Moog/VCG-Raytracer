@@ -1,6 +1,7 @@
 package scene.shape;
 
 import raytracer.Ray;
+import scene.material.Material;
 import utils.algebra.Matrix4x4;
 import utils.algebra.Vec2;
 import utils.algebra.Vec3;
@@ -8,7 +9,6 @@ import utils.algebra.Vec4;
 
 public class Sphere extends Shape{
 
-    private Vec3 centerPosition;
     private float radius;
 
     private float A;
@@ -19,13 +19,14 @@ public class Sphere extends Shape{
     private Matrix4x4 myInverseMatrix;
 
     
-    public Sphere(Vec3 pos, float radius) {
-        this.centerPosition = new Vec3(0,0,0);
+    public Sphere(Vec3 pos, float radius, Material _material) {
+        super(new Vec3(0,0,0), _material);
         this.radius = 1;
         this.intersectionData = new Intersection();
         this.myTransformationMatrix = new Matrix4x4();
         this.setupMatrix(pos, radius);
         this.myInverseMatrix = myTransformationMatrix.invert();
+        intersectionData.setShape(this);
     }
 
     public void setupMatrix(Vec3 _pos, float _rad){
@@ -91,20 +92,28 @@ public class Sphere extends Shape{
             if(t1 > 0 && t0 > 0){// case + +
                 //strahl trifft die kugel vor uns
                 if(t1 < t0){
+                    t=t1;
                     //case t1 is closer to cam
                     intersectionData.setInRay(ray.calculateRayAt(t1));
                     intersectionData.setOutRay(ray.calculateRayAt(t0));
                 }else{
                     //case t0 is closer to cam
+                    t=t0;
                     intersectionData.setInRay(ray.calculateRayAt(t0));
                     intersectionData.setOutRay(ray.calculateRayAt(t1));
                 }
-
+                /* 
                 intersectionData.setIntersectionPoint(intersectionData.getInRay());
                 Vec3 normal = (intersectionData.getInRay().sub(centerPosition)).multScalar(1/radius);
-                intersectionData.setNormal(normal);
+                intersectionData.setNormal(normal);*/
+
+                //testing Nicoles - me thinks this more correct
+                intersectionData.setIntersectionPoint(myTransformationMatrix.multVec3(start.add(direction.multScalar(t)), true));
+                intersectionData.setNormal(myTransformationMatrix.multVec3(intersectionData.getIntersectionPoint().normalize(), false));
+                System.err.println("hit");
                 
             } else{
+                System.err.println("entered else that has never before been entered");
                 //right now this else block never gets entered?
                 //if(t1 < 0 && t0 < 0) // case - -
                     //strahl hinter der kugel
@@ -138,4 +147,9 @@ public class Sphere extends Shape{
     public Intersection getIntersectionData(){
         return this.intersectionData;
     }
+
+    public Material getMaterial () {
+        return this.material;
+    }
+
 }
