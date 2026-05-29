@@ -157,8 +157,11 @@ public class Sphere extends Shape{
     public Intersection intersect (Ray ray, int filler) {
         Intersection intersection = new Intersection();
 
-        Vec3 ray_origin = ray.getOrigin();
-        Vec3 ray_direction = ray.getDirection();
+        //tim testing with transformed ray
+        Ray transformedRay = createTransformedRay(ray);
+
+        Vec3 ray_origin = transformedRay.getOrigin();
+        Vec3 ray_direction = transformedRay.getDirection();
 
         //A = (float) Math.pow(checkRay.x, 2) + (float) Math.pow(checkRay.y, 2) + (float) Math.pow(checkRay.z, 2);
         //ist das selbe wie
@@ -201,6 +204,11 @@ public class Sphere extends Shape{
         intersection.setNormal(intersection.getIntersectionPoint().sub(position).normalize()); // Vector between intersection and sphere center = normal
         intersection.setShape(this); // for material
         intersection.setInRay(ray.calculateRayAt(t)); // primary Ray
+
+        //tim testing
+        intersection.setIntersectionPoint(myTransformationMatrix.multVec3(ray_origin.add(ray_direction.multScalar(t)), true));
+        intersection.setNormal(myTransformationMatrix.multVec3(intersection.getIntersectionPoint().normalize(), false));
+        intersection.setInRay(transformedRay.calculateRayAt(t)); 
 
         return intersection;
     }
