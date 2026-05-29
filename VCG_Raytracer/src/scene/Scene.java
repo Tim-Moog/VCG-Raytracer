@@ -84,8 +84,8 @@ public class Scene {
         this.ambient_k = _ambient_k;
     }
 
-    public RgbColor getAmbientFactor () {
-        return this.ambient_k;
+    public static RgbColor getAmbientFactor () {
+        return ambient_k;
     }
 
     public static PointLight getFirstLight() {
@@ -130,11 +130,12 @@ public class Scene {
     }
 
     
-    public Intersection findClosestIntersection(Ray ray) {
-        Intersection closest = new Intersection();
+    public static Intersection findClosestIntersection(Ray ray) {
+        Shape first = shapeList.getFirst();
+        Intersection closest = first.intersect(ray, 0);
         for (Shape shape : shapeList) {
             Intersection temp = shape.intersect(ray, 0); //added 2nd param for testing
-            System.out.println(temp.isHit());
+            //System.out.println(temp.isHit());
             if (temp.isHit() && temp.getDistance() < closest.getDistance()) {
                 System.out.println("SHAPE HIT");
                 closest = temp;

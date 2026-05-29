@@ -162,15 +162,15 @@ public class Sphere extends Shape{
 
         //A = (float) Math.pow(checkRay.x, 2) + (float) Math.pow(checkRay.y, 2) + (float) Math.pow(checkRay.z, 2);
         //ist das selbe wie
-        Float a = ray_direction.scalar(ray_direction);
+        Float A = ray_direction.scalar(ray_direction);
         //B = (float) (2 * (camPos.x * checkRay.x + camPos.y * checkRay.y + camPos.z * checkRay.z));
         //ist das selbe wie
-        Float b = 2.0f * ray_origin.scalar(ray_direction);
+        Float B = 2.0f * ray_origin.scalar(ray_direction);
         //C = (float) (Math.pow(camPos.x,2) + Math.pow(camPos.y,2) + Math.pow(camPos.z,2) - Math.pow(radius,2));
         //ist das selbe wie
-        Float c = ray_origin.scalar(ray_origin) - radius * radius;
+        Float C = ray_origin.scalar(ray_origin) - radius * radius;
 
-        float diskriminante = (float) (Math.pow(b, 2) - 4 * c);
+        float diskriminante = (float) (Math.pow(B, 2) - 4 * C);
         
         // Did we hit a sphere in line of sight?
         intersection.setHit(diskriminante >= 0);
@@ -179,8 +179,8 @@ public class Sphere extends Shape{
             return intersection;
 
         //calculating t's
-        float t0 = (float) (- b - Math.sqrt(diskriminante))/2;
-        float t1 = (float) (- b + Math.sqrt(diskriminante))/2;
+        float t0 = (float) (-B - Math.sqrt(diskriminante))/2;
+        float t1 = (float) (-B + Math.sqrt(diskriminante))/2;
 
         // Deciding, which t is first contact infront of us
         float t = -1;

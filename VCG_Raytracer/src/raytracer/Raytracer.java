@@ -85,7 +85,8 @@ public class Raytracer {
         //colorCircle();
         //raytrace_backgroundOnly();
         //circle_radius1();
-        a3_Beleuchtung();
+        //a3_Beleuchtung();
+        a3versionTeamPurple();
         System.out.println(mScene.getShapes().size());
 
 
@@ -102,6 +103,46 @@ public class Raytracer {
         this.exportRendering();
     }
 
+
+    private void a3versionTeamPurple(){
+        Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
+        Vec2 currentPixel;
+
+        PerspCam camera = new PerspCam (new Vec3(0,0,5),
+                                        new Vec3(0,0,0),
+                                        new Vec3(0,1,0),
+                                        70,
+                                        (windowSize.x/windowSize.y));
+
+
+
+        Intersection clostest_intersection;
+
+        for (int y = 0; y < windowSize.y; y++) {
+            for (int x = 0; x < windowSize.x; x++) {
+                currentPixel = new Vec2(x, y);
+
+                Ray ray = camera.getRayForPixel(currentPixel, windowSize);
+
+                //create intersection data and update it based on our sphere and ray
+                clostest_intersection = Scene.findClosestIntersection(ray);
+                
+
+                RgbColor outputColor;
+                if (clostest_intersection.isHit()) {
+                    //System.out.println("SHAPE HIT");
+                    outputColor = Scene.shade(clostest_intersection);
+                } else {
+                    outputColor = Scene.getAmbientFactor();
+                }
+
+                //set the pixel with the adjusted color :)
+                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
+            }
+        }
+
+    }
+
     private void a3_Beleuchtung(){
         Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
         Vec2 currentPixel;
@@ -113,6 +154,7 @@ public class Raytracer {
                                         (windowSize.x/windowSize.y));
 
 
+                                
         for (int y = 0; y < windowSize.y; y++) {
             for (int x = 0; x < windowSize.x; x++) {
                 currentPixel = new Vec2(x, y);
