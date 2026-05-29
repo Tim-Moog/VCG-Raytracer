@@ -34,7 +34,7 @@ public class Scene {
         Material mat_lambert2 = new Lambert(new RgbColor(0.8f,0.8f,0.8f));
 
         //create spheres
-        //createSphere(new Vec3(1.5f,1,0), 1.25f, mat_lambert);
+        createSphere(new Vec3(1.5f,1,0), 1.25f, mat_lambert);
         createSphere(new Vec3(-1.5f,-0.5f,0), 0.75f, mat_lambert2);
 
         //create lights
@@ -131,11 +131,13 @@ public class Scene {
 
     
     public static Intersection findClosestIntersection(Ray ray) {
-        Shape first = shapeList.getFirst();
-        Intersection closest = first.intersect(ray, 0);
+        Intersection closest = new Intersection();
         for (Shape shape : shapeList) {
             Intersection temp = shape.intersect(ray, 0); //added 2nd param for testing
             //System.out.println(temp.isHit());
+
+            if(closest.getShape() == null) //check if there is a shape in already if not we take that as closest
+                closest = temp;
             if (temp.isHit() && temp.getDistance() < closest.getDistance()) {
                 //System.out.println("SHAPE HIT");
                 closest = temp;
