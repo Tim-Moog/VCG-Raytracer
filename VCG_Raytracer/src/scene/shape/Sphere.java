@@ -20,7 +20,7 @@ public class Sphere extends Shape{
 
     
     public Sphere(Vec3 pos, float radius, Material _material) {
-        super(new Vec3(0,0,0), _material);
+        super(pos, _material);
         this.radius = 1;
         this.intersectionData = new Intersection();
         this.myTransformationMatrix = new Matrix4x4();
@@ -154,10 +154,11 @@ public class Sphere extends Shape{
 
 
     //adding other version for testing
+    //dont mind the filler parameter that was just for easy pasting in
     public Intersection intersect (Ray ray, int filler) {
         Intersection intersection = new Intersection();
 
-        //tim testing with transformed ray
+        //very sure this is needed for transformations to work
         Ray transformedRay = createTransformedRay(ray);
 
         Vec3 ray_origin = transformedRay.getOrigin();
@@ -206,9 +207,12 @@ public class Sphere extends Shape{
         intersection.setInRay(ray.calculateRayAt(t)); // primary Ray
 
         //tim testing
-        //intersection.setIntersectionPoint(myTransformationMatrix.multVec3(ray_origin.add(ray_direction.multScalar(t)), true));
-        //intersection.setNormal(myTransformationMatrix.multVec3(intersection.getIntersectionPoint().normalize(), false));
-        //intersection.setInRay(transformedRay.calculateRayAt(t)); 
+        intersection.setIntersectionPoint(myTransformationMatrix.multVec3(ray_origin.add(ray_direction.multScalar(t)), true)); //pretty sure this is needed
+        intersection.setNormal(myTransformationMatrix.multVec3(intersection.getIntersectionPoint().sub(position).normalize(), false));
+        intersection.setInRay(transformedRay.calculateRayAt(t)); 
+
+        //tim testing 2
+        //intersection.setIntersectionPoint(this.myTransformationMatrix.multVec3(intersection.getIntersectionPoint(), true)); //and i think this too wait no i think this was nonsense
 
         return intersection;
     }
