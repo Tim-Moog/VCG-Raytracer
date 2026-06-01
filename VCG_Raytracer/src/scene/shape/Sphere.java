@@ -206,9 +206,9 @@ public class Sphere extends Shape{
         intersection.setInRay(ray.calculateRayAt(t)); // primary Ray
 
         //tim testing
-        intersection.setIntersectionPoint(myTransformationMatrix.multVec3(ray_origin.add(ray_direction.multScalar(t)), true));
-        intersection.setNormal(myTransformationMatrix.multVec3(intersection.getIntersectionPoint().normalize(), false));
-        intersection.setInRay(transformedRay.calculateRayAt(t)); 
+        //intersection.setIntersectionPoint(myTransformationMatrix.multVec3(ray_origin.add(ray_direction.multScalar(t)), true));
+        //intersection.setNormal(myTransformationMatrix.multVec3(intersection.getIntersectionPoint().normalize(), false));
+        //intersection.setInRay(transformedRay.calculateRayAt(t)); 
 
         return intersection;
     }

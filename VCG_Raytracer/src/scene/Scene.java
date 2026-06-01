@@ -30,7 +30,7 @@ public class Scene {
         Log.print(this, "Init");
 
         //create materials
-        Material mat_lambert = new Lambert(new RgbColor(0.9f,0.2f,0.5f));
+        Material mat_lambert = new Lambert(new RgbColor(0.6f,0.2f,0.5f));
         Material mat_lambert2 = new Lambert(new RgbColor(0.8f,0.8f,0.8f));
 
         //create spheres
@@ -38,9 +38,9 @@ public class Scene {
         createSphere(new Vec3(-1.5f,-0.5f,0), 0.75f, mat_lambert2);
 
         //create lights
-        createPointLight(new Vec3 (3f,3f,0), RgbColor.PURPLE);
-        createPointLight(new Vec3 (0f,0f,1), RgbColor.RED);
-        createPointLight(new Vec3(-2, -3, -2), RgbColor.YELLOW);
+        createPointLight(new Vec3 (-2.5f,2.5f,3), RgbColor.GREEN);
+        createPointLight(new Vec3 (2.5f,2.5f,3), RgbColor.RED);
+        createPointLight(new Vec3(0, -2.5f, 3), RgbColor.BLUE);
         ambient_k = new RgbColor(0.1f,0.1f,0.1f);
     }
 
@@ -117,14 +117,27 @@ public class Scene {
             float distance = currentLight.getPosition()
                             .sub(_intersection.getIntersectionPoint())
                             .length();
-            diffuse = diffuse.multScalar(distance * 0.25f); // *0.25 due to else impact either too big or too smol 
+            //diffuse = diffuse.multScalar(distance * 0.25f); // *0.25 due to else impact either too big or too smol 
             //value just depends on light distance which makes sense as you want further lights to have less impact....
             //but for this surely there has to be a better way to make it seem balanced no?
 
+
+            //maybe here sekundärstrahl von schnittpunkt zu lichtquelle und if no path found then dont add?
+            //gotta prob create a new ray here and test with that? i dunno
+            float distplusnorm = currentLight.getPosition()
+                                .sub((_intersection.getIntersectionPoint()).add(_intersection.getNormal()))
+                                .length();
+            
+
             //System.out.println("DIFFUSE COLOR: " + diffuse);
-            pointColor.add(diffuse.red(), diffuse.green(), diffuse.blue());
+            if(distplusnorm < distance) //check if we are looking at the light or not //i dont think this is actually needed since already done in 
+                pointColor.add(diffuse.red(), diffuse.green(), diffuse.blue());
             //System.out.println("SHAPE COLOR: " + pointColor);
         }
+
+        //pretty sure this aint wanted since it just makes it a lot darker
+        //pointColor = new RgbColor(pointColor.red()/getLights().size(), pointColor.green()/getLights().size(), pointColor.blue()/getLights().size());
+
 
         return pointColor;
     }
