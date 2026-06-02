@@ -167,7 +167,7 @@ public class Raytracer {
                     currentShape.intersect(ray);
                     currentIntersection = currentShape.getIntersectionData();
                     if(currentIntersection.isHit())
-                        outputColor = Scene.shade(currentIntersection); //shade method instead
+                        outputColor = mScene.shade(currentIntersection); //shade method instead
                 } 
 
                 //set the pixel with the adjusted color :)
