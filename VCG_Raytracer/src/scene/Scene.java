@@ -17,11 +17,10 @@ import utils.io.Log;
 
 public class Scene {
 
-    private static ArrayList<Shape> shapeList;
-    private static ArrayList<PointLight> lightList;
+    private ArrayList<Shape> shapeList;
+    private ArrayList<PointLight> lightList;
 
-    private static PerspCam perspCam;
-    private static RgbColor ambient_k;
+    private RgbColor ambient_k;
 
     public Scene() 
     {
@@ -44,19 +43,6 @@ public class Scene {
         ambient_k = new RgbColor(0.1f,0.1f,0.1f);
     }
 
-    public Scene(PerspCam _perspCam) {
-        // For our Task 3 specified
-        this();
-        addPerspCam(_perspCam);
-        Material mat_lambert = new Lambert(new RgbColor(0.8f,0.8f,0.8f));
-        //createSphere(new Vec3(0,0,0), 1, mat_lambert);
-        createSphere(new Vec3(1.5f,1,0), 1.25f, mat_lambert);
-        createSphere(new Vec3(-0.5f,-0.5f,0), 0.75f, mat_lambert);
-        //createSphere(new Vec3(-1f,0,0), 0.75f);
-        createPointLight(new Vec3 (0.8f,0.8f,0), RgbColor.PURPLE);
-        ambient_k = new RgbColor(0.1f,0.1f,0.1f);
-    }
-
     public void createSphere(Vec3 _pos, float _radius, Material _material){
         // unit circle, transformation can be added later
         Sphere newSphere = new Sphere(_pos, _radius, _material);
@@ -67,40 +53,28 @@ public class Scene {
         PointLight newLight = new PointLight(_position, _color);
         lightList.add(newLight);
     }
-    
-    public void createPerspCam(Vec3 cameraPos_P0, Vec3 centerOfInterest_C, Vec3 userUp_g, float alphaDeg, float aspectRatio){
-        this.perspCam = new PerspCam(cameraPos_P0, centerOfInterest_C, userUp_g, alphaDeg, aspectRatio);
-    }
-
-    public void addPerspCam(PerspCam _perspCam){
-        this.perspCam = _perspCam;
-    }
-
-    public PerspCam getPerspectiveCamera () {
-        return this.perspCam;
-    }
 
     public void setAmbientFactor (RgbColor _ambient_k) {
-        this.ambient_k = _ambient_k;
+        ambient_k = _ambient_k;
     }
 
-    public static RgbColor getAmbientFactor () {
-        return ambient_k;
+    public RgbColor getAmbientFactor () {
+        return this.ambient_k;
     }
 
-    public static PointLight getFirstLight() {
+    public PointLight getFirstLight() {
         return lightList.getFirst();
     }
 
-    public static ArrayList<Shape> getShapes(){
+    public ArrayList<Shape> getShapes(){
         return shapeList;
     }
     
-    public static ArrayList<PointLight> getLights(){
+    public ArrayList<PointLight> getLights(){
         return lightList;
     }
 
-    public static RgbColor shade (Intersection _intersection) {
+    public RgbColor shade (Intersection _intersection) {
         RgbColor pointColor = new RgbColor(
                                     ambient_k.red(),
                                     ambient_k.green(),
@@ -121,20 +95,18 @@ public class Scene {
             //value just depends on light distance which makes sense as you want further lights to have less impact....
             //but for this surely there has to be a better way to make it seem balanced no?
             //honestly no clue if theres a better way atleast couldnt find any specific way for this in folien but not having it in feels troll cuz it just makes sense for distance to play a role logically
+            //weirdest thing is wenn wir das auskommentieren sieht es genauso dunkel aus bei *0.25 ?? like wha but bei nur *distance it bright af
 
 
-            //maybe here sekundärstrahl von schnittpunkt zu lichtquelle und if no path found then dont add?
-            //gotta prob create a new ray here and test with that? i dunno
-            float distplusnorm = currentLight.getPosition()
-                                .sub((_intersection.getIntersectionPoint()).add(_intersection.getNormal())) //think this was nonsense since it got handeled within getColor()
-                                .length();
-            
-
-            //System.out.println("DIFFUSE COLOR: " + diffuse);
-            //dumm check that is already in getColor i realised
-            //if(distplusnorm < distance) //check if we are looking at the light or not //i dont think this is actually needed since already done in 
-              //  pointColor.add(diffuse.red(), diffuse.green(), diffuse.blue());
-            //System.out.println("SHAPE COLOR: " + pointColor);
+            //----------------------------- secondary rays -----------------------
+            //sekundärstrahlen idee
+            //logic written down 
+            //send ray from intersectionpoint to the light itself <- due to this, this prob needs to be inside of the prev for each loop so will add there
+            //schnitttest mit allen objekten
+                //falls treffer
+                //objektpunkt im schatten = pixelfarbe ist ambientwert
+                //falls kein treffer
+                //berechne lokales beleuchtungsmodell 
 
             //sekundärstrahlen attempt- nvm not attempt.... SUCCESS
             Ray secondaryRay = new Ray(_intersection.getIntersectionPoint(), currentLight.getPosition().sub(_intersection.getIntersectionPoint()));
@@ -143,7 +115,7 @@ public class Scene {
 
             for (Shape currentShape : shapeList) { //go through all shapes
                 if(currentShape != hitObjectShape){//except the one that our ray is starting from -> da kann man es abhängig von normale machen
-                    Intersection secondaryRayData = currentShape.intersect(secondaryRay, 0);
+                    Intersection secondaryRayData = currentShape.intersect(secondaryRay);
                     if(secondaryRayData.isHit())
                         objectInTheWay = true;
                 }
@@ -156,23 +128,14 @@ public class Scene {
         //pretty sure this aint wanted since it just makes it a lot darker -> yea this just makes it very dark so dont do this
         //pointColor = new RgbColor(pointColor.red()/getLights().size(), pointColor.green()/getLights().size(), pointColor.blue()/getLights().size());
 
-        //sekundärstrahlen attempt
-        //logic written down 
-        //send ray from intersectionpoint to the light itself <- due to this, this prob needs to be inside of the prev for each loop so will add there
-        //schnitttest mit allen objekten
-            //falls treffer
-            //objektpunkt im schatten = pixelfarbe ist ambientwert
-            //falls kein treffer
-            //berechne lokales beleuchtungsmodell  
-
         return pointColor;
     }
 
     
-    public static Intersection findClosestIntersection(Ray ray) {
+    public Intersection findClosestIntersection(Ray ray) {
         Intersection closest = new Intersection();
         for (Shape shape : shapeList) {
-            Intersection temp = shape.intersect(ray, 0); //added 2nd param for testing
+            Intersection temp = shape.intersect(ray);
             //System.out.println(temp.isHit());
 
             if(closest.getShape() == null) //check if there is a shape in already if not we take that as closest

@@ -125,15 +125,15 @@ public class Raytracer {
                 Ray ray = camera.getRayForPixel(currentPixel, windowSize);
 
                 //create intersection data and update it based on our sphere and ray
-                clostest_intersection = Scene.findClosestIntersection(ray);
+                clostest_intersection = mScene.findClosestIntersection(ray);
                 
 
                 RgbColor outputColor;
                 if (clostest_intersection.isHit()) {
                     //System.out.println("SHAPE HIT");
-                    outputColor = Scene.shade(clostest_intersection);
+                    outputColor = mScene.shade(clostest_intersection);
                 } else {
-                    outputColor = Scene.getAmbientFactor();
+                    outputColor = mScene.getAmbientFactor();
                 }
 
                 //set the pixel with the adjusted color :)
