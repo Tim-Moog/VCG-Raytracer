@@ -5,6 +5,11 @@ import scene.light.PointLight;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 
+
+//////////////////////////-----------------------NOT IMPLEMENTED YET-----------------//////////////////////////
+///------CURRENTLY JUST A COPY PASTE TO AVOID ISSUES
+
+
 // Calculates the Diffuse Aspect of Lighting
 public class Blinn extends Material {
 
@@ -26,7 +31,7 @@ public class Blinn extends Material {
         // Calculating the necessary Vectors for diffuse light component:
         // I * kd * (N x L) <- [(N x L)]
         Vec3 normal = _normal.normalize();
-        Vec3 vec_light = _position.sub(lightPosition).normalize();
+        Vec3 vec_light = lightPosition.sub(_position).normalize();
         Float scalar_normal_light = normal.scalar(vec_light);
 
         // Scalarproduct has to be above 0, else Light doesn't hit this point
@@ -43,4 +48,8 @@ public class Blinn extends Material {
         }
     }
 
+    //temp for testing
+    public RgbColor getColorPhong(Vec3 _camPos, Vec3 _position, Vec3 _normal, Light _light){
+        return diffuseK;
+    }
 }

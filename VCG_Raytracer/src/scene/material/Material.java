@@ -15,5 +15,6 @@ public abstract class Material {
     }
     
     public abstract RgbColor getColor(Vec3 _position, Vec3 _normal, Light _light);
+    public abstract RgbColor getColorPhong(Vec3 _camPos, Vec3 _position, Vec3 _normal, Light _light);
 
 }

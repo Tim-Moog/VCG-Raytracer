@@ -18,6 +18,10 @@ public abstract class Camera extends SceneObject{
         this.up = this.side.cross(this.view);
     }
 
+    public Vec3 getOrigin(){
+        return this.origin;
+    }
+
     // abstract method for perspective & orthogonal camera
     public abstract Ray getRay (float s, float u);
 

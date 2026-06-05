@@ -43,4 +43,8 @@ public class Lambert extends Material {
         }
     }
 
+    //temp for testing
+    public RgbColor getColorPhong(Vec3 _camPos, Vec3 _position, Vec3 _normal, Light _light){
+        return diffuseK;
+    }
 }

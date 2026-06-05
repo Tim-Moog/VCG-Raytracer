@@ -22,6 +22,9 @@ import org.w3c.dom.css.RGBColor;
 
 import scene.Scene;
 import scene.camera.*;
+import scene.material.Lambert;
+import scene.material.Material;
+import scene.material.Phong;
 import scene.shape.Intersection;
 import scene.shape.Shape;
 import scene.shape.Sphere;
@@ -86,6 +89,7 @@ public class Raytracer {
         //raytrace_backgroundOnly();
         //circle_radius1();
         //a3_Beleuchtung();
+        a3ScenePrep();
         a3versionTeamPurple();
         System.out.println(mScene.getShapes().size());
 
@@ -104,6 +108,23 @@ public class Raytracer {
     }
 
 
+    private void a3ScenePrep(){
+
+        //create materials
+        Material mat_lambert = new Lambert(new RgbColor(0.6f,0.2f,0.5f));
+        Material mat_lambert2 = new Lambert(new RgbColor(0.8f,0.8f,0.8f));
+
+        //create spheres
+        mScene.createSphere(new Vec3(1.5f,1,0), 1.25f, mat_lambert);
+        mScene.createSphere(new Vec3(-1.5f,-0.5f,0), 0.75f, mat_lambert2);
+
+        //create lights
+        mScene.createPointLight(new Vec3 (-2.5f,2.5f,4), RgbColor.GREEN);
+        mScene.createPointLight(new Vec3 (2.5f,2.5f,4), RgbColor.RED);
+        mScene.createPointLight(new Vec3(0, -2.5f, 4), RgbColor.BLUE);
+        mScene.setAmbientFactor(new RgbColor(0.1f,0.1f,0.1f));
+    }
+
     private void a3versionTeamPurple(){
         Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
         Vec2 currentPixel;
@@ -115,6 +136,7 @@ public class Raytracer {
                                         (windowSize.x/windowSize.y));
 
 
+        mScene.setSceneCamera(camera);
 
         Intersection clostest_intersection;
 
