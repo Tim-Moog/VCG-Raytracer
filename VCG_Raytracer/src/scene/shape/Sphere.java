@@ -23,7 +23,6 @@ public class Sphere extends Shape{
         super(pos, _material);
         //might change the radius setting later
         this.radius = 1; //this is fine due to us doing scale in transformationmatrix, without that we'd need radius set correctly here
-        this.intersectionData = new Intersection();
         this.myTransformationMatrix = new Matrix4x4();
         this.setupMatrix(pos, radius);
         this.myInverseMatrix = myTransformationMatrix.invert();
@@ -54,14 +53,6 @@ public class Sphere extends Shape{
 
         //return ray with modified data
         return new Ray(newOrigin, newDirection);
-    }
-    
-    public Intersection getIntersectionData(){
-        return this.intersectionData;
-    }
-
-    public Material getMaterial () {
-        return this.material;
     }
 
 

@@ -108,6 +108,28 @@ public class Raytracer {
     }
 
 
+    private void a4ScenePrep(){
+        //create cornell box
+        setupCornellBox();
+
+        //add in our spheres with Phong material
+        
+
+    }
+
+    //think this makes sense to put in its own method since it prob wont change in future
+    private void setupCornellBox(){
+        //create 5 plane's that are perpendicular(senkrecht) zu einander
+        //4:3 as Width:Height relation
+        //all plane's should have Lambert material
+        //all walls should be white 
+            //except for left(red) and right(blue)
+        //there should be a pointlight at the top the box
+            //there should be a square to make symbolise the lightsource position
+        
+    }
+
+
     private void a3ScenePrep(){
 
         //create materials

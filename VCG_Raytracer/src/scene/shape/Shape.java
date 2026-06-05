@@ -15,14 +15,19 @@ public abstract class Shape extends SceneObject {
     public Shape (Vec3 _position, Material _material) {
         this.position = _position;
         this.material = _material;
+        this.intersectionData = new Intersection();
     }
 
     
     //prob another place for polymorphism
     public abstract Intersection intersect(Ray checkRay);
 
-    public abstract Intersection getIntersectionData();
+    public Material getMaterial(){
+        return this.material;
+    };
 
-    public abstract Material getMaterial();
+    public Intersection getIntersectionData() {
+        return this.intersectionData;
+    }
 
 }
