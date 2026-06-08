@@ -36,7 +36,7 @@ public class Sphere extends Shape{
         addInvTranslation(_pos);
     }
 
-    public void addInvTranslation (Vec3 _pos) {
+    public void addInvTranslation (Vec3 _pos) { //why did we name this inv? when its not inverse??
         Vec4 homoTrans = new Vec4(_pos.x, _pos.y, _pos.z, 1);
         myTransformationMatrix = myTransformationMatrix.translateXYZW(homoTrans);
     }

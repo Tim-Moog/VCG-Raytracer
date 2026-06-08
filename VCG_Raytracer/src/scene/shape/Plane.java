@@ -26,10 +26,12 @@ public class Plane extends Shape {
         
 
         //think we need the transformationsmatrix for translation
-        this.myTransformationMatrix = new Matrix4x4();
+        /*this.myTransformationMatrix = new Matrix4x4();
         Vec4 homoTrans = new Vec4(_pos.x, _pos.y, _pos.z, 1);
         myTransformationMatrix = myTransformationMatrix.translateXYZW(homoTrans);
-        this.myInverseMatrix = myTransformationMatrix.invert();
+        this.myInverseMatrix = myTransformationMatrix.invert(); */
+        //trying without this and manually adding the position in intersect
+        //yea dont think we need that and instead can do - when creating the modified ray and + when readjusting at the end like we do with the transformation matrix's in sphere
 
     }
 
@@ -37,7 +39,7 @@ public class Plane extends Shape {
         //richtung bleibt
         Vec3 newDirection = _ray.getDirection();
         //müssen nur den startpunkt bearbeiten mit der inverse
-        Vec3 newOrigin = this.myInverseMatrix.multVec3(_ray.getOrigin(), true);
+        Vec3 newOrigin = _ray.getOrigin().sub(this.position);
 
         //return ray with modified data
         return new Ray(newOrigin, newDirection);
@@ -55,21 +57,24 @@ public class Plane extends Shape {
 
         Q = ray_direction.sub(ray_origin).length();
         
-
-        //idk if this is whats meant with the D in der formel
-        float diskriminante = (float) (Math.pow(B, 2) - 4 * C);
+        float check = normal.scalar(ray_direction);
         float t = -(A * ray_origin.x + B * ray_origin.y + C * ray_origin.z + Q)/(A * ray_direction.x + B * ray_direction.y + C * ray_direction.z);
+        //think should be the same as
+        t = -(normal.scalar(ray_origin) + Q )/ normal.scalar(ray_direction);
 
-        intersection.setHit(diskriminante > 0);
+        intersection.setHit(check < 0); //glaub der check muss instead != 0 sein -> dann maybe ne abbruch bedingung if not != 0 then just stop
+        //oder maybe könnten wir es aber auch vereinfachen?(laut folien wärs != 0 aber cornell box wär eher <0 id say)
+        //also nur den check < 0 bereich zu betrachten da wir in der cornellbox ja strahlen innerhalb der box behalten wollen und keine von draußen rein kommen sollen?
+        //i think that would make sense and make things less complicated
         intersection.setShape(this);
         intersection.setNormal(normal);
         intersection.setDistance(t);
-        intersection.setInRay(ray.calculateRayAt(t));
-        intersection.setIntersectionPoint(ray_origin.add(ray_direction.multScalar(t)));
+        intersection.setInRay(transformedRay.calculateRayAt(t));
+        intersection.setIntersectionPoint(ray_origin.add(ray_direction.multScalar(t)).add(position));
 
-        intersection.setIntersectionPoint(myTransformationMatrix.multVec3(ray_origin.add(ray_direction.multScalar(t)), true));
+        //intersection.setIntersectionPoint(myTransformationMatrix.multVec3(ray_origin.add(ray_direction.multScalar(t)), true));
         //intersection.setNormal(myTransformationMatrix.multVec3(intersection.getIntersectionPoint().sub(position).normalize(), false));
-        intersection.setInRay(ray.calculateRayAt(t));
+        intersection.setInRay(transformedRay.calculateRayAt(t));
 
         return intersection;
     }
