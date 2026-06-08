@@ -127,8 +127,9 @@ public class Raytracer {
             //except for left(red) and right(blue)
         //there should be a pointlight at the top the box
             //there should be a square to make symbolise the lightsource position
-        Material mat_lambert2 = new Lambert(new RgbColor(0.8f,0.8f,0.8f));
-        mScene.createPlane(new Vec3(2,2,0), new Vec3(-1,0,0), mat_lambert2);
+        Material mat_lambert2 = new Lambert(new RgbColor(0.5f,0.5f,0.5f));
+        mScene.createPlane(new Vec3(1,1,0), new Vec3(-2f,-1,-0f), mat_lambert2);
+        //mScene.createPlane(new Vec3(-10,0,0), new Vec3(1,0,0), mat_lambert2);
     }
 
 
