@@ -10,6 +10,7 @@ import scene.light.PointLight;
 import scene.material.Lambert;
 import scene.material.Material;
 import scene.shape.Intersection;
+import scene.shape.Plane;
 import scene.shape.Shape;
 import scene.shape.Sphere;
 import utils.RgbColor;
@@ -37,6 +38,11 @@ public class Scene {
         shapeList = new ArrayList<Shape>();
         lightList = new ArrayList<PointLight>();
         Log.print(this, "Init");
+    }
+
+    public void createPlane(Vec3 _pos, Vec3 _norm, Material _mat){
+        Plane newPlane = new Plane(_pos, _norm, _mat);
+        shapeList.add(newPlane);
     }
 
     public void createSphere(Vec3 _pos, float _radius, Material _material){
@@ -76,6 +82,7 @@ public class Scene {
                                     ambient_k.green(),
                                     ambient_k.blue()
                                 );
+        //pointColor = new RgbColor(0, 0, 0); //idk which once of these is the correct start
 
         for(Light currentLight : getLights()){
             Material material = _intersection.getShape().getMaterial();
@@ -87,7 +94,7 @@ public class Scene {
             float distance = currentLight.getPosition()
                             .sub(_intersection.getIntersectionPoint())
                             .length();
-            //diffuse = diffuse.multScalar(distance * 0.25f); // *0.25 due to else impact either too big or too smol 
+            diffuse = diffuse.multScalar(distance * 0.25f); // *0.25 due to else impact either too big or too smol 
             //value just depends on light distance which makes sense as you want further lights to have less impact....
             //but for this surely there has to be a better way to make it seem balanced no?
             //honestly no clue if theres a better way atleast couldnt find any specific way for this in folien but not having it in feels troll cuz it just makes sense for distance to play a role logically
