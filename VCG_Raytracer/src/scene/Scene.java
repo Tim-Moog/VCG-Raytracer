@@ -95,7 +95,7 @@ public class Scene {
             float distance = currentLight.getPosition()
                             .sub(_intersection.getIntersectionPoint())
                             .length();
-            diffuse = diffuse.multScalar(distance * 0.25f); // *0.25 due to else impact either too big or too smol 
+            diffuse = diffuse.multScalar(distance*0.25f); // *0.25 due to else impact either too big or too smol 
             //value just depends on light distance which makes sense as you want further lights to have less impact....
             //but for this surely there has to be a better way to make it seem balanced no?
             //honestly no clue if theres a better way atleast couldnt find any specific way for this in folien but not having it in feels troll cuz it just makes sense for distance to play a role logically
@@ -120,13 +120,17 @@ public class Scene {
             for (Shape currentShape : shapeList) { //go through all shapes
                 if(currentShape != hitObjectShape){//except the one that our ray is starting from -> da kann man es abhängig von normale machen
                     Intersection secondaryRayData = currentShape.intersect(secondaryRay);
-                    if(secondaryRayData.isHit())
+                    if(secondaryRayData.isHit() && secondaryRayData.getDistance() < currentLight.getPosition().sub(_intersection.getIntersectionPoint()).length()){ //need to additionally check that the distance is shorter to make sure the hit is between out initial hit and the light and not beyond
                         objectInTheWay = true;
+                        break;
+                    }
                 }
             }
 
             if(!objectInTheWay)
-                pointColor.add(diffuse.red(), diffuse.green(), diffuse.blue());
+                pointColor = new RgbColor(pointColor.red() + diffuse.red(), pointColor.green() + diffuse.green(), pointColor.blue() + diffuse.blue());
+            
+                //pointColor.add(diffuse.red(), diffuse.green(), diffuse.blue()); //above version makes no difference just testing add method trust issues
         }
 
         //pretty sure this aint wanted since it just makes it a lot darker -> yea this just makes it very dark so dont do this

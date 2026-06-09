@@ -26,10 +26,10 @@ public class Plane extends Shape {
         
 
         //think we need the transformationsmatrix for translation
-        /*this.myTransformationMatrix = new Matrix4x4();
+        this.myTransformationMatrix = new Matrix4x4();
         Vec4 homoTrans = new Vec4(_pos.x, _pos.y, _pos.z, 1);
         myTransformationMatrix = myTransformationMatrix.translateXYZW(homoTrans);
-        this.myInverseMatrix = myTransformationMatrix.invert(); */
+        this.myInverseMatrix = myTransformationMatrix.invert(); 
         //trying without this and manually adding the position in intersect
         //yea dont think we need that and instead can do - when creating the modified ray and + when readjusting at the end like we do with the transformation matrix's in sphere
 
@@ -39,7 +39,7 @@ public class Plane extends Shape {
         //richtung bleibt
         Vec3 newDirection = _ray.getDirection();
         //müssen nur den startpunkt bearbeiten mit der inverse
-        Vec3 newOrigin = _ray.getOrigin().sub(this.position);
+        Vec3 newOrigin = this.myInverseMatrix.multVec3(_ray.getOrigin(), true);
 
         //return ray with modified data
         return new Ray(newOrigin, newDirection);
@@ -55,7 +55,7 @@ public class Plane extends Shape {
         Vec3 ray_origin = transformedRay.getOrigin();
         Vec3 ray_direction = transformedRay.getDirection();
 
-        Q = ray_direction.sub(ray_origin).length();
+        Q = ray_origin.sub(ray_direction).length(); //swapped these two for testing
         
         float check = normal.scalar(ray_direction);
         float t = -(A * ray_origin.x + B * ray_origin.y + C * ray_origin.z + Q)/(A * ray_direction.x + B * ray_direction.y + C * ray_direction.z);
@@ -68,13 +68,13 @@ public class Plane extends Shape {
         //i think that would make sense and make things less complicated
         intersection.setShape(this);
         intersection.setNormal(normal);
-        intersection.setDistance(t);
-        intersection.setInRay(transformedRay.calculateRayAt(t));
-        intersection.setIntersectionPoint(ray_origin.add(ray_direction.multScalar(t)).add(position));
+        intersection.setDistance(transformedRay.calculateRayAt(t).length());
+        intersection.setInRay(ray.calculateRayAt(t));
+        intersection.setIntersectionPoint(ray_origin.add(ray_direction.multScalar(t)));
 
         //intersection.setIntersectionPoint(myTransformationMatrix.multVec3(ray_origin.add(ray_direction.multScalar(t)), true));
         //intersection.setNormal(myTransformationMatrix.multVec3(intersection.getIntersectionPoint().sub(position).normalize(), false));
-        intersection.setInRay(transformedRay.calculateRayAt(t));
+        //intersection.setInRay(transformedRay.calculateRayAt(t));
 
         return intersection;
     }

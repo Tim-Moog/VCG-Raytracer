@@ -101,7 +101,7 @@ public class Sphere extends Shape{
 
         // Giving over information to Intersection
         // Hit is already set
-        intersection.setDistance(t);// set distance to t / alternative would be actually getting the length but idk if thats wanted atm
+        intersection.setDistance(transformedRay.calculateRayAt(t).length());// set distance to t / alternative would be actually getting the length but idk if thats wanted atm
         // for the point and normal we must transform the ray back(reminder we created it with the inverse so we use normal for going back)
         intersection.setIntersectionPoint(myTransformationMatrix.multVec3(ray_origin.add(ray_direction.multScalar(t)), true));// TransformationMatrix * transformedRay start, into normalized direction * distance
         intersection.setNormal(myTransformationMatrix.multVec3(intersection.getIntersectionPoint().sub(position).normalize(), false)); // TransformationMatrix * Vector between intersection and sphere center = normal
