@@ -11,7 +11,9 @@ import utils.algebra.Vec3;
 
 
 // Calculates the Diffuse Aspect of Lighting
-public class Blinn extends Material {
+public abstract class Blinn extends Material {
+
+    private RgbColor diffuseK;
 
     // diffuse factor is set on instantiation
     public Blinn (RgbColor _diffuse_k) {
