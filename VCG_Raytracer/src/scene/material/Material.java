@@ -14,6 +14,15 @@ import utils.algebra.Vec3;
 public abstract class Material {
 
     private static RgbColor ambientK = new RgbColor(0.1f,0.1f,0.1f);
+    protected Shape myShape;
+
+    public Shape getMyShape() {
+        return myShape;
+    }
+
+    public void setMyShape(Shape myShape) {
+        this.myShape = myShape;
+    }
 
     protected Material (RgbColor _ambientK) {
         Material.ambientK = _ambientK;
@@ -31,19 +40,17 @@ public abstract class Material {
         Material.ambientK = ambientK;
     }
 
-    public abstract RgbColor getColor(Vec3 _camPos, Vec3 _position, Vec3 _normal, ArrayList<PointLight> _list_lights);
+    public abstract RgbColor getColor(Vec3 _camPos, Vec3 _position, Vec3 _normal, ArrayList<PointLight> _list_lights, ArrayList<Shape> _list_shapes);
 
     //farbe trennen von dem einen licht
-    public RgbColor shade (Intersection _intersection, PointLight _current_light, RgbColor _input, ArrayList<Shape> _list_shapes) {
-
-        RgbColor current = _input;
-        Material material = _intersection.getShape().getMaterial();
+    public Float shade (Vec3 _intersection_pos, Light _current_light, ArrayList<Shape> _list_shapes) {
 
         //we prob need to grab the light position and compare to our intersection point
         float distance = _current_light.getPosition()
-                        .sub(_intersection.getIntersectionPoint())
+                        .sub(_intersection_pos)
                         .length();
-        current = current.multScalar(distance * distance); // *0.25 due to else impact either too big or too smol 
+        //current = current.multScalar(distance * distance); // dist * dist recommended by marcel
+        // *0.25 due to else impact either too big or too smol 
         //value just depends on light distance which makes sense as you want further lights to have less impact....
         //but for this surely there has to be a better way to make it seem balanced no?
         //honestly no clue if theres a better way atleast couldnt find any specific way for this in folien but not having it in feels troll cuz it just makes sense for distance to play a role logically
@@ -61,8 +68,8 @@ public abstract class Material {
             //berechne lokales beleuchtungsmodell 
 
         //sekundärstrahlen attempt- nvm not attempt.... SUCCESS
-        Ray secondaryRay = new Ray(_intersection.getIntersectionPoint(), _current_light.getPosition().sub(_intersection.getIntersectionPoint()));
-        Shape hitObjectShape = _intersection.getShape();
+        Ray secondaryRay = new Ray(_intersection_pos, _current_light.getPosition().sub(_intersection_pos));
+        Shape hitObjectShape = this.getMyShape();
         boolean objectInTheWay = false; //boolean to keep track of if any object is blocking direct LOS from impact to light
 
         for (Shape currentShape : _list_shapes) { //go through all shapes
@@ -73,14 +80,16 @@ public abstract class Material {
             }
         }
 
-        if(!objectInTheWay)
-            pointColor.add(diffuse.red(), diffuse.green(), diffuse.blue());
+
+
+        if(objectInTheWay)
+            return 0f;
     
 
         //pretty sure this aint wanted since it just makes it a lot darker -> yea this just makes it very dark so dont do this
         //pointColor = new RgbColor(pointColor.red()/getLights().size(), pointColor.green()/getLights().size(), pointColor.blue()/getLights().size());
 
-        return pointColor;
+        return distance * distance;
     }
 
 }

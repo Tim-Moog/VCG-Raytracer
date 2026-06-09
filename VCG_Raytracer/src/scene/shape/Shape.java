@@ -15,6 +15,7 @@ public abstract class Shape extends SceneObject {
     public Shape (Vec3 _position, Material _material) {
         this.position = _position;
         this.material = _material;
+        this.material.setMyShape(this);
         this.intersectionData = new Intersection();
     }
 

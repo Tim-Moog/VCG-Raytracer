@@ -179,7 +179,11 @@ public class Raytracer {
                 RgbColor outputColor;
                 if (clostest_intersection.isHit()) {
                     //System.out.println("SHAPE HIT");
-                    outputColor = mScene.shade(clostest_intersection);
+                    outputColor = clostest_intersection.getShape().getMaterial().getColor(camera.getOrigin(), 
+                                                                                        clostest_intersection.getIntersectionPoint(), 
+                                                                                        clostest_intersection.getNormal(), 
+                                                                                        mScene.getLights(), 
+                                                                                        mScene.getShapes());
                 } else {
                     outputColor = mScene.getAmbientFactor();
                 }
@@ -190,7 +194,7 @@ public class Raytracer {
         }
 
     }
-
+/* 
     private void a3_Beleuchtung(){
         Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
         Vec2 currentPixel;
@@ -222,7 +226,7 @@ public class Raytracer {
                 mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
             }
         }
-    }
+    }*/
     
     /* auskommentiert to avoid errors from changed code in inner workings 
     private void circle_radius1 () {

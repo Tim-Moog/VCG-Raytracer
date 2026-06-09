@@ -18,7 +18,7 @@ public class Lambert extends Material {
         this.diffuseK = _diffuse_k;
     }
     
-    public RgbColor getColor(Vec3 _camPos, Vec3 _position, Vec3 _normal, ArrayList<PointLight> _list_lights){
+    public RgbColor getColor(Vec3 _camPos, Vec3 _position, Vec3 _normal, ArrayList<PointLight> _list_lights, ArrayList<Shape> _list_shapes){
 
         // Variables later on inserted into our RgbColor output
         // Better for calculating the indiviual light components

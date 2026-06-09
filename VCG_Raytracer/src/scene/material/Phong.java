@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import scene.light.Light;
 import scene.light.PointLight;
+import scene.shape.Shape;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 
@@ -24,7 +25,7 @@ public class Phong extends Material {
     //honestly think we may need another input var for the cam position
     //man könnte light als param raus nehmen und hier drinnen ne for each schleife der lichter haben
     //but we'd need access to the lightlist for that
-    public RgbColor getColor(Vec3 _camPos, Vec3 _position, Vec3 _normal, ArrayList<PointLight> _list_lights){
+    public RgbColor getColor(Vec3 _camPos, Vec3 _position, Vec3 _normal, ArrayList<PointLight> _list_lights, ArrayList<Shape> _list_shapes){
 
         Float r,g,b;
 
@@ -66,9 +67,12 @@ public class Phong extends Material {
 
                 System.out.println(scalar_view_reflection);
 
-                r += (float) (lightColor.red() * (specularK.red() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent)));
-                g += (float) (lightColor.green() * (specularK.green() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent)));
-                b += (float) (lightColor.blue() * (specularK.blue() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent)));
+                Float shadeResult = this.shade(_position, light, _list_shapes);
+                if(shadeResult != 0){
+                  r += (float) (lightColor.red() * (specularK.red() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent)));// * shadeResult;
+                  g += (float) (lightColor.green() * (specularK.green() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent)));// * shadeResult;
+                  b += (float) (lightColor.blue() * (specularK.blue() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent)));// * shadeResult;
+                }
 
 
             }
