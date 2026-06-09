@@ -8,13 +8,22 @@ import utils.algebra.Vec3;
 // Abstract class for all Materials, only knows the light Factors (k's)
 public abstract class Material {
 
-    protected RgbColor diffuseK = new RgbColor (0,0,0);
+    protected static RgbColor ambientK = new RgbColor(0.1f,0.1f,0.1f);
 
-    public Material (RgbColor _diffuseK) {
-        this.diffuseK = _diffuseK;
+    protected Material (RgbColor _ambientK) {
+        Material.ambientK = _ambientK;
     }
+
+    protected Material () {
+        //uwu 
+    }
+
+    public RgbColor getAmbientK() {
+        return ambientK;
+    }
+
     
-    public abstract RgbColor getColor(Vec3 _position, Vec3 _normal, Light _light);
-    public abstract RgbColor getColorPhong(Vec3 _camPos, Vec3 _position, Vec3 _normal, Light _light);
+    public abstract RgbColor getColor(Vec3 _campos, Vec3 _position, Vec3 _normal, Light _light);
+    //public abstract RgbColor getColorPhong(Vec3 _camPos, Vec3 _position, Vec3 _normal, Light _light);
 
 }

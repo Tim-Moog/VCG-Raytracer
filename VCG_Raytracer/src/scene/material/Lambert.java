@@ -8,12 +8,14 @@ import utils.algebra.Vec3;
 // Calculates the Diffuse Aspect of Lighting
 public class Lambert extends Material {
 
+    private RgbColor diffuseK;
+
     // diffuse factor is set on instantiation
     public Lambert (RgbColor _diffuse_k) {
-        super(_diffuse_k);
+        diffuseK = _diffuse_k;
     }
     
-    public RgbColor getColor(Vec3 _position, Vec3 _normal, Light _light){
+    public RgbColor getColor(Vec3 _campos, Vec3 _position, Vec3 _normal, Light _light){
 
         // We use the Light Object for the Parameter to ease changes (fewer places to add or remove values)
         Vec3 lightPosition = _light.getPosition();

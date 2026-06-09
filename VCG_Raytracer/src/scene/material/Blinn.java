@@ -11,7 +11,7 @@ import utils.algebra.Vec3;
 
 
 // Calculates the Diffuse Aspect of Lighting
-public class Blinn extends Material {
+public abstract class Blinn extends Material {
 
     // diffuse factor is set on instantiation
     public Blinn (RgbColor _diffuse_k) {
@@ -40,16 +40,16 @@ public class Blinn extends Material {
             return new RgbColor(0,0,0);
         } else {
             // I * kd * (N x L)
-            r = lightColor.red() * diffuseK.red() * scalar_normal_light;
-            g = lightColor.green() * diffuseK.green() * scalar_normal_light;
-            b = lightColor.blue() * diffuseK.blue() * scalar_normal_light;
-
-            return new RgbColor(r,g,b);
+            //r = lightColor.red() * diffuseK.red() * scalar_normal_light;
+            //g = lightColor.green() * diffuseK.green() * scalar_normal_light;
+            //b = lightColor.blue() * diffuseK.blue() * scalar_normal_light;
+return null;
+            //return new RgbColor(r,g,b);
         }
     }
 
     //temp for testing
     public RgbColor getColorPhong(Vec3 _camPos, Vec3 _position, Vec3 _normal, Light _light){
-        return diffuseK;
+        return null; //diffuseK;
     }
 }

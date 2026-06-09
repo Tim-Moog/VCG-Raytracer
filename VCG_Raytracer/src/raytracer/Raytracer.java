@@ -90,7 +90,7 @@ public class Raytracer {
         //circle_radius1();
         //a3_Beleuchtung();
         a3ScenePrep();
-        setupCornellBox();
+        //setupCornellBox();
         a3versionTeamPurple();
         System.out.println(mScene.getShapes().size());
 
@@ -139,14 +139,18 @@ public class Raytracer {
         Material mat_lambert = new Lambert(new RgbColor(0.6f,0.2f,0.5f));
         Material mat_lambert2 = new Lambert(new RgbColor(0.8f,0.8f,0.8f));
 
+        Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
+        Material mat_phong2 = new Phong(RgbColor.GRAY, RgbColor.WHITE, 18);
+
+
         //create spheres
-        mScene.createSphere(new Vec3(1.5f,1,0), 1.25f, mat_lambert);
-        mScene.createSphere(new Vec3(-1.5f,-0.5f,0), 0.75f, mat_lambert2);
+        mScene.createSphere(new Vec3(1.5f,1,0), 1.25f, mat_phong);
+        mScene.createSphere(new Vec3(-1.5f,-0.5f,0), 0.75f, mat_phong2);
 
         //create lights
-        mScene.createPointLight(new Vec3 (-2.5f,2.5f,4), RgbColor.GREEN);
-        mScene.createPointLight(new Vec3 (2.5f,2.5f,4), RgbColor.RED);
-        mScene.createPointLight(new Vec3(0, -2.5f, 4), RgbColor.BLUE);
+        mScene.createPointLight(new Vec3 (-2.5f,2.5f,4), new RgbColor(0.3f,0.7f,0.3f));
+        mScene.createPointLight(new Vec3 (2.5f,2.5f,4), new RgbColor(0.7f,0.3f,0.3f));
+        mScene.createPointLight(new Vec3(0, -2.5f, 4), new RgbColor(0.3f,0.3f,0.7f));
         mScene.setAmbientFactor(new RgbColor(0.1f,0.1f,0.1f));
     }
 

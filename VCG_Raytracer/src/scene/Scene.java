@@ -86,7 +86,8 @@ public class Scene {
 
         for(Light currentLight : getLights()){
             Material material = _intersection.getShape().getMaterial();
-            RgbColor diffuse = material.getColor(_intersection.getIntersectionPoint(), 
+            RgbColor diffuse = material.getColor(this.getSceneCamera().getOrigin(),
+                                                _intersection.getIntersectionPoint(), 
                                                 _intersection.getNormal(), 
                                                 currentLight);
             
