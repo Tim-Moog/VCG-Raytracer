@@ -129,13 +129,13 @@ public class Raytracer {
             //there should be a square to make symbolise the lightsource position
         Material mat_lambert2 = new Lambert(RgbColor.WHITE);
         //left
-        mScene.createPlane(new Vec3(-4,0,0), new Vec3(1f,0f,0f), new Lambert(RgbColor.RED));
+        mScene.createPlane(new Vec3(-5,0,0), new Vec3(1f,0f,0f), new Lambert(RgbColor.RED));
         //right
-        mScene.createPlane(new Vec3(4,0,0), new Vec3(-1f,0f,0f), new Lambert(RgbColor.BLUE));
+        mScene.createPlane(new Vec3(5,0,0), new Vec3(-1f,0f,0f), new Lambert(RgbColor.BLUE));
         //bot, top, back
-        mScene.createPlane(new Vec3(0,-4,0), new Vec3(0f,1f,0f), new Lambert(RgbColor.WHITE));
-        mScene.createPlane(new Vec3(0,4,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));
-        mScene.createPlane(new Vec3(0,0,-15), new Vec3(0f,0f,1f), new Lambert(RgbColor.WHITE)); 
+        mScene.createPlane(new Vec3(0,-5,0), new Vec3(0f,1f,0f), new Lambert(RgbColor.WHITE));
+        mScene.createPlane(new Vec3(0,5,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));
+        mScene.createPlane(new Vec3(0,0,-5), new Vec3(0f,0f,1f), new Lambert(RgbColor.WHITE)); 
         //mScene.createPlane(new Vec3(1,0,0), new Vec3(-1f,0,0), mat_lambert2);
     }
 
@@ -154,10 +154,15 @@ public class Raytracer {
         mScene.createSphere(new Vec3(1.5f,1,0), 1.25f, mat_phong);
         mScene.createSphere(new Vec3(-1.5f,-0.5f,0), 0.75f, mat_phong2);
 
+
+        //mScene.createSphere(new Vec3(1f,1,-2.5f), 1.25f, mat_phong); // -> testing shadow 25
+        //mScene.createSphere(new Vec3(-2f,1f,-2.5f), 0.75f, mat_phong2);
+
         //create lights
+        //mScene.createPointLight(new Vec3(-4,1,-0f), RgbColor.WHITE); //->testing shadow 25
         mScene.createPointLight(new Vec3 (-2.5f,2.5f,4), new RgbColor(0.3f,0.7f,0.3f));
-        mScene.createPointLight(new Vec3 (2.5f,2.5f,4), new RgbColor(0.7f,0.3f,0.3f));
-        mScene.createPointLight(new Vec3(0, -2.5f, 4), new RgbColor(0.3f,0.3f,0.7f));
+        //mScene.createPointLight(new Vec3 (2.5f,2.5f,4), new RgbColor(0.7f,0.3f,0.3f));
+        //mScene.createPointLight(new Vec3(0, -2.5f, 4), new RgbColor(0.3f,0.3f,0.7f));
         mScene.setAmbientFactor(new RgbColor(0.1f,0.1f,0.1f));
     }
 

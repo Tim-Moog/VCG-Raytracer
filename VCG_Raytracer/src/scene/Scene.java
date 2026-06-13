@@ -77,12 +77,14 @@ public class Scene {
     }
 
     public RgbColor shade (Intersection _intersection) {
-        RgbColor pointColor = new RgbColor(
-                                    ambient_k.red(),
+        RgbColor pointColor;
+        if(_intersection.getShape().getMaterial() instanceof Lambert){ //testing this since apparently we dont need ambient for lambert?
+            pointColor = new RgbColor(0, 0, 0);
+        }else{
+            pointColor = new RgbColor(ambient_k.red(),
                                     ambient_k.green(),
-                                    ambient_k.blue()
-                                );
-        //pointColor = new RgbColor(0, 0, 0); //idk which once of these is the correct start
+                                    ambient_k.blue());
+        }
 
         for(Light currentLight : getLights()){
             Material material = _intersection.getShape().getMaterial();

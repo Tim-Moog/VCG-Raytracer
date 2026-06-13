@@ -50,12 +50,12 @@ public class Plane extends Shape {
     public Intersection intersect(Ray ray){
         Intersection intersection = new Intersection();
 
-        Ray transformedRay = createTransformedRay(ray);
+        //Ray transformedRay = createTransformedRay(ray);
 
-        Vec3 ray_origin = transformedRay.getOrigin();
-        Vec3 ray_direction = transformedRay.getDirection();
+        Vec3 ray_origin = ray.getOrigin();
+        Vec3 ray_direction = ray.getDirection();
 
-        Q = ray_origin.sub(ray_direction).length(); //swapped these two for testing
+        Q = ray_origin.sub(position).length(); //testing with sub position instead of ray_direction
         
         float check = normal.scalar(ray_direction);
         float t = -(A * ray_origin.x + B * ray_origin.y + C * ray_origin.z + Q)/(A * ray_direction.x + B * ray_direction.y + C * ray_direction.z);
@@ -68,14 +68,14 @@ public class Plane extends Shape {
         //i think that would make sense and make things less complicated
         intersection.setShape(this);
         intersection.setNormal(normal);
-        intersection.setDistance(transformedRay.calculateRayAt(t).length());
+        intersection.setDistance(ray.calculateRayAt(t).length());
         intersection.setInRay(ray.calculateRayAt(t));
         intersection.setIntersectionPoint(ray_origin.add(ray_direction.multScalar(t)));
 
         //intersection.setIntersectionPoint(myTransformationMatrix.multVec3(ray_origin.add(ray_direction.multScalar(t)), true));
-        //intersection.setNormal(myTransformationMatrix.multVec3(intersection.getIntersectionPoint().sub(position).normalize(), false));
         //intersection.setInRay(transformedRay.calculateRayAt(t));
 
+        //intersection.setIntersectionPoint(myTransformationMatrix.multVec3(ray_origin.add(position), true)); //this combined with q = ray_position.sub(position).length() results in closer
         return intersection;
     }
 

@@ -4,7 +4,6 @@ import scene.light.Light;
 import scene.light.PointLight;
 import utils.RgbColor;
 import utils.algebra.Vec3;
-
 // Calculates the Diffuse Aspect of Lighting
 public class Lambert extends Material {
 
