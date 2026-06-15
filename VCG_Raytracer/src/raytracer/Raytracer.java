@@ -83,84 +83,14 @@ public class Raytracer {
 
     /**  This is where our scene is actually ray-traced **/
     public void renderScene(){
+        //Scene gets prepared inside of main.java
         Log.print(this, "Prepare rendering at " + String.valueOf(stopTime(tStart)));
 
-        a3ScenePrep();
-        //setupCornellBox();
-        a3versionTeamPurple();
-        System.out.println(mScene.getShapes().size());
-
-        // Here trace the rays ...
-
-        // Primary rays ...
-
-        // Later secondary rays ...
-
-        // Yeeaahhh, raytracing is so much fun ...
-        this.exportRendering();
-    }
-
-
-    private void a4ScenePrep(){
-        //create cornell box
-        setupCornellBox();
-
-        //add in our spheres with Phong material
-        
-
-    }
-
-    //think this makes sense to put in its own method since it prob wont change in future
-    private void setupCornellBox(){
-        //create 5 plane's that are perpendicular(senkrecht) zu einander
-        //4:3 as Width:Height relation
-        //all plane's should have Lambert material
-        //all walls should be white 
-            //except for left(red) and right(blue)
-        //there should be a pointlight at the top the box
-            //there should be a square to make symbolise the lightsource position
-        Material mat_lambert2 = new Lambert(RgbColor.WHITE);
-        //left
-        mScene.createPlane(new Vec3(-5,0,0), new Vec3(1f,0f,0f), new Lambert(RgbColor.RED));
-        //right
-        mScene.createPlane(new Vec3(5,0,0), new Vec3(-1f,0f,0f), new Lambert(RgbColor.BLUE));
-        //bot, top, back
-        mScene.createPlane(new Vec3(0,-5,0), new Vec3(0f,1f,0f), new Lambert(RgbColor.WHITE));
-        mScene.createPlane(new Vec3(0,5,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));
-        mScene.createPlane(new Vec3(0,0,-5), new Vec3(0f,0f,1f), new Lambert(RgbColor.WHITE)); 
-        //mScene.createPlane(new Vec3(1,0,0), new Vec3(-1f,0,0), mat_lambert2);
-    }
-
-
-    private void a3ScenePrep(){
-
-        // Materials
-        Material mat_lambert = new Lambert(new RgbColor(0.6f,0.2f,0.5f));
-        Material mat_lambert2 = new Lambert(new RgbColor(0.8f,0.8f,0.8f));
-
-        Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
-        Material mat_phong2 = new Phong(RgbColor.GRAY, RgbColor.WHITE, 18);
-
-        // Objects
-        mScene.createSphere(new Vec3(1.5f,1,0), 1.25f, mat_phong);
-        mScene.createSphere(new Vec3(-1.5f,-0.5f,0), 0.75f, mat_phong2);
-
-        // Lights
-        mScene.createPointLight(new Vec3 (-2.5f,2.5f,4), new RgbColor(0.3f,0.7f,0.3f));
-        mScene.createPointLight(new Vec3 (3f,2.5f,3), new RgbColor(0.7f,0.3f,0.3f));
-        mScene.createPointLight(new Vec3 (-2.5f,5f,2), new RgbColor(0.3f,0.3f,0.7f));
-    }
-
-    private void a3versionTeamPurple(){
+        //INFO: if we adjust screensize we also gotta change it in main to not fuck over the camera
         Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
         Vec2 currentPixel;
 
-        PerspCam camera = new PerspCam (new Vec3(0,0,5),
-                                        new Vec3(0,0,0),
-                                        new Vec3(0,1,0),
-                                        70,
-                                        (windowSize.x/windowSize.y));
-        mScene.setSceneCamera(camera);
+        Camera camera = mScene.getSceneCamera();
 
         for (int y = 0; y < windowSize.y; y++) {
             for (int x = 0; x < windowSize.x; x++) {
@@ -172,7 +102,14 @@ public class Raytracer {
                 mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
             }
         }
+        // Here trace the rays ...
 
+        // Primary rays ...
+
+        // Later secondary rays ...
+
+        // Yeeaahhh, raytracing is so much fun ...  d=====(￣▽￣*)b
+        this.exportRendering();
     }
 
     private RgbColor shade (Ray _ray, Scene _scene) {

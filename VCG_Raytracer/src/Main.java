@@ -26,7 +26,12 @@
 import raytracer.Raytracer;
 import ui.Window;
 import scene.Scene;
+import scene.camera.PerspCam;
+import scene.material.Lambert;
+import scene.material.Material;
+import scene.material.Phong;
 import utils.RgbColor;
+import utils.algebra.Vec2;
 import utils.algebra.Vec3;
 
 /*
@@ -121,15 +126,64 @@ public class Main {
     }
 
     private static void setupLights(Scene renderScene) {
+        // Lights
+        //renderScene.createPointLight(new Vec3 (-2.5f,2.5f,4), new RgbColor(0.3f,0.7f,0.3f));
+        //renderScene.createPointLight(new Vec3 (3f,2.5f,3), new RgbColor(0.7f,0.3f,0.3f));
+        //renderScene.createPointLight(new Vec3 (-2.5f,5f,2), new RgbColor(0.3f,0.3f,0.7f));
+
+        //testing shadow projection
+        renderScene.createPointLight(new Vec3(4,0,0), RgbColor.WHITE);
     }
 
     private static void setupCameras(Scene renderScene) {
+        //idk if we can use this since we need a reference to the cam in Raytracer?
+        //then again we could technically just add another param
+        //we can technically just set it here and then get it in raytracer but then we'd need to manually set the screen width/height in here
+        //and that doesnt seem that great to me but eh fuck it we'll do it for now
+        Vec2 windowSize = new Vec2(800, 600);
+        PerspCam camera = new PerspCam (new Vec3(0,0,5),
+                                        new Vec3(0,0,0),
+                                        new Vec3(0,1,0),
+                                        70,
+                                        (windowSize.x/windowSize.y));
+        renderScene.setSceneCamera(camera);
     }
 
     private static void setupObjects(Scene renderScene) {
+         // Materials
+        Material mat_lambert = new Lambert(new RgbColor(0.6f,0.2f,0.5f));
+        Material mat_lambert2 = new Lambert(new RgbColor(0.8f,0.8f,0.8f));
+
+        Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
+        Material mat_phong2 = new Phong(RgbColor.GRAY, RgbColor.WHITE, 18);
+
+        // Objects
+        //renderScene.createSphere(new Vec3(1.5f,1,0), 1.25f, mat_phong);
+        //renderScene.createSphere(new Vec3(-1.5f,-0.5f,0), 0.75f, mat_phong2);
+
+        //testing shadow projection
+        renderScene.createSphere(new Vec3(1f, 0,0), 1.25f, mat_phong2);
+        renderScene.createSphere(new Vec3(-3f, 0,0), 1, mat_phong2);
+        
     }
 
     private static void setupCornellBox(Scene renderScene) {
+        //create 5 plane's that are perpendicular(senkrecht) zu einander
+        //4:3 as Width:Height relation
+        //all plane's should have Lambert material
+        //all walls should be white 
+            //except for left(red) and right(blue)
+        //there should be a pointlight at the top the box
+            //there should be a square to make symbolise the lightsource position
+        Material mat_lambert2 = new Lambert(RgbColor.WHITE);
+        //left
+        renderScene.createPlane(new Vec3(-5,0,0), new Vec3(1f,0f,0f), new Lambert(RgbColor.RED));
+        //right
+        renderScene.createPlane(new Vec3(5,0,0), new Vec3(-1f,0f,0f), new Lambert(RgbColor.BLUE));
+        //bot, top, back
+        renderScene.createPlane(new Vec3(0,-5,0), new Vec3(0f,1f,0f), new Lambert(RgbColor.WHITE));
+        renderScene.createPlane(new Vec3(0,5,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));
+        renderScene.createPlane(new Vec3(0,0,-5), new Vec3(0f,0f,1f), new Lambert(RgbColor.WHITE)); 
     }
 
     /** Create our personal renderer and give it all of our items and prefs to calculate our scene **/
