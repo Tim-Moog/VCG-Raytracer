@@ -108,6 +108,7 @@ public class Sphere extends Shape{
         Vec3 global_intersection = myTransformationMatrix.multVec3(local_intersection, true);
         Vec3 global_normal = myTransformationMatrix.invert().transpose().multVec3(local_normal, false).normalize();
 
+        
         intersection.setDistance(global_intersection.sub(ray.getOrigin()).length());
         intersection.setIntersectionPoint(global_intersection);
         intersection.setNormal(global_normal);
