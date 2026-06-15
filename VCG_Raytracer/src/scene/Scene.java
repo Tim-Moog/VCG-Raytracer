@@ -118,13 +118,17 @@ public class Scene {
             Ray secondaryRay = new Ray(_intersection.getIntersectionPoint(), currentLight.getPosition().sub(_intersection.getIntersectionPoint()));
             Shape hitObjectShape = _intersection.getShape();
             boolean objectInTheWay = false; //boolean to keep track of if any object is blocking direct LOS from impact to light
+            int i =0;
 
             for (Shape currentShape : shapeList) { //go through all shapes
+                i++;
                 if(currentShape != hitObjectShape){//except the one that our ray is starting from -> da kann man es abhängig von normale machen
                     Intersection secondaryRayData = currentShape.intersect(secondaryRay);
                     if(secondaryRayData.isHit() && secondaryRayData.getDistance() < currentLight.getPosition().sub(_intersection.getIntersectionPoint()).length()){ //need to additionally check that the distance is shorter to make sure the hit is between out initial hit and the light and not beyond
-                        objectInTheWay = true;
-                        break;
+                        if(i % 2== 0){
+                            objectInTheWay = true;
+                            break;
+                        }
                     }
                 }
             }

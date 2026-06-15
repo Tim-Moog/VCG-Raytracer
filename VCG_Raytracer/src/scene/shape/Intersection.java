@@ -12,7 +12,14 @@ public class Intersection { //for now ive just added basic setters and getters f
     private Shape shape;
     private float distance;
     private boolean hit;
+    private float nearestT;
 
+    public float getNearestT() {
+        return nearestT;
+    }
+    public void setNearestT(float nearestT) {
+        this.nearestT = nearestT;
+    }
     public Vec3 getIntersectionPoint() {
         return intersectionPoint;
     }

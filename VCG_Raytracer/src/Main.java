@@ -26,6 +26,8 @@
 import raytracer.Raytracer;
 import ui.Window;
 import scene.Scene;
+import scene.material.Lambert;
+import scene.material.Material;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 
@@ -130,6 +132,22 @@ public class Main {
     }
 
     private static void setupCornellBox(Scene renderScene) {
+        //create 5 plane's that are perpendicular(senkrecht) zu einander
+        //4:3 as Width:Height relation
+        //all plane's should have Lambert material
+        //all walls should be white 
+            //except for left(red) and right(blue)
+        //there should be a pointlight at the top the box
+            //there should be a square to make symbolise the lightsource position
+        Material mat_lambert2 = new Lambert(RgbColor.WHITE);
+        //left
+        renderScene.createPlane(new Vec3(-5,0,0), new Vec3(1f,0f,0f), new Lambert(RgbColor.RED));
+        //right
+        renderScene.createPlane(new Vec3(5,0,0), new Vec3(-1f,0f,0f), new Lambert(RgbColor.BLUE));
+        //bot, top, back
+        renderScene.createPlane(new Vec3(0,-5,0), new Vec3(0f,1f,0f), new Lambert(RgbColor.WHITE));
+        renderScene.createPlane(new Vec3(0,5,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));
+        renderScene.createPlane(new Vec3(0,0,-5), new Vec3(0f,0f,1f), new Lambert(RgbColor.WHITE)); 
     }
 
     /** Create our personal renderer and give it all of our items and prefs to calculate our scene **/

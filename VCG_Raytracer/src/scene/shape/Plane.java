@@ -67,6 +67,7 @@ public class Plane extends Shape {
         //also nur den check < 0 bereich zu betrachten da wir in der cornellbox ja strahlen innerhalb der box behalten wollen und keine von draußen rein kommen sollen?
         //i think that would make sense and make things less complicated
         intersection.setShape(this);
+        intersection.setNearestT(t);
         intersection.setNormal(normal);
         intersection.setDistance(ray.calculateRayAt(t).length());
         intersection.setInRay(ray.calculateRayAt(t));

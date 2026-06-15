@@ -107,6 +107,7 @@ public class Sphere extends Shape{
         intersection.setNormal(myTransformationMatrix.multVec3(intersection.getIntersectionPoint().sub(position).normalize(), false)); // TransformationMatrix * Vector between intersection and sphere center = normal
         intersection.setShape(this); // for material
         intersection.setInRay(transformedRay.calculateRayAt(t));  // primary Ray
+        intersection.setNearestT(t);
 
         return intersection;
     }
