@@ -69,7 +69,8 @@ public class Main {
 
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
 
-    static final Vec3 LIGHT_POSITION = null;
+    //DONT SET HEIGHT TO EXACT SAME VALUE AS ROOF PLANE ELSE YOULL SUMMON A DEMON!!!
+    static final Vec3 LIGHT_POSITION = new Vec3(0,4.99f,0); 
     static final short AREA_LIGHT_SIZE = 2;
 
     /** GI **/
@@ -126,13 +127,17 @@ public class Main {
     }
 
     private static void setupLights(Scene renderScene) {
-        // Lights
+        // Lights - task 3
         //renderScene.createPointLight(new Vec3 (-2.5f,2.5f,4), new RgbColor(0.3f,0.7f,0.3f));
         //renderScene.createPointLight(new Vec3 (3f,2.5f,3), new RgbColor(0.7f,0.3f,0.3f));
         //renderScene.createPointLight(new Vec3 (-2.5f,5f,2), new RgbColor(0.3f,0.3f,0.7f));
 
+        // Lights - task 4
+        renderScene.createPointLight(LIGHT_POSITION, RgbColor.WHITE);
+
+
         //testing shadow projection
-        renderScene.createPointLight(new Vec3(50,0,0), RgbColor.WHITE);
+        //renderScene.createPointLight(new Vec3(50,0,0), RgbColor.WHITE);
     }
 
     private static void setupCameras(Scene renderScene) {
@@ -158,12 +163,12 @@ public class Main {
         Material mat_phong2 = new Phong(RgbColor.GRAY, RgbColor.WHITE, 18);
 
         // Objects
-        //renderScene.createSphere(new Vec3(1.5f,1,0), 1.25f, mat_phong);
-        //renderScene.createSphere(new Vec3(-1.5f,-0.5f,0), 0.75f, mat_phong2);
+        renderScene.createSphere(new Vec3(1.5f,1,0), 1.25f, mat_phong);
+        renderScene.createSphere(new Vec3(-1.5f,-0.5f,0), 0.75f, mat_phong2);
 
         //testing shadow projection
-        renderScene.createSphere(new Vec3(1f, 0,0), 0.75f, mat_phong);
-        renderScene.createSphere(new Vec3(-2f, 0,0), 1, mat_phong);
+        //renderScene.createSphere(new Vec3(1f, 0,0), 0.75f, mat_phong);
+        //renderScene.createSphere(new Vec3(-2f, 0,0), 1, mat_phong);
         
     }
 
@@ -179,7 +184,7 @@ public class Main {
         //left
         renderScene.createPlane(new Vec3(-5,0,0), new Vec3(1f,0f,0f), new Lambert(RgbColor.RED));
         //right
-        //renderScene.createPlane(new Vec3(5,0,0), new Vec3(-1f,0f,0f), new Lambert(RgbColor.BLUE));
+        renderScene.createPlane(new Vec3(5,0,0), new Vec3(-1f,0f,0f), new Lambert(RgbColor.BLUE));
         //bot, top, back
         renderScene.createPlane(new Vec3(0,-5,0), new Vec3(0f,1f,0f), new Lambert(RgbColor.WHITE));
         renderScene.createPlane(new Vec3(0,5,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));

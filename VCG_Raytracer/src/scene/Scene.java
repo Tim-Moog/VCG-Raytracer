@@ -86,8 +86,6 @@ public class Scene {
         Vec3 vToLight = _light.getPosition().sub(_intersection.getIntersectionPoint()).normalize();
         // offset to prevent ray starting inside the object
         Vec3 origin = _intersection.getIntersectionPoint().add(vToLight.multScalar(0.01f));
-        //Vec3 origin = _intersection.getIntersectionPoint().add(_intersection.getNormal().multScalar(0.01f));
-        //System.err.println(_intersection.getNormal().multScalar(0.01f));
         Ray shadowRay = new Ray(origin, vToLight);
         Intersection hit = this.findClosestIntersection(shadowRay);
 
