@@ -21,17 +21,7 @@ public class Scene {
 
     private ArrayList<Shape> shapeList;
     private ArrayList<PointLight> lightList;
-
-    private RgbColor ambient_k;
     private Camera sceneCamera;
-
-    public Camera getSceneCamera() {
-        return sceneCamera;
-    }
-
-    public void setSceneCamera(Camera sceneCamera) {
-        this.sceneCamera = sceneCamera;
-    }
 
     public Scene() 
     {
@@ -56,18 +46,6 @@ public class Scene {
         lightList.add(newLight);
     }
 
-    public void setAmbientFactor (RgbColor _ambient_k) {
-        ambient_k = _ambient_k;
-    }
-
-    public RgbColor getAmbientFactor () {
-        return this.ambient_k;
-    }
-
-    public PointLight getFirstLight() {
-        return lightList.getFirst();
-    }
-
     public ArrayList<Shape> getShapes(){
         return shapeList;
     }
@@ -76,86 +54,51 @@ public class Scene {
         return lightList;
     }
 
-    public RgbColor shade (Intersection _intersection) {
-        RgbColor pointColor;
-        if(_intersection.getShape().getMaterial() instanceof Lambert){ //testing this since apparently we dont need ambient for lambert?
-            pointColor = new RgbColor(0, 0, 0);
-        }else{
-            pointColor = new RgbColor(ambient_k.red(),
-                                    ambient_k.green(),
-                                    ambient_k.blue());
-        }
-
-        for(Light currentLight : getLights()){
-            Material material = _intersection.getShape().getMaterial();
-            RgbColor diffuse = material.getColor(this.getSceneCamera().getOrigin(),
-                                                _intersection.getIntersectionPoint(), 
-                                                _intersection.getNormal(), 
-                                                currentLight);
-            
-            //we prob need to grab the light position and compare to our intersection point
-            float distance = currentLight.getPosition()
-                            .sub(_intersection.getIntersectionPoint())
-                            .length();
-            diffuse = diffuse.multScalar(distance*0.25f); // *0.25 due to else impact either too big or too smol 
-            //value just depends on light distance which makes sense as you want further lights to have less impact....
-            //but for this surely there has to be a better way to make it seem balanced no?
-            //honestly no clue if theres a better way atleast couldnt find any specific way for this in folien but not having it in feels troll cuz it just makes sense for distance to play a role logically
-            //weirdest thing is wenn wir das auskommentieren sieht es genauso dunkel aus bei *0.25 ?? like wha but bei nur *distance it bright af
-
-
-            //----------------------------- secondary rays -----------------------
-            //sekundärstrahlen idee
-            //logic written down 
-            //send ray from intersectionpoint to the light itself <- due to this, this prob needs to be inside of the prev for each loop so will add there
-            //schnitttest mit allen objekten
-                //falls treffer
-                //objektpunkt im schatten = pixelfarbe ist ambientwert
-                //falls kein treffer
-                //berechne lokales beleuchtungsmodell 
-
-            //sekundärstrahlen attempt- nvm not attempt.... SUCCESS
-            Ray secondaryRay = new Ray(_intersection.getIntersectionPoint(), currentLight.getPosition().sub(_intersection.getIntersectionPoint()));
-            Shape hitObjectShape = _intersection.getShape();
-            boolean objectInTheWay = false; //boolean to keep track of if any object is blocking direct LOS from impact to light
-
-            for (Shape currentShape : shapeList) { //go through all shapes
-                if(currentShape != hitObjectShape){//except the one that our ray is starting from -> da kann man es abhängig von normale machen
-                    Intersection secondaryRayData = currentShape.intersect(secondaryRay);
-                    if(secondaryRayData.isHit() && secondaryRayData.getDistance() < currentLight.getPosition().sub(_intersection.getIntersectionPoint()).length()){ //need to additionally check that the distance is shorter to make sure the hit is between out initial hit and the light and not beyond
-                        objectInTheWay = true;
-                        break;
-                    }
-                }
-            }
-
-            if(!objectInTheWay)
-                pointColor = new RgbColor(pointColor.red() + diffuse.red(), pointColor.green() + diffuse.green(), pointColor.blue() + diffuse.blue());
-            
-                //pointColor.add(diffuse.red(), diffuse.green(), diffuse.blue()); //above version makes no difference just testing add method trust issues
-        }
-
-        //pretty sure this aint wanted since it just makes it a lot darker -> yea this just makes it very dark so dont do this
-        //pointColor = new RgbColor(pointColor.red()/getLights().size(), pointColor.green()/getLights().size(), pointColor.blue()/getLights().size());
-
-        return pointColor;
+    public Camera getSceneCamera() {
+        return sceneCamera;
     }
 
+    public void setSceneCamera(Camera sceneCamera) {
+        this.sceneCamera = sceneCamera;
+    }
     
     public Intersection findClosestIntersection(Ray ray) {
-        Intersection closest = new Intersection();
+        // Start with null, incase we never hit anything
+        Intersection closest = null;
         for (Shape shape : shapeList) {
-            Intersection temp = shape.intersect(ray);
-            //System.out.println(temp.isHit());
+            // Creates a temporary hit check
+            Intersection hit = shape.intersect(ray);
 
-            if(closest.getShape() == null) //check if there is a shape in already if not we take that as closest
-                closest = temp;
-            if (temp.isHit() && temp.getDistance() < closest.getDistance()) {
-                //System.out.println("SHAPE HIT");
-                closest = temp;
+            // Checks, if a Shape was even hit
+            if(hit != null && hit.isHit()) {
+                // Only sets the Clostest hit if Closest is yet empty, or a hit that is nearer is found
+                if (closest == null || hit.getDistance() < closest.getDistance()) {
+                closest = hit;
+                }
             }
         }
         return closest;
+    }
+
+    public boolean isInShadow(Intersection _intersection, Light _light) {
+
+        // intersection towards light
+        Vec3 vToLight = _light.getPosition().sub(_intersection.getIntersectionPoint()).normalize();
+        // offset to prevent ray starting inside the object
+        Vec3 origin = _intersection.getIntersectionPoint().add(vToLight.multScalar(0.01f));
+        Ray shadowRay = new Ray(origin, vToLight);
+        Intersection hit = this.findClosestIntersection(shadowRay);
+
+        // Nothing hit or own shape hit -> no shadow
+        if (hit == null) {
+            return false;
+        }
+
+        // only if object is infront of light -> shadow
+        float distanceToLight = _light.getPosition().sub(origin).length();
+        float distanceToHit = hit.getIntersectionPoint().sub(origin).length();
+
+        return distanceToHit < distanceToLight;
     }
 
 }

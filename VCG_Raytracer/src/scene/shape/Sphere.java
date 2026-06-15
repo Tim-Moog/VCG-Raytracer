@@ -3,7 +3,6 @@ package scene.shape;
 import raytracer.Ray;
 import scene.material.Material;
 import utils.algebra.Matrix4x4;
-import utils.algebra.Vec2;
 import utils.algebra.Vec3;
 import utils.algebra.Vec4;
 
@@ -46,12 +45,9 @@ public class Sphere extends Shape{
     }
 
     public Ray createTransformedRay(Ray _ray){
-        //richtung bleibt
-        Vec3 newDirection = _ray.getDirection();
-        //müssen nur den startpunkt bearbeiten mit der inverse
-        Vec3 newOrigin = this.myInverseMatrix.multVec3(_ray.getOrigin(), true);
 
-        //return ray with modified data
+        Vec3 newOrigin = this.myInverseMatrix.multVec3(_ray.getOrigin(), true);
+        Vec3 newDirection = this.myInverseMatrix.multVec3(_ray.getDirection(), false).normalize();
         return new Ray(newOrigin, newDirection);
     }
 
@@ -59,21 +55,21 @@ public class Sphere extends Shape{
     public Intersection intersect (Ray ray) {
         Intersection intersection = new Intersection();
 
-        //very sure this is needed for transformations to work
+        //transforms Ray into local coordinates
         Ray transformedRay = createTransformedRay(ray);
 
-        Vec3 ray_origin = transformedRay.getOrigin();
-        Vec3 ray_direction = transformedRay.getDirection();
+        Vec3 local_ray_origin = transformedRay.getOrigin();
+        Vec3 local_ray_direction = transformedRay.getDirection();
 
         //A = (float) Math.pow(checkRay.x, 2) + (float) Math.pow(checkRay.y, 2) + (float) Math.pow(checkRay.z, 2);
         //ist das selbe wie
-        Float A = ray_direction.scalar(ray_direction);
+        Float A = local_ray_direction.scalar(local_ray_direction);
         //B = (float) (2 * (camPos.x * checkRay.x + camPos.y * checkRay.y + camPos.z * checkRay.z));
         //ist das selbe wie
-        Float B = 2.0f * ray_origin.scalar(ray_direction);
+        Float B = 2.0f * local_ray_origin.scalar(local_ray_direction);
         //C = (float) (Math.pow(camPos.x,2) + Math.pow(camPos.y,2) + Math.pow(camPos.z,2) - Math.pow(radius,2));
         //ist das selbe wie
-        Float C = ray_origin.scalar(ray_origin) - radius * radius;
+        Float C = local_ray_origin.scalar(local_ray_origin) - radius * radius;
 
         float diskriminante = (float) (Math.pow(B, 2) - 4 * C);
         
@@ -81,7 +77,7 @@ public class Sphere extends Shape{
         intersection.setHit(diskriminante >= 0);
         // Stop if we did not hit, or hit is behind camera
         if(diskriminante < 0)
-            return intersection;
+            return null;
 
         //calculating t's
         float t0 = (float) (-B - Math.sqrt(diskriminante))/2;
@@ -99,14 +95,25 @@ public class Sphere extends Shape{
             t = t1;
         }
 
-        // Giving over information to Intersection
-        // Hit is already set
-        intersection.setDistance(transformedRay.calculateRayAt(t).length());// set distance to t / alternative would be actually getting the length but idk if thats wanted atm
-        // for the point and normal we must transform the ray back(reminder we created it with the inverse so we use normal for going back)
-        intersection.setIntersectionPoint(myTransformationMatrix.multVec3(ray_origin.add(ray_direction.multScalar(t)), true));// TransformationMatrix * transformedRay start, into normalized direction * distance
-        intersection.setNormal(myTransformationMatrix.multVec3(intersection.getIntersectionPoint().sub(position).normalize(), false)); // TransformationMatrix * Vector between intersection and sphere center = normal
-        intersection.setShape(this); // for material
-        intersection.setInRay(transformedRay.calculateRayAt(t));  // primary Ray
+        // no t is infront of us (behind camera or inside shape)
+        if (t <= 0){
+             return null;
+        }
+
+        // We need: local intersection point
+        Vec3 local_intersection = local_ray_origin.add(local_ray_direction.multScalar(t));
+        // local normal (position could be left out, as it's (0,0,0) in local coordinates)
+        Vec3 local_normal = local_intersection.normalize();
+        //Transform into global coordinates
+        Vec3 global_intersection = myTransformationMatrix.multVec3(local_intersection, true);
+        Vec3 global_normal = myTransformationMatrix.invert().transpose().multVec3(local_normal, false).normalize();
+
+        intersection.setDistance(global_intersection.sub(ray.getOrigin()).length());
+        intersection.setIntersectionPoint(global_intersection);
+        intersection.setNormal(global_normal);
+        intersection.setShape(this);
+        intersection.setInRay(ray);
+        // OutRay is set in Material Shadow calc if needed
 
         return intersection;
     }

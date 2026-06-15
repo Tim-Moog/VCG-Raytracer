@@ -1,29 +1,23 @@
 package scene.material;
 
-import scene.light.Light;
-import scene.light.PointLight;
+import raytracer.Ray;
+import scene.Scene;
+import scene.shape.Intersection;
 import utils.RgbColor;
-import utils.algebra.Vec3;
 
 // Abstract class for all Materials, only knows the light Factors (k's)
 public abstract class Material {
 
-    protected static RgbColor ambientK = new RgbColor(0.1f,0.1f,0.1f);
-
-    protected Material (RgbColor _ambientK) {
-        Material.ambientK = _ambientK;
-    }
+    protected RgbColor diffuseK;
+    protected RgbColor specularK;
+    protected int specularExponent;
 
     protected Material () {
-        //uwu 
-    }
-
-    public RgbColor getAmbientK() {
-        return ambientK;
+        // UwU empty
     }
 
     
-    public abstract RgbColor getColor(Vec3 _campos, Vec3 _position, Vec3 _normal, Light _light);
+    public abstract RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, RgbColor _ambient);
     //public abstract RgbColor getColorPhong(Vec3 _camPos, Vec3 _position, Vec3 _normal, Light _light);
 
 }

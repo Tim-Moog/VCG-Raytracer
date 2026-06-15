@@ -1,5 +1,6 @@
 package scene.shape;
 
+import raytracer.Ray;
 import utils.algebra.Vec3;
 
 public class Intersection { //for now ive just added basic setters and getters for everything for us to use from inside of sphere itself when doing the intersection check
@@ -7,8 +8,8 @@ public class Intersection { //for now ive just added basic setters and getters f
     //basic IVs from UML diagramm
     private Vec3 intersectionPoint;
     private Vec3 normal;
-    private Vec3 inRay;
-    private Vec3 outRay;
+    private Ray inRay;
+    private Ray outRay;
     private Shape shape;
     private float distance;
     private boolean hit;
@@ -19,10 +20,10 @@ public class Intersection { //for now ive just added basic setters and getters f
     public Vec3 getNormal() {
         return normal;
     }
-    public Vec3 getInRay() {
+    public Ray getInRay() {
         return inRay;
     }
-    public Vec3 getOutRay() {
+    public Ray getOutRay() {
         return outRay;
     }
     public Shape getShape() {
@@ -40,10 +41,10 @@ public class Intersection { //for now ive just added basic setters and getters f
     public void setNormal(Vec3 normal) {
         this.normal = normal;
     }
-    public void setInRay(Vec3 inRay) {
+    public void setInRay(Ray inRay) {
         this.inRay = inRay;
     }
-    public void setOutRay(Vec3 outRay) {
+    public void setOutRay(Ray outRay) {
         this.outRay = outRay;
     }
     public void setShape(Shape shape) {

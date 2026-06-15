@@ -69,7 +69,7 @@ public class Plane extends Shape {
         intersection.setShape(this);
         intersection.setNormal(normal);
         intersection.setDistance(ray.calculateRayAt(t).length());
-        intersection.setInRay(ray.calculateRayAt(t));
+        intersection.setInRay(ray);
         intersection.setIntersectionPoint(ray_origin.add(ray_direction.multScalar(t)));
 
         //intersection.setIntersectionPoint(myTransformationMatrix.multVec3(ray_origin.add(ray_direction.multScalar(t)), true));

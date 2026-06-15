@@ -73,7 +73,7 @@ public class Main {
     static final int GI_SAMPLES = 0;
 
     static final RgbColor LIGHT_COLOR = null;
-    static final RgbColor AMBIENT_LIGHT = null;
+    static final RgbColor AMBIENT_LIGHT = new RgbColor(0.1f, 0.1f, 0.2f);
 
     static final boolean USE_AO = false;
     static final int NUMBER_OF_AO_SAMPLES = 0;
