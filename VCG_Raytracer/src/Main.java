@@ -182,13 +182,13 @@ public class Main {
             //there should be a square to make symbolise the lightsource position
         Material mat_lambert2 = new Lambert(RgbColor.WHITE);
         //left
-        //renderScene.createPlane(new Vec3(-5,0,0), new Vec3(1f,0f,0f), new Lambert(RgbColor.RED));
+        renderScene.createPlane(new Vec3(-5,0,0), new Vec3(1f,0f,0f), new Lambert(RgbColor.RED));
         //right
-        //renderScene.createPlane(new Vec3(5,0,0), new Vec3(-1f,0f,0f), new Lambert(RgbColor.BLUE));
+        renderScene.createPlane(new Vec3(5,0,0), new Vec3(-1f,0f,0f), new Lambert(RgbColor.BLUE));
         //bot, top, back
         renderScene.createPlane(new Vec3(0,-5,0), new Vec3(0f,1f,0f), new Lambert(RgbColor.WHITE));
-        //renderScene.createPlane(new Vec3(0,5,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));
-        //renderScene.createPlane(new Vec3(0,0,-5), new Vec3(0f,0f,1f), new Lambert(RgbColor.WHITE)); 
+        renderScene.createPlane(new Vec3(0,5,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));
+        renderScene.createPlane(new Vec3(0,0,-5), new Vec3(0f,0f,1f), new Lambert(RgbColor.WHITE)); 
     }
 
     /** Create our personal renderer and give it all of our items and prefs to calculate our scene **/

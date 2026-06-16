@@ -28,6 +28,42 @@ public class Matrix4x4 {
 		return out;
 	}
 
+	public static Matrix4x4 rotationFromTo(Vec3 from, Vec3 to){
+		Matrix4x4 out = new Matrix4x4();
+		
+		from = from.normalize();
+		to = to.normalize();
+
+		Vec3 v = from.cross(to);
+
+		float s = v.length();
+		float c = from.scalar(to);
+
+		if (s < 0.00001f){
+			return out; // Identity
+		}
+
+		float vx = v.x;
+		float vy = v.y;
+		float vz = v.z;
+
+		float k = (1 - c) / (s * s);
+
+		out.setValueAt(0, 0,  1 + k * (-vy*vy - vz*vz));
+		out.setValueAt(0, 1, -vz + k * vx*vy);
+		out.setValueAt(0, 2, vy + k * vx*vz);
+
+		out.setValueAt(1, 0,  vz + k * vy*vx);
+		out.setValueAt(1, 1, 1 + k * (-vx*vx - vz*vz));
+		out.setValueAt(1, 2,  -vx + k * vy*vz);
+
+		out.setValueAt(2, 0, -vy + k * vz*vx);
+		out.setValueAt(2, 1,  vx + k * vz*vy);
+		out.setValueAt(2, 2, 1 + k * (-vx*vx - vy*vy));
+
+		return out;
+	}
+
 	/**
 	 Translate Matrix in 4D - watch for the homogeneous coordinate
 	 **/

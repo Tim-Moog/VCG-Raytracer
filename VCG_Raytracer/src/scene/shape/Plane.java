@@ -84,9 +84,9 @@ public class Plane extends Shape {
     
 }*/
 
+/* 
 
-
-//testing Nicole+Lennart version
+//testing other groups version
 public class Plane extends Shape {
 
     protected Vec3 normal;
@@ -98,7 +98,7 @@ public class Plane extends Shape {
 
     public Intersection intersect(Ray inRay) {
         
-        Intersection intersection = new Intersection;
+        Intersection intersection = new Intersection();
         //RÃ¼ckgabewerte
         boolean hit = false;
         Vec3 intersectionPoint = null;
@@ -124,10 +124,97 @@ public class Plane extends Shape {
             }
         }
 
+        intersection.setIntersectionPoint(intersectionPoint);
+        intersection.setNormal(_normal);
+        intersection.setInRay(inRay);
+        intersection.setOutRay(outRay);
+        intersection.setHit(hit);
+        intersection.setShape(this);
+        intersection.setDistance(distance);
 
         
-        return intersection; //new Intersection(intersectionPoint, _normal, inRay, outRay, this, distance, hit, false, false); // inShape kann ignoriert werden weil floating Error 
+        return intersection; 
     }
 
     
+}*/
+
+
+//testing version chatti
+public class Plane extends Shape {
+
+    private Matrix4x4 myTransformationMatrix;
+    private Matrix4x4 myInverseMatrix;
+
+    private Vec3 localNormal = new Vec3(0, 1, 0);
+
+    public Plane(Vec3 pos, Vec3 normal, Material material) {
+        super(pos, material);
+
+        this.myTransformationMatrix = new Matrix4x4();
+
+        setupMatrix(pos, normal.normalize());
+
+        this.myInverseMatrix = myTransformationMatrix.invert();
+        intersectionData.setShape(this);
+    }
+
+    private void setupMatrix(Vec3 pos, Vec3 normal) {
+        // lokale Plane: y = 0, Normal (0,1,0)
+        // jetzt Matrix bauen, die (0,1,0) auf normal rotiert
+        Matrix4x4 rotation = Matrix4x4.rotationFromTo(new Vec3(0, 1, 0), normal);
+
+        Matrix4x4 translation = new Matrix4x4()
+            .translateXYZW(new Vec4(pos.x, pos.y, pos.z, 1));
+
+        // Reihenfolge wie bei Sphere: erst Rotation, dann Translation
+        myTransformationMatrix = translation.mult(rotation);
+    }
+
+    public Ray createTransformedRay(Ray ray) {
+        Vec3 newOrigin = this.myInverseMatrix.multVec3(ray.getOrigin(), true);
+        Vec3 newDirection = this.myInverseMatrix.multVec3(ray.getDirection(), false).normalize();
+
+        return new Ray(newOrigin, newDirection);
+    }
+
+    @Override
+    public Intersection intersect(Ray ray) {
+        Intersection intersection = new Intersection();
+
+        Ray transformedRay = createTransformedRay(ray);
+
+        Vec3 localOrigin = transformedRay.getOrigin();
+        Vec3 localDirection = transformedRay.getDirection();
+
+        float denom = localNormal.scalar(localDirection);
+
+        if (Math.abs(denom) < 0.0001f) {
+            return null;
+        }
+
+        // lokale Plane ist y = 0
+        float t = -localOrigin.y / denom;
+
+        if (t <= 0.0001f) {
+            return null;
+        }
+
+        Vec3 localIntersection = localOrigin.add(localDirection.multScalar(t));
+        Vec3 globalIntersection = myTransformationMatrix.multVec3(localIntersection, true);
+
+        Vec3 globalNormal = myInverseMatrix
+            .transpose()
+            .multVec3(localNormal, false)
+            .normalize();
+
+        intersection.setHit(true);
+        intersection.setDistance(globalIntersection.sub(ray.getOrigin()).length());
+        intersection.setIntersectionPoint(globalIntersection);
+        intersection.setNormal(globalNormal);
+        intersection.setShape(this);
+        intersection.setInRay(ray);
+
+        return intersection;
+    }
 }
