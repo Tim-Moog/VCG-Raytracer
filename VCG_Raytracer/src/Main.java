@@ -70,7 +70,7 @@ public class Main {
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
 
     //DONT SET HEIGHT TO EXACT SAME VALUE AS ROOF PLANE ELSE YOULL SUMMON A DEMON!!!
-    static final Vec3 LIGHT_POSITION = new Vec3(0,4.99f,0); 
+    static final Vec3 LIGHT_POSITION = new Vec3(0,5.98f,0); 
     static final short AREA_LIGHT_SIZE = 2;
 
     /** GI **/
@@ -87,15 +87,15 @@ public class Main {
 
     /** CAMERA **/
 
-    static final Vec3 CAM_POS = null;
-    static final Vec3 LOOK_AT = null;
-    static final Vec3 UP_VECTOR = null;
+    static final Vec3 CAM_POS = new Vec3(0,3,6);
+    static final Vec3 LOOK_AT = new Vec3(0,3,0);
+    static final Vec3 UP_VECTOR = new Vec3(0,1,0);
 
-    static final float VIEW_ANGLE = 0;
+    static final float VIEW_ANGLE = 70;
 
     /** DEBUG **/
-
-    static final boolean SHOW_PARAM_LABEL = true;
+    //this gets rid of the debug info on the bottom of the window
+    static final boolean SHOW_PARAM_LABEL = false;
 
 
     /** Initial method. This is where the show begins. **/
@@ -141,16 +141,12 @@ public class Main {
     }
 
     private static void setupCameras(Scene renderScene) {
-        //idk if we can use this since we need a reference to the cam in Raytracer?
-        //then again we could technically just add another param
-        //we can technically just set it here and then get it in raytracer but then we'd need to manually set the screen width/height in here
-        //and that doesnt seem that great to me but eh fuck it we'll do it for now
-        Vec2 windowSize = new Vec2(800, 600);
-        PerspCam camera = new PerspCam (new Vec3(0,0,10),
-                                        new Vec3(0,0,0),
-                                        new Vec3(0,1,0),
-                                        70,
-                                        (windowSize.x/windowSize.y));
+        PerspCam camera = new PerspCam (CAM_POS,
+                                        LOOK_AT,
+                                        UP_VECTOR,
+                                        VIEW_ANGLE,
+                                        (float)IMAGE_WIDTH/IMAGE_HEIGHT);
+                                        //casting needed for correct proportions and no we cant change the variables to be type float since that doesnt work with the constructor for Window
         renderScene.setSceneCamera(camera);
     }
 
@@ -163,9 +159,14 @@ public class Main {
         Material mat_phong2 = new Phong(RgbColor.GRAY, RgbColor.WHITE, 18);
 
         // Objects
-        renderScene.createSphere(new Vec3(1.5f,-2,0), 1.25f, mat_phong);
+        renderScene.createSphere(new Vec3(1.5f,1.25f,-1), 1.25f, mat_phong);
         //renderScene.createSphere(new Vec3(-1.5f,-4.25f,0), 0.75f, mat_phong2);
-        renderScene.createSquare(1, new Vec3(-1.5f, -3.5f, 0f), new Vec3(1f, 0.5f, 0.5f), new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
+
+        //roof  square
+        renderScene.createSquare(1, new Vec3(0f, 5.99f, 0f), new Vec3(0f, -1f, 0f), new Lambert(RgbColor.WHITE));
+
+        //testing square
+        renderScene.createSquare(2, new Vec3(-1.5f, 3.5f, 0f), new Vec3(1f, 0.5f, 0.5f), new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
 
         //testing shadow projection
         //renderScene.createSphere(new Vec3(1f, 0,0), 0.75f, mat_phong);
@@ -181,15 +182,16 @@ public class Main {
             //except for left(red) and right(blue)
         //there should be a pointlight at the top the box
             //there should be a square to make symbolise the lightsource position
-        Material mat_lambert2 = new Lambert(RgbColor.WHITE);
+        
+
         //left
-        renderScene.createPlane(new Vec3(-5,0,0), new Vec3(1f,0f,0f), new Lambert(RgbColor.RED));
+        renderScene.createPlane(new Vec3(-4,0,0), new Vec3(1f,0f,0f), new Lambert(RgbColor.RED));
         //right
-        renderScene.createPlane(new Vec3(5,0,0), new Vec3(-1f,0f,0f), new Lambert(RgbColor.BLUE));
+        renderScene.createPlane(new Vec3(4,0,0), new Vec3(-1f,0f,0f), new Lambert(RgbColor.BLUE));
         //bot, top, back
-        renderScene.createPlane(new Vec3(0,-5,0), new Vec3(0f,1f,0f), new Lambert(RgbColor.WHITE));
-        renderScene.createPlane(new Vec3(0,5,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));
-        renderScene.createPlane(new Vec3(0,0,-5), new Vec3(0f,0f,1f), new Lambert(RgbColor.WHITE)); 
+        renderScene.createPlane(new Vec3(0,0,0), new Vec3(0f,1f,0f), new Lambert(RgbColor.WHITE));
+        renderScene.createPlane(new Vec3(0,6,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));
+        renderScene.createPlane(new Vec3(0,0,-4), new Vec3(0f,0f,1f), new Lambert(RgbColor.WHITE)); 
     }
 
     /** Create our personal renderer and give it all of our items and prefs to calculate our scene **/
