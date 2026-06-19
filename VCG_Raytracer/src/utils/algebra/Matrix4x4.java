@@ -28,38 +28,55 @@ public class Matrix4x4 {
 		return out;
 	}
 
+	//this function uses the Rodrigues-Rotationmatrix formular
 	public static Matrix4x4 rotationFromTo(Vec3 from, Vec3 to){
 		Matrix4x4 out = new Matrix4x4();
 		
-		from = from.normalize();
-		to = to.normalize();
+		Vec3 startingRotation = from.normalize();
+		Vec3 targetRotation = to.normalize();
 
-		Vec3 v = from.cross(to);
+		//kreuzprodukt sagt uns hier im welche Achse wir drehen müssen
+		Vec3 rotationAxis = startingRotation.cross(targetRotation);
 
-		float s = v.length();
-		float c = from.scalar(to);
 
-		if (s < 0.00001f){
-			return out; // Identity
+		//cosTheta weil vektorA * vektorB = cosTheta -> A * B = |A|*|B|*cosTheta -> weil wir die vektoren normiert haben fallen |A| und |B| weg
+		float cosTheta = startingRotation.scalar(targetRotation); 
+
+		//check if from and to are facing EXACT opposite directions
+		if (cosTheta < -0.9999f){
+			out.setValueAt(0,0,-1);
+			out.setValueAt(1,1,-1);
+			out.setValueAt(2,2, 1);
+
+			return out;
 		}
 
-		float vx = v.x;
-		float vy = v.y;
-		float vz = v.z;
+		//sinTheta weil |A x B| = |A| * |B| * sinTheta -> weil beide vektoren normiert sind fällt alles bis auf sinTheta rechts weg
+		float sinTheta = rotationAxis.length();
+		
 
-		float k = (1 - c) / (s * s);
+		//if we never get closer to our plane
+		if (sinTheta < 0.00001f){
+			return out; //Vectors are parallel so we dont have to rotate
+		}
 
-		out.setValueAt(0, 0,  1 + k * (-vy*vy - vz*vz));
-		out.setValueAt(0, 1, -vz + k * vx*vy);
-		out.setValueAt(0, 2, vy + k * vx*vz);
+		float axisX = rotationAxis.x;
+		float axisY = rotationAxis.y;
+		float axisZ = rotationAxis.z;
 
-		out.setValueAt(1, 0,  vz + k * vy*vx);
-		out.setValueAt(1, 1, 1 + k * (-vx*vx - vz*vz));
-		out.setValueAt(1, 2,  -vx + k * vy*vz);
+		float factor_K = (1 - cosTheta) / (sinTheta * sinTheta);
 
-		out.setValueAt(2, 0, -vy + k * vz*vx);
-		out.setValueAt(2, 1,  vx + k * vz*vy);
-		out.setValueAt(2, 2, 1 + k * (-vx*vx - vy*vy));
+		out.setValueAt(0, 0,  1 + factor_K * (-axisY*axisY - axisZ*axisZ));
+		out.setValueAt(0, 1, -axisZ + factor_K * axisX*axisY);
+		out.setValueAt(0, 2, axisY + factor_K * axisX*axisZ);
+
+		out.setValueAt(1, 0,  axisZ + factor_K * axisY*axisX);
+		out.setValueAt(1, 1, 1 + factor_K * (-axisX*axisX - axisZ*axisZ));
+		out.setValueAt(1, 2,  -axisX + factor_K * axisY*axisZ);
+
+		out.setValueAt(2, 0, -axisY + factor_K * axisZ*axisX);
+		out.setValueAt(2, 1,  axisX + factor_K * axisZ*axisY);
+		out.setValueAt(2, 2, 1 + factor_K * (-axisX*axisX - axisY*axisY));
 
 		return out;
 	}

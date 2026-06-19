@@ -70,7 +70,7 @@ public class Main {
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
 
     //DONT SET HEIGHT TO EXACT SAME VALUE AS ROOF PLANE ELSE YOULL SUMMON A DEMON!!!
-    static final Vec3 LIGHT_POSITION = new Vec3(0,5.98f,0); 
+    static final Vec3 LIGHT_POSITION = new Vec3(0,5.9f,0); 
     static final short AREA_LIGHT_SIZE = 2;
 
     /** GI **/
@@ -166,7 +166,8 @@ public class Main {
         renderScene.createSquare(1, new Vec3(0f, 5.99f, 0f), new Vec3(0f, -1f, 0f), new Lambert(RgbColor.WHITE));
 
         //testing square
-        renderScene.createSquare(2, new Vec3(-1.5f, 3.5f, 0f), new Vec3(1f, 0.5f, 0.5f), new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
+        //renderScene.createSquare(2, new Vec3(-1.5f, 3.5f, 0f), new Vec3(1f, 0.5f, 0.5f), new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
+        renderScene.createCube(1f, new Vec3(-2.5f, 1f, 1f),new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
 
         //testing shadow projection
         //renderScene.createSphere(new Vec3(1f, 0,0), 0.75f, mat_phong);
