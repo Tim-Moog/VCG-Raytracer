@@ -9,10 +9,12 @@ import scene.light.Light;
 import scene.light.PointLight;
 import scene.material.Lambert;
 import scene.material.Material;
+import scene.shape.Cube;
 import scene.shape.Intersection;
 import scene.shape.Plane;
 import scene.shape.Shape;
 import scene.shape.Sphere;
+import scene.shape.Square;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 import utils.io.Log;
@@ -39,6 +41,16 @@ public class Scene {
         // unit circle, transformation can be added later
         Sphere newSphere = new Sphere(_pos, _radius, _material);
         shapeList.add(newSphere);
+    }
+
+    public void createSquare(float _size, Vec3 _pos, Vec3 _normal, Material _Material){
+        Square newSquare = new Square(_size, _pos, _normal, _Material);
+        shapeList.add(newSquare);
+    }
+
+    public void createCube(float _size, Vec3 _pos, Material _Material){
+        Square newCube = new Cube(_size, _pos, _Material);
+        shapeList.add(newCube);
     }
 
     public void createPointLight(Vec3 _position, RgbColor _color){

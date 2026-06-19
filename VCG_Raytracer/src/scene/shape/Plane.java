@@ -84,72 +84,19 @@ public class Plane extends Shape {
     
 }*/
 
-/* 
 
-//testing other groups version
+//testing version 
 public class Plane extends Shape {
 
-    protected Vec3 normal;
-
-    public Plane(Vec3 _position, Vec3 _normal, Material _material){
-        super(_position, _material);
-        normal = _normal.normalize();
-    }    
-
-    public Intersection intersect(Ray inRay) {
-        
-        Intersection intersection = new Intersection();
-        //RÃ¼ckgabewerte
-        boolean hit = false;
-        Vec3 intersectionPoint = null;
-        Vec3 _normal = null;
-        float distance = -1;
-        Ray outRay = null;
-
-        Vec3 rayDirection = inRay.getDirection().normalize();
-        float pScalarD= normal.scalar(rayDirection);
-        
-        if(pScalarD < 0){
-            Vec3 rayStartpoint = inRay.getOrigin();
-
-            float planeDistance = position.sub(rayStartpoint).length();
-            float t = -(normal.scalar(rayStartpoint)+planeDistance)/pScalarD;
-
-            if(t>0){
-                hit = true;
-                distance = t;
-
-                intersectionPoint = rayStartpoint.add(rayDirection.multScalar(distance));
-                _normal = normal;
-            }
-        }
-
-        intersection.setIntersectionPoint(intersectionPoint);
-        intersection.setNormal(_normal);
-        intersection.setInRay(inRay);
-        intersection.setOutRay(outRay);
-        intersection.setHit(hit);
-        intersection.setShape(this);
-        intersection.setDistance(distance);
-
-        
-        return intersection; 
-    }
-
-    
-}*/
-
-
-//testing version chatti
-public class Plane extends Shape {
-
-    private Matrix4x4 myTransformationMatrix;
-    private Matrix4x4 myInverseMatrix;
+    protected Matrix4x4 myTransformationMatrix;
+    protected Matrix4x4 myInverseMatrix;
 
     private Vec3 localNormal = new Vec3(0, 1, 0);
+    protected Vec3 normal;
 
     public Plane(Vec3 pos, Vec3 normal, Material material) {
         super(pos, material);
+        this.normal = normal;
 
         this.myTransformationMatrix = new Matrix4x4();
 
@@ -164,8 +111,7 @@ public class Plane extends Shape {
         // jetzt Matrix bauen, die (0,1,0) auf normal rotiert
         Matrix4x4 rotation = Matrix4x4.rotationFromTo(new Vec3(0, 1, 0), normal);
 
-        Matrix4x4 translation = new Matrix4x4()
-            .translateXYZW(new Vec4(pos.x, pos.y, pos.z, 1));
+        Matrix4x4 translation = new Matrix4x4().translateXYZW(new Vec4(pos.x, pos.y, pos.z, 1));
 
         // Reihenfolge wie bei Sphere: erst Rotation, dann Translation
         myTransformationMatrix = translation.mult(rotation);
@@ -187,14 +133,14 @@ public class Plane extends Shape {
         Vec3 localOrigin = transformedRay.getOrigin();
         Vec3 localDirection = transformedRay.getDirection();
 
-        float denom = localNormal.scalar(localDirection);
+        float check = localNormal.scalar(localDirection);
 
-        if (Math.abs(denom) < 0.0001f) {
+        if (Math.abs(check) < 0.0001f) {
             return null;
         }
 
         // lokale Plane ist y = 0
-        float t = -localOrigin.y / denom;
+        float t = -localOrigin.y / check;
 
         if (t <= 0.0001f) {
             return null;
@@ -203,6 +149,7 @@ public class Plane extends Shape {
         Vec3 localIntersection = localOrigin.add(localDirection.multScalar(t));
         Vec3 globalIntersection = myTransformationMatrix.multVec3(localIntersection, true);
 
+        //isnt this completely overkill like we dont need this since we can simply save the normal from constructor and set that
         Vec3 globalNormal = myInverseMatrix
             .transpose()
             .multVec3(localNormal, false)
@@ -211,7 +158,7 @@ public class Plane extends Shape {
         intersection.setHit(true);
         intersection.setDistance(globalIntersection.sub(ray.getOrigin()).length());
         intersection.setIntersectionPoint(globalIntersection);
-        intersection.setNormal(globalNormal);
+        intersection.setNormal(normal);//changed this from gloabalNormal to normal given in constructor
         intersection.setShape(this);
         intersection.setInRay(ray);
 

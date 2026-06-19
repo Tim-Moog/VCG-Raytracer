@@ -163,8 +163,9 @@ public class Main {
         Material mat_phong2 = new Phong(RgbColor.GRAY, RgbColor.WHITE, 18);
 
         // Objects
-        renderScene.createSphere(new Vec3(1.5f,1,0), 1.25f, mat_phong);
-        renderScene.createSphere(new Vec3(-1.5f,-4.25f,0), 0.75f, mat_phong2);
+        renderScene.createSphere(new Vec3(1.5f,-2,0), 1.25f, mat_phong);
+        //renderScene.createSphere(new Vec3(-1.5f,-4.25f,0), 0.75f, mat_phong2);
+        renderScene.createSquare(1, new Vec3(-1.5f, -3.5f, 0f), new Vec3(1f, 0.5f, 0.5f), new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
 
         //testing shadow projection
         //renderScene.createSphere(new Vec3(1f, 0,0), 0.75f, mat_phong);
