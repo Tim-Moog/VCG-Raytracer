@@ -35,18 +35,12 @@ public class Lambert extends Material {
                 Vec3 vLight = lightPosition.sub(intersectionPosition).normalize();
                 Float scalar_normal_light = vNormal.scalar(vLight);
 
-                if(scalar_normal_light <= 0){
-                    // Face is looking away from Light; doesn't get any values added
-                    continue;
-                }else{
+                RgbColor lightColor = light.getColor();
 
-                    RgbColor lightColor = light.getColor();
-
-                    // DIFFUSE
-                    r += lightColor.red() * diffuseK.red() * scalar_normal_light;
-                    g += lightColor.green() * diffuseK.green() * scalar_normal_light;
-                    b += lightColor.blue() * diffuseK.blue() * scalar_normal_light;
-                }
+                // DIFFUSE
+                r += lightColor.red() * diffuseK.red() * scalar_normal_light;
+                g += lightColor.green() * diffuseK.green() * scalar_normal_light;
+                b += lightColor.blue() * diffuseK.blue() * scalar_normal_light;
             }
         }
         return new RgbColor(r,g,b);

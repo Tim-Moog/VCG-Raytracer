@@ -31,49 +31,47 @@ public class Specular extends Material {
         for (Light light : _scene.getLights()) {
 
             Vec3 intersectionPosition = _intersection.getIntersectionPoint();
+            Vec3 vNormal = _intersection.getNormal().normalize();
+            //betrachtungsvektor
+            Vec3 vCam = _ray.getDirection().multScalar(-1).normalize();
 
             if (!_scene.isInShadow(_intersection, light)) {
 
                 Vec3 lightPosition = light.getPosition();
-
-                Vec3 vNormal = _intersection.getNormal().normalize();
                 Vec3 vLight = lightPosition.sub(intersectionPosition).normalize();
                 Float scalar_normal_light = vNormal.scalar(vLight);
 
-                if(scalar_normal_light <= 0){
-                    // Face is looking away from Light; doesn't get any values added
-                    continue;
-                }else{
+                RgbColor lightColor = light.getColor();
 
-                    RgbColor lightColor = light.getColor();
-
-                    // DIFFUSE
-                    r += lightColor.red() * diffuseK.red() * scalar_normal_light;
-                    g += lightColor.green() * diffuseK.green() * scalar_normal_light;
-                    b += lightColor.blue() * diffuseK.blue() * scalar_normal_light;
-
-
-                    //betrachtungsvektor
-                    Vec3 vCam = _ray.getDirection().multScalar(-1).normalize();
-                    //reflektionsvektor
-                    Vec3 vReflection = vNormal.multScalar(2 * scalar_normal_light).sub(vLight);
-                    vReflection = vReflection.normalize();
-
-                    Float scalar_view_reflection = vReflection.scalar(vCam);
-                    
-                    //SPECULAR
-                    r += (float) (lightColor.red() * (specularK.red() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent)));
-                    g += (float) (lightColor.green() * (specularK.green() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent)));
-                    b += (float) (lightColor.blue() * (specularK.blue() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent)));
+                // DIFFUSE
+                r += lightColor.red() * diffuseK.red() * scalar_normal_light;
+                g += lightColor.green() * diffuseK.green() * scalar_normal_light;
+                b += lightColor.blue() * diffuseK.blue() * scalar_normal_light;
                 
-                    //REFLECTIVE SURFACE CALC
-                    r = r * (1-shinyness);
-                    g = g * (1-shinyness);
-                    b = b * (1-shinyness);
+                //reflektionsvektor
+                Vec3 vReflection = vNormal.multScalar(2 * scalar_normal_light).sub(vLight);
+                vReflection = vReflection.normalize();
 
-                    Ray reflectRay = new Ray(intersectionPosition.add(_intersection.getNormal().multScalar(0.0001f)), vReflection);
-                    _intersection.setOutRay(reflectRay);
-                }
+                Float scalar_view_reflection = vReflection.scalar(vCam);
+                
+                //SPECULAR
+                r += (float) (lightColor.red() * (specularK.red() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent)));
+                g += (float) (lightColor.green() * (specularK.green() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent)));
+                b += (float) (lightColor.blue() * (specularK.blue() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent)));
+
+            }
+
+            if (this.shinyness != 0) {
+                                //REFLECTIVE SURFACE CALC
+                r = r * (1-shinyness);
+                g = g * (1-shinyness);
+                b = b * (1-shinyness);
+
+                
+                Vec3 vOutReflection = vNormal.multScalar(2 * (vCam.scalar(vNormal))).sub(vCam).normalize();
+
+                Ray reflectRay = new Ray(intersectionPosition.add(_intersection.getNormal().multScalar(0.0001f)), vOutReflection);
+                _intersection.setOutRay(reflectRay);
             }
         }
         return new RgbColor(r,g,b);

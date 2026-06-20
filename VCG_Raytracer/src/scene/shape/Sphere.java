@@ -51,7 +51,7 @@ public class Sphere extends Shape{
         return new Ray(newOrigin, newDirection);
     }
 
-
+    @Override
     public Intersection intersect (Ray ray) {
         Intersection intersection = new Intersection();
 
@@ -107,6 +107,9 @@ public class Sphere extends Shape{
         //Transform into global coordinates
         Vec3 global_intersection = myTransformationMatrix.multVec3(local_intersection, true);
         Vec3 global_normal = myTransformationMatrix.invert().transpose().multVec3(local_normal, false).normalize();
+ 
+ 
+        System.out.println("Inc Ray: " + global_intersection.sub(ray.getOrigin()).length() + " | Trans Ray: " + local_intersection.sub(ray.getOrigin()).length());
 
         
         intersection.setDistance(global_intersection.sub(ray.getOrigin()).length());
