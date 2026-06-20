@@ -31,7 +31,6 @@ import scene.material.Lambert;
 import scene.material.LambertLamp;
 import scene.material.Material;
 import scene.material.Phong;
-import scene.material.Specular;
 import utils.RgbColor;
 import utils.algebra.Vec2;
 import utils.algebra.Vec3;
@@ -155,27 +154,25 @@ public class Main {
     private static void setupObjects(Scene renderScene) {
          // Materials
         Material mat_lambert = new Lambert(new RgbColor(0.6f,0.2f,0.5f));
-        Material mat_lambert2 = new Lambert(new RgbColor(0.8f,0.8f,0.8f));
+        Material mat_lambert_shiny = new Lambert(RgbColor.PURPLE,0.6f);
 
         Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
-        Material mat_phong2 = new Phong(RgbColor.WHITE, RgbColor.WHITE, 18);
+        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 0.2f);
 
         Material mat_lamp = new LambertLamp();
 
-        Material mat_shiny = new Specular(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8, RECURSIONS, 1f);
-
         // Objects
-        renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_shiny);
-        renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_shiny);
+        renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_lambert_shiny);
+        renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong_shiny);
 
         //roof  square
         renderScene.createSquare(1, new Vec3(0f, 5.99999f, 0f), new Vec3(0f, -1f, 0f), mat_lamp);
 
         //testing square
         //renderScene.createSquare(2, new Vec3(-1.5f, 3.5f, 0f), new Vec3(1f, 0.5f, 0.5f), new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
-        renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2f),new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
-        renderScene.createCube(1f, new Vec3(-2.5f, 1.5f, -2f),mat_phong);
-        renderScene.createCube(1f, new Vec3(-2.5f, 2.5f, -2f),new Phong(RgbColor.CYAN, new RgbColor(0.8f, 0.8f, 0.8f), 8));
+        //renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2f),new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
+        //renderScene.createCube(1f, new Vec3(-2.5f, 1.5f, -2f),mat_phong);
+        //renderScene.createCube(1f, new Vec3(-2.5f, 2.5f, -2f),new Phong(RgbColor.CYAN, new RgbColor(0.8f, 0.8f, 0.8f), 8));
         //renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2.5f),mat_shiny);
 
         //testing shadow projection
