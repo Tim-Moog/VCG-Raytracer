@@ -31,6 +31,7 @@ import scene.material.Lambert;
 import scene.material.LambertLamp;
 import scene.material.Material;
 import scene.material.Phong;
+import scene.material.Specular;
 import utils.RgbColor;
 import utils.algebra.Vec2;
 import utils.algebra.Vec3;
@@ -60,7 +61,7 @@ public class Main {
 
     /** RAYTRACER **/
 
-    static final int RECURSIONS = 0;
+    static final int RECURSIONS = 4;
     static final int ANTI_ALIASING = 1;
     static final boolean USE_SOFT_SHADOWS = false;
 
@@ -80,7 +81,7 @@ public class Main {
     static final int GI_SAMPLES = 0;
 
     static final RgbColor LIGHT_COLOR = null;
-    static final RgbColor AMBIENT_LIGHT = new RgbColor(0.1f, 0.1f, 0.2f);
+    static final RgbColor AMBIENT_LIGHT = new RgbColor(0.1f, 0.1f, 0.15f);
 
     static final boolean USE_AO = false;
     static final int NUMBER_OF_AO_SAMPLES = 0;
@@ -134,7 +135,7 @@ public class Main {
         //renderScene.createPointLight(new Vec3 (-2.5f,5f,2), new RgbColor(0.3f,0.3f,0.7f));
 
         // Lights - task 4
-        renderScene.createPointLight(LIGHT_POSITION, RgbColor.WHITE);
+        renderScene.createPointLight(LIGHT_POSITION, new RgbColor(0.7f,0.7f,0.7f));
 
 
         //testing shadow projection
@@ -161,9 +162,11 @@ public class Main {
 
         Material mat_lamp = new LambertLamp();
 
+        Material mat_shiny = new Specular(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8, RECURSIONS, 1f);
+
         // Objects
-        renderScene.createSphere(new Vec3(1.5f,1.25f,-1), 1.25f, mat_phong);
-        renderScene.createSphere(new Vec3(-1.5f,0.75f,-2), 0.75f, mat_phong2);
+        renderScene.createSphere(new Vec3(1.5f,1.25f,-1), 1.25f, mat_shiny);
+        renderScene.createSphere(new Vec3(-1.5f,0.75f,-1), 0.75f, mat_shiny);
 
         //roof  square
         renderScene.createSquare(1, new Vec3(0f, 5.99999f, 0f), new Vec3(0f, -1f, 0f), mat_lamp);
@@ -196,6 +199,8 @@ public class Main {
         renderScene.createPlane(new Vec3(0,0,0), new Vec3(0f,1f,0f), new Lambert(RgbColor.WHITE));
         renderScene.createPlane(new Vec3(0,6,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));
         renderScene.createPlane(new Vec3(0,0,-4), new Vec3(0f,0f,1f), new Lambert(RgbColor.WHITE)); 
+        //behind cam
+        renderScene.createPlane(new Vec3(0,0,6), new Vec3(0f,0f,-1f), new Lambert(RgbColor.WHITE)); 
     }
 
     /** Create our personal renderer and give it all of our items and prefs to calculate our scene **/

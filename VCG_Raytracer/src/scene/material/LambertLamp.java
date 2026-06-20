@@ -12,7 +12,7 @@ public class LambertLamp extends Material {
     }
     
     @Override
-    public RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, RgbColor _ambient){
+    public RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, RgbColor _ambient, int _depth){
 
         return RgbColor.WHITE;
     }

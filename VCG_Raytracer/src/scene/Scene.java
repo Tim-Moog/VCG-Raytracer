@@ -4,10 +4,8 @@ import java.util.ArrayList;
 
 import raytracer.Ray;
 import scene.camera.Camera;
-import scene.camera.PerspCam;
 import scene.light.Light;
 import scene.light.PointLight;
-import scene.material.Lambert;
 import scene.material.Material;
 import scene.shape.Cube;
 import scene.shape.Intersection;

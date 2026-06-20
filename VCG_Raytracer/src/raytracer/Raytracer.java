@@ -18,14 +18,9 @@ package raytracer;
 
 import java.awt.image.BufferedImage;
 
-import org.w3c.dom.css.RGBColor;
-
 import scene.Scene;
 import scene.camera.*;
-import scene.light.Light;
-import scene.material.Lambert;
 import scene.material.Material;
-import scene.material.Phong;
 import scene.shape.Intersection;
 import scene.shape.Shape;
 import scene.shape.Sphere;
@@ -97,7 +92,7 @@ public class Raytracer {
                 currentPixel = new Vec2(x, y);
 
                 Ray ray = camera.getRayForPixel(currentPixel, windowSize);
-                RgbColor outputColor = shade(ray, mScene);
+                RgbColor outputColor = shade(ray,0, mScene);
 
                 mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
             }
@@ -112,7 +107,10 @@ public class Raytracer {
         this.exportRendering();
     }
 
-    private RgbColor shade (Ray _ray, Scene _scene) {
+    private RgbColor shade (Ray _ray, int _depth, Scene _scene) {
+        if(_depth >= this.mMaxRecursions) {
+            return RgbColor.BLACK;
+        }
 
         Intersection hit = _scene.findClosestIntersection(_ray);
 
@@ -121,9 +119,13 @@ public class Raytracer {
         }
 
         Material material = hit.getShape().getMaterial();
-        RgbColor color = material.getColor(hit, _ray, _scene, mAmbientLight);
+        RgbColor color = material.getColor(hit, _ray, _scene, mAmbientLight, _depth);
 
-        
+        if(hit.getOutRay() != null && material.getShinyness() != 0) {
+            RgbColor reflectedColor = shade(hit.getOutRay(), _depth+1, _scene);
+            color = color.multScalar(1-material.getShinyness()).add(reflectedColor.multScalar(material.getShinyness()));
+        }
+
         return color;
     }
     
