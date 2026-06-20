@@ -25,4 +25,6 @@ public abstract class Camera extends SceneObject{
     // abstract method for perspective & orthogonal camera
     public abstract Ray getRay (float s, float u);
 
+    public abstract Ray getRayForPixel(Vec2 _currentPixel, Vec2 _screensize);
+
 }

@@ -26,7 +26,14 @@
 import raytracer.Raytracer;
 import ui.Window;
 import scene.Scene;
+import scene.camera.PerspCam;
+import scene.material.Lambert;
+import scene.material.LambertLamp;
+import scene.material.Material;
+import scene.material.Phong;
+import scene.material.Specular;
 import utils.RgbColor;
+import utils.algebra.Vec2;
 import utils.algebra.Vec3;
 
 /*
@@ -54,7 +61,7 @@ public class Main {
 
     /** RAYTRACER **/
 
-    static final int RECURSIONS = 0;
+    static final int RECURSIONS = 4;
     static final int ANTI_ALIASING = 1;
     static final boolean USE_SOFT_SHADOWS = false;
 
@@ -64,7 +71,8 @@ public class Main {
 
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
 
-    static final Vec3 LIGHT_POSITION = null;
+    //DONT SET HEIGHT TO EXACT SAME VALUE AS ROOF PLANE ELSE YOULL SUMMON A DEMON!!!
+    static final Vec3 LIGHT_POSITION = new Vec3(0,5.9f,0); 
     static final short AREA_LIGHT_SIZE = 2;
 
     /** GI **/
@@ -73,7 +81,7 @@ public class Main {
     static final int GI_SAMPLES = 0;
 
     static final RgbColor LIGHT_COLOR = null;
-    static final RgbColor AMBIENT_LIGHT = null;
+    static final RgbColor AMBIENT_LIGHT = new RgbColor(0.1f, 0.1f, 0.15f);
 
     static final boolean USE_AO = false;
     static final int NUMBER_OF_AO_SAMPLES = 0;
@@ -81,15 +89,15 @@ public class Main {
 
     /** CAMERA **/
 
-    static final Vec3 CAM_POS = null;
-    static final Vec3 LOOK_AT = null;
-    static final Vec3 UP_VECTOR = null;
+    static final Vec3 CAM_POS = new Vec3(0,3,6);
+    static final Vec3 LOOK_AT = new Vec3(0,3,0);
+    static final Vec3 UP_VECTOR = new Vec3(0,1,0);
 
-    static final float VIEW_ANGLE = 0;
+    static final float VIEW_ANGLE = 70;
 
     /** DEBUG **/
-
-    static final boolean SHOW_PARAM_LABEL = true;
+    //this gets rid of the debug info on the bottom of the window
+    static final boolean SHOW_PARAM_LABEL = false;
 
 
     /** Initial method. This is where the show begins. **/
@@ -121,15 +129,81 @@ public class Main {
     }
 
     private static void setupLights(Scene renderScene) {
+        // Lights - task 3
+        //renderScene.createPointLight(new Vec3 (-2.5f,2.5f,4), new RgbColor(0.3f,0.7f,0.3f));
+        //renderScene.createPointLight(new Vec3 (3f,2.5f,3), new RgbColor(0.7f,0.3f,0.3f));
+        //renderScene.createPointLight(new Vec3 (-2.5f,5f,2), new RgbColor(0.3f,0.3f,0.7f));
+
+        // Lights - task 4
+        renderScene.createPointLight(LIGHT_POSITION, new RgbColor(0.7f,0.7f,0.7f));
+
+
+        //testing shadow projection
+        //renderScene.createPointLight(new Vec3(50,0,0), RgbColor.WHITE);
     }
 
     private static void setupCameras(Scene renderScene) {
+        PerspCam camera = new PerspCam (CAM_POS,
+                                        LOOK_AT,
+                                        UP_VECTOR,
+                                        VIEW_ANGLE,
+                                        (float)IMAGE_WIDTH/IMAGE_HEIGHT);
+                                        //casting needed for correct proportions and no we cant change the variables to be type float since that doesnt work with the constructor for Window
+        renderScene.setSceneCamera(camera);
     }
 
     private static void setupObjects(Scene renderScene) {
+         // Materials
+        Material mat_lambert = new Lambert(new RgbColor(0.6f,0.2f,0.5f));
+        Material mat_lambert2 = new Lambert(new RgbColor(0.8f,0.8f,0.8f));
+
+        Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
+        Material mat_phong2 = new Phong(RgbColor.WHITE, RgbColor.WHITE, 18);
+
+        Material mat_lamp = new LambertLamp();
+
+        Material mat_shiny = new Specular(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8, RECURSIONS, 1f);
+
+        // Objects
+        renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_shiny);
+        renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_shiny);
+
+        //roof  square
+        renderScene.createSquare(1, new Vec3(0f, 5.99999f, 0f), new Vec3(0f, -1f, 0f), mat_lamp);
+
+        //testing square
+        //renderScene.createSquare(2, new Vec3(-1.5f, 3.5f, 0f), new Vec3(1f, 0.5f, 0.5f), new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
+        renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2f),new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
+        renderScene.createCube(1f, new Vec3(-2.5f, 1.5f, -2f),mat_phong);
+        renderScene.createCube(1f, new Vec3(-2.5f, 2.5f, -2f),new Phong(RgbColor.CYAN, new RgbColor(0.8f, 0.8f, 0.8f), 8));
+        //renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2.5f),mat_shiny);
+
+        //testing shadow projection
+        //renderScene.createSphere(new Vec3(1f, 0,0), 0.75f, mat_phong);
+        //renderScene.createSphere(new Vec3(-2f, 0,0), 1, mat_phong);
+        
     }
 
     private static void setupCornellBox(Scene renderScene) {
+        //create 5 plane's that are perpendicular(senkrecht) zu einander
+        //4:3 as Width:Height relation
+        //all plane's should have Lambert material
+        //all walls should be white 
+            //except for left(red) and right(blue)
+        //there should be a pointlight at the top the box
+            //there should be a square to make symbolise the lightsource position
+        
+
+        //left
+        renderScene.createPlane(new Vec3(-4,0,0), new Vec3(1f,0f,0f), new Lambert(RgbColor.RED));
+        //right
+        renderScene.createPlane(new Vec3(4,0,0), new Vec3(-1f,0f,0f), new Lambert(RgbColor.BLUE));
+        //bot, top, back
+        renderScene.createPlane(new Vec3(0,0,0), new Vec3(0f,1f,0f), new Lambert(RgbColor.WHITE));
+        renderScene.createPlane(new Vec3(0,6,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));
+        renderScene.createPlane(new Vec3(0,0,-4), new Vec3(0f,0f,1f), new Lambert(RgbColor.WHITE)); 
+        //behind cam
+        renderScene.createPlane(new Vec3(0,0,6), new Vec3(0f,0f,-1f), new Lambert(RgbColor.WHITE)); 
     }
 
     /** Create our personal renderer and give it all of our items and prefs to calculate our scene **/

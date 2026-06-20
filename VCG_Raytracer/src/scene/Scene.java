@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 import raytracer.Ray;
 import scene.camera.Camera;
-import scene.camera.PerspCam;
 import scene.light.Light;
 import scene.light.PointLight;
-import scene.material.Lambert;
 import scene.material.Material;
+import scene.shape.Cube;
 import scene.shape.Intersection;
 import scene.shape.Plane;
 import scene.shape.Shape;
 import scene.shape.Sphere;
+import scene.shape.Square;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 import utils.io.Log;
@@ -21,17 +21,7 @@ public class Scene {
 
     private ArrayList<Shape> shapeList;
     private ArrayList<PointLight> lightList;
-
-    private RgbColor ambient_k;
     private Camera sceneCamera;
-
-    public Camera getSceneCamera() {
-        return sceneCamera;
-    }
-
-    public void setSceneCamera(Camera sceneCamera) {
-        this.sceneCamera = sceneCamera;
-    }
 
     public Scene() 
     {
@@ -51,21 +41,19 @@ public class Scene {
         shapeList.add(newSphere);
     }
 
+    public void createSquare(float _size, Vec3 _pos, Vec3 _normal, Material _Material){
+        Square newSquare = new Square(_size, _pos, _normal, _Material);
+        shapeList.add(newSquare);
+    }
+
+    public void createCube(float _size, Vec3 _pos, Material _Material){
+        Square newCube = new Cube(_size, _pos, _Material);
+        shapeList.add(newCube);
+    }
+
     public void createPointLight(Vec3 _position, RgbColor _color){
         PointLight newLight = new PointLight(_position, _color);
         lightList.add(newLight);
-    }
-
-    public void setAmbientFactor (RgbColor _ambient_k) {
-        ambient_k = _ambient_k;
-    }
-
-    public RgbColor getAmbientFactor () {
-        return this.ambient_k;
-    }
-
-    public PointLight getFirstLight() {
-        return lightList.getFirst();
     }
 
     public ArrayList<Shape> getShapes(){
@@ -76,21 +64,52 @@ public class Scene {
         return lightList;
     }
 
+    public Camera getSceneCamera() {
+        return sceneCamera;
+    }
+
+    public void setSceneCamera(Camera sceneCamera) {
+        this.sceneCamera = sceneCamera;
+    }
     
     public Intersection findClosestIntersection(Ray ray) {
-        Intersection closest = new Intersection();
+        // Start with null, incase we never hit anything
+        Intersection closest = null;
         for (Shape shape : shapeList) {
-            Intersection temp = shape.intersect(ray);
-            //System.out.println(temp.isHit());
+            // Creates a temporary hit check
+            Intersection hit = shape.intersect(ray);
 
-            if(closest.getShape() == null) //check if there is a shape in already if not we take that as closest
-                closest = temp;
-            if (temp.isHit() && temp.getDistance() < closest.getDistance()) {
-                //System.out.println("SHAPE HIT");
-                closest = temp;
+            // Checks, if a Shape was even hit
+            if(hit != null && hit.isHit()) {
+                // Only sets the Clostest hit if Closest is yet empty, or a hit that is nearer is found
+                if (closest == null || hit.getDistance() < closest.getDistance()) {
+                closest = hit;
+                }
             }
         }
         return closest;
+    }
+
+    public boolean isInShadow(Intersection _intersection, Light _light) {
+
+        // intersection towards light
+        Vec3 vToLight = _light.getPosition().sub(_intersection.getIntersectionPoint()).normalize();
+        // offset to prevent ray starting inside the object
+        Vec3 origin = _intersection.getIntersectionPoint().add(vToLight.multScalar(0.01f));
+        Ray shadowRay = new Ray(origin, vToLight);
+        Intersection hit = this.findClosestIntersection(shadowRay);
+
+        // Nothing hit or own shape hit -> no shadow
+        if (hit == null) {
+            return false;
+        }
+
+        // only if object is infront of light -> shadow
+        float distanceToLight = _light.getPosition().sub(origin).length();
+        float distanceToHit = hit.getIntersectionPoint().sub(origin).length();
+        //distanceToHit = hit.getDistance();
+
+        return distanceToHit < distanceToLight;
     }
 
 }

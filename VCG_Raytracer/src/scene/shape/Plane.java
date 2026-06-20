@@ -8,77 +8,76 @@ import utils.algebra.Vec4;
 
 public class Plane extends Shape {
 
-    Vec3 normal;
-    Float A,B,C, Q;
+    protected Matrix4x4 myTransformationMatrix;
+    protected Matrix4x4 myInverseMatrix;
 
-    private Matrix4x4 myTransformationMatrix;
-    private Matrix4x4 myInverseMatrix;
+    private Vec3 localNormal = new Vec3(0, 1, 0);
+    protected Vec3 normal;
 
-    public Plane(Vec3 _pos, Vec3 _normal, Material _material) {
-        super(_pos, _material);
-        //i think this is the only extra thing we need for a plane?
-        this.normal = _normal.normalize();
-        //ABC UND Q SETZEN
-        A = this.normal.x;
-        B = this.normal.y;
-        C = this.normal.z;
-        //Q ist Abstand zum Ursprung -> prob makes more sense to set in intersect method as it will differ for each point of the plane
-        
+    public Plane(Vec3 pos, Vec3 normal, Material material) {
+        super(pos, material);
+        this.normal = normal;
 
-        //think we need the transformationsmatrix for translation
-        /*this.myTransformationMatrix = new Matrix4x4();
-        Vec4 homoTrans = new Vec4(_pos.x, _pos.y, _pos.z, 1);
-        myTransformationMatrix = myTransformationMatrix.translateXYZW(homoTrans);
-        this.myInverseMatrix = myTransformationMatrix.invert(); */
-        //trying without this and manually adding the position in intersect
-        //yea dont think we need that and instead can do - when creating the modified ray and + when readjusting at the end like we do with the transformation matrix's in sphere
-
+        setupMatrix(pos, normal.normalize());
+        this.myInverseMatrix = myTransformationMatrix.invert();
     }
 
-    public Ray createTransformedRay(Ray _ray){
-        //richtung bleibt
-        Vec3 newDirection = _ray.getDirection();
-        //müssen nur den startpunkt bearbeiten mit der inverse
-        Vec3 newOrigin = _ray.getOrigin().sub(this.position);
+    private void setupMatrix(Vec3 pos, Vec3 normal) {
+        // startingpoint for plane:
+        // local Plane: y = 0, Normal (0,1,0) --> this is pretty much the same as in sphere where we take as startingpoint 0,0,0 with radius 1
 
-        //return ray with modified data
+        Matrix4x4 rotation = Matrix4x4.rotationFromTo(new Vec3(0, 1, 0), normal);
+        Matrix4x4 translation = new Matrix4x4().translateXYZW(new Vec4(pos.x, pos.y, pos.z, 1));
+        //first we rotate then we translate
+        myTransformationMatrix = translation.mult(rotation);
+    }
+
+    public Ray createTransformedRay(Ray ray) {
+        Vec3 newOrigin = this.myInverseMatrix.multVec3(ray.getOrigin(), true);
+        Vec3 newDirection = this.myInverseMatrix.multVec3(ray.getDirection(), false).normalize();
+
         return new Ray(newOrigin, newDirection);
     }
 
 
-
-    public Intersection intersect(Ray ray){
+    public Intersection intersect(Ray ray) {
         Intersection intersection = new Intersection();
 
         Ray transformedRay = createTransformedRay(ray);
 
-        Vec3 ray_origin = transformedRay.getOrigin();
-        Vec3 ray_direction = transformedRay.getDirection();
+        Vec3 rayOrigin = transformedRay.getOrigin();
+        Vec3 rayDirection = transformedRay.getDirection();
 
-        Q = ray_direction.sub(ray_origin).length();
-        
-        float check = normal.scalar(ray_direction);
-        float t = -(A * ray_origin.x + B * ray_origin.y + C * ray_origin.z + Q)/(A * ray_direction.x + B * ray_direction.y + C * ray_direction.z);
-        //think should be the same as
-        t = -(normal.scalar(ray_origin) + Q )/ normal.scalar(ray_direction);
+        float check = localNormal.scalar(rayDirection);
 
-        intersection.setHit(check < 0); //glaub der check muss instead != 0 sein -> dann maybe ne abbruch bedingung if not != 0 then just stop
-        //oder maybe könnten wir es aber auch vereinfachen?(laut folien wärs != 0 aber cornell box wär eher <0 id say)
-        //also nur den check < 0 bereich zu betrachten da wir in der cornellbox ja strahlen innerhalb der box behalten wollen und keine von draußen rein kommen sollen?
-        //i think that would make sense and make things less complicated
+        //treffen wir die plane? -> safety check to make sure the ray isnt going parallel to the plane
+        //basically step size on Y -> if 0 we never hit plane
+        if (Math.abs(check) < 0.0001f) {
+            return null;
+        }
+
+        // local Plane we've defined as y = 0
+        float t = -rayOrigin.y / check;
+
+        //distance check to make sure the hit is infront of us and not behind us
+        if (t <= 0.0001f) {
+            return null;
+        }
+
+        //transform everything to global coordinate system
+        Vec3 localIntersection = rayOrigin.add(rayDirection.multScalar(t));
+        Vec3 globalIntersection = myTransformationMatrix.multVec3(localIntersection, true);
+
+        //we do this here now since else i think it would break later if we end up doing non-uniform scaling
+        Vec3 globalNormal = myInverseMatrix.transpose().multVec3(localNormal, false).normalize();
+
+        intersection.setHit(true);
+        intersection.setDistance(globalIntersection.sub(ray.getOrigin()).length());
+        intersection.setIntersectionPoint(globalIntersection);
+        intersection.setNormal(globalNormal); //why not just use normal? -> read comment above globalNormal
         intersection.setShape(this);
-        intersection.setNormal(normal);
-        intersection.setDistance(t);
-        intersection.setInRay(transformedRay.calculateRayAt(t));
-        intersection.setIntersectionPoint(ray_origin.add(ray_direction.multScalar(t)).add(position));
-
-        //intersection.setIntersectionPoint(myTransformationMatrix.multVec3(ray_origin.add(ray_direction.multScalar(t)), true));
-        //intersection.setNormal(myTransformationMatrix.multVec3(intersection.getIntersectionPoint().sub(position).normalize(), false));
-        intersection.setInRay(transformedRay.calculateRayAt(t));
+        intersection.setInRay(ray);
 
         return intersection;
     }
-
-    
-    
 }

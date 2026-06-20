@@ -1,60 +1,48 @@
 package scene.material;
 
-import java.util.ArrayList;
-
+import raytracer.Ray;
+import scene.Scene;
 import scene.light.Light;
-import scene.light.PointLight;
-import scene.shape.Shape;
+import scene.shape.Intersection;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 
 // Calculates the Diffuse Aspect of Lighting
 public class Lambert extends Material {
 
-    private RgbColor diffuseK;
-
     // diffuse factor is set on instantiation
     public Lambert (RgbColor _diffuse_k) {
         this.diffuseK = _diffuse_k;
     }
     
-    public RgbColor getColor(Vec3 _camPos, Vec3 _position, Vec3 _normal, ArrayList<PointLight> _list_lights, ArrayList<Shape> _list_shapes){
+    @Override
+    public RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, RgbColor _ambient, int _depth){
 
-        // Variables later on inserted into our RgbColor output
-        // Better for calculating the indiviual light components
         Float r,g,b;
 
-        r = getAmbientK().red();
-        g = getAmbientK().green();
-        b = getAmbientK().blue();
+        r = _ambient.red() * diffuseK.red();
+        g = _ambient.green() * diffuseK.green();
+        b = _ambient.blue() * diffuseK.blue();
 
-        for (Light light : _list_lights) {
+        for (Light light : _scene.getLights()) {
 
-            // We use the Light Object for the Parameter to ease changes (fewer places to add or remove values)
-            Vec3 lightPosition = light.getPosition();
-            RgbColor lightColor = light.getColor();
+            if (!_scene.isInShadow(_intersection, light)) {
 
-            // Calculating the necessary Vectors for diffuse light component:
-            // I * kd * (N x L) <- [(N x L)]
-            Vec3 normal = _normal.normalize();
-            Vec3 vec_light = lightPosition.sub(_position).normalize();
-            Float scalar_normal_light = normal.scalar(vec_light);
+                Vec3 lightPosition = light.getPosition();
+                Vec3 intersectionPosition = _intersection.getIntersectionPoint();
 
-            // Scalarproduct has to be above 0, else Light doesn't hit this point
-            if(scalar_normal_light <= 0) {
-                // Face is looking away from Light; doesn't get any values added
-                return new RgbColor(0,0,0);
-            } else {
-                // I * kd * (N x L)
-                r = lightColor.red() * diffuseK.red() * scalar_normal_light;
-                g = lightColor.green() * diffuseK.green() * scalar_normal_light;
-                b = lightColor.blue() * diffuseK.blue() * scalar_normal_light;
+                Vec3 vNormal = _intersection.getNormal().normalize();
+                Vec3 vLight = lightPosition.sub(intersectionPosition).normalize();
+                Float scalar_normal_light = vNormal.scalar(vLight);
 
-                
+                RgbColor lightColor = light.getColor();
+
+                // DIFFUSE
+                r += lightColor.red() * diffuseK.red() * scalar_normal_light;
+                g += lightColor.green() * diffuseK.green() * scalar_normal_light;
+                b += lightColor.blue() * diffuseK.blue() * scalar_normal_light;
             }
         }
-
         return new RgbColor(r,g,b);
-
     }
 }

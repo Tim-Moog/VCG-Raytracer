@@ -28,6 +28,64 @@ public class Matrix4x4 {
 		return out;
 	}
 
+	//this function uses the Rodrigues-Rotationmatrix formular
+	//enables smooth rotation around a chosen pivot axis
+	public static Matrix4x4 rotationFromTo(Vec3 from, Vec3 to){
+		Matrix4x4 out = new Matrix4x4();
+		
+		Vec3 startingRotation = from.normalize();
+		Vec3 targetRotation = to.normalize();
+
+		//cross product tells us which axis to target for rotation
+		Vec3 rotationAxis = startingRotation.cross(targetRotation);
+
+		//cosTheta because vectorF * vectorT = cosTheta -> F * T = |F|*|T|*cosTheta 
+		//F (from) and T (to) can be removed due to being normalized
+		//Angle of how much we are rotating
+		float cosTheta = startingRotation.scalar(targetRotation); 
+
+		//check if from and to are facing EXACT opposite directions
+		if (cosTheta < -0.9999f){
+			// simplified Matrix as output
+			out.setValueAt(0,0,-1);
+			out.setValueAt(1,1,-1);
+			out.setValueAt(2,2, 1);
+
+			return out;
+		}
+
+		//sinTheta because |F x T| = |F| * |T| * sinTheta 
+		//F (from) and T (to) can be removed due to being normalized
+		float sinTheta = rotationAxis.length();
+		
+		//if we never get closer to our plane
+		if (sinTheta < 0.00001f){
+			return out; //Vectors are parallel so we dont have to rotate
+		}
+
+		//vector chosen as the pivot axis
+		rotationAxis = rotationAxis.normalize();
+
+		float axisX = rotationAxis.x;
+		float axisY = rotationAxis.y;
+		float axisZ = rotationAxis.z;
+
+		//every single Matrix position according to the Formular
+		out.setValueAt(0,0, cosTheta + axisX*axisX*(1-cosTheta));
+		out.setValueAt(0,1, axisX*axisY*(1-cosTheta) - axisZ*sinTheta);
+		out.setValueAt(0,2, axisX*axisZ*(1-cosTheta) + axisY*sinTheta);
+
+		out.setValueAt(1,0, axisY*axisX*(1-cosTheta) + axisZ*sinTheta);
+		out.setValueAt(1,1, cosTheta + axisY*axisY*(1-cosTheta));
+		out.setValueAt(1,2, axisY*axisZ*(1-cosTheta) - axisX*sinTheta);
+
+		out.setValueAt(2,0, axisZ*axisX*(1-cosTheta) - axisY*sinTheta);
+		out.setValueAt(2,1, axisZ*axisY*(1-cosTheta) + axisX*sinTheta);
+		out.setValueAt(2,2, cosTheta + axisZ*axisZ*(1-cosTheta));
+
+		return out;
+	}
+
 	/**
 	 Translate Matrix in 4D - watch for the homogeneous coordinate
 	 **/

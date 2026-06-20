@@ -18,13 +18,9 @@ package raytracer;
 
 import java.awt.image.BufferedImage;
 
-import org.w3c.dom.css.RGBColor;
-
 import scene.Scene;
 import scene.camera.*;
-import scene.material.Lambert;
 import scene.material.Material;
-import scene.material.Phong;
 import scene.shape.Intersection;
 import scene.shape.Shape;
 import scene.shape.Sphere;
@@ -82,303 +78,57 @@ public class Raytracer {
 
     /**  This is where our scene is actually ray-traced **/
     public void renderScene(){
+        //Scene gets prepared inside of main.java
         Log.print(this, "Prepare rendering at " + String.valueOf(stopTime(tStart)));
 
-        //colorGradient();
-        //colorCircle();
-        //raytrace_backgroundOnly();
-        //circle_radius1();
-        //a3_Beleuchtung();
-        a3ScenePrep();
-        //setupCornellBox();
-        a3versionTeamPurple();
-        System.out.println(mScene.getShapes().size());
+        //INFO: if we adjust screensize we also gotta change it in main to not fuck over the camera
+        Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
+        Vec2 currentPixel;
 
+        Camera camera = mScene.getSceneCamera();
 
-    
-        
+        for (int y = 0; y < windowSize.y; y++) {
+            for (int x = 0; x < windowSize.x; x++) {
+                currentPixel = new Vec2(x, y);
 
+                Ray ray = camera.getRayForPixel(currentPixel, windowSize);
+                RgbColor outputColor = shade(ray,0, mScene);
+
+                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
+            }
+        }
         // Here trace the rays ...
 
         // Primary rays ...
 
         // Later secondary rays ...
 
-        // Yeeaahhh, raytracing is so much fun ...
+        // Yeeaahhh, raytracing is so much fun ...  d=====(￣▽￣*)b
         this.exportRendering();
     }
 
-
-    private void a4ScenePrep(){
-        //create cornell box
-        setupCornellBox();
-
-        //add in our spheres with Phong material
-        
-
-    }
-
-    //think this makes sense to put in its own method since it prob wont change in future
-    private void setupCornellBox(){
-        //create 5 plane's that are perpendicular(senkrecht) zu einander
-        //4:3 as Width:Height relation
-        //all plane's should have Lambert material
-        //all walls should be white 
-            //except for left(red) and right(blue)
-        //there should be a pointlight at the top the box
-            //there should be a square to make symbolise the lightsource position
-        Material mat_lambert2 = new Lambert(RgbColor.WHITE);
-        mScene.createPlane(new Vec3(-1,0,0), new Vec3(1f,0f,0f), mat_lambert2);
-        //mScene.createPlane(new Vec3(1,0,0), new Vec3(-1f,0,0), mat_lambert2);
-    }
-
-
-    private void a3ScenePrep(){
-
-        //create materials
-        Material mat_lambert = new Lambert(new RgbColor(0.6f,0.2f,0.5f));
-        Material mat_lambert2 = new Lambert(RgbColor.GRAY);
-        Material mat_phong = new Phong(RgbColor.BLUE, RgbColor.YELLOW, 67);
-
-        //create spheres
-        mScene.createSphere(new Vec3(1.5f,1,0), 1.25f, mat_lambert);
-        mScene.createSphere(new Vec3(-1.5f,-0.5f,0), 0.75f, mat_lambert2);
-
-        //create lights
-        mScene.createPointLight(new Vec3 (-10f,10f,0), RgbColor.GREEN);
-        mScene.createPointLight(new Vec3 (10f,10f,0), RgbColor.RED);
-        mScene.createPointLight(new Vec3(0, 10f, 0), RgbColor.BLUE);
-        mScene.setAmbientFactor(new RgbColor(0.1f,0.1f,0.1f));
-    }
-
-    private void a3versionTeamPurple(){
-        Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
-        Vec2 currentPixel;
-
-        PerspCam camera = new PerspCam (new Vec3(0,0,5),
-                                        new Vec3(0,0,0),
-                                        new Vec3(0,1,0),
-                                        70,
-                                        (windowSize.x/windowSize.y));
-
-
-        mScene.setSceneCamera(camera);
-
-        Intersection clostest_intersection;
-
-        for (int y = 0; y < windowSize.y; y++) {
-            for (int x = 0; x < windowSize.x; x++) {
-                currentPixel = new Vec2(x, y);
-
-                Ray ray = camera.getRayForPixel(currentPixel, windowSize);
-
-                //create intersection data and update it based on our sphere and ray
-                clostest_intersection = mScene.findClosestIntersection(ray);
-                
-
-                RgbColor outputColor;
-                if (clostest_intersection.isHit()) {
-                    //System.out.println("SHAPE HIT");
-                    outputColor = clostest_intersection.getShape().getMaterial().getColor(camera.getOrigin(), 
-                                                                                        clostest_intersection.getIntersectionPoint(), 
-                                                                                        clostest_intersection.getNormal(), 
-                                                                                        mScene.getLights(), 
-                                                                                        mScene.getShapes());
-                } else {
-                    outputColor = mScene.getAmbientFactor();
-                }
-
-                //set the pixel with the adjusted color :)
-                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
-            }
+    private RgbColor shade (Ray _ray, int _depth, Scene _scene) {
+        if(_depth >= this.mMaxRecursions) {
+            return RgbColor.BLACK;
         }
 
-    }
-/* 
-    private void a3_Beleuchtung(){
-        Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
-        Vec2 currentPixel;
+        Intersection hit = _scene.findClosestIntersection(_ray);
 
-        PerspCam camera = new PerspCam (new Vec3(0,0,5),
-                                        new Vec3(0,0,0),
-                                        new Vec3(0,1,0),
-                                        70,
-                                        (windowSize.x/windowSize.y));
-
-
-                                
-        for (int y = 0; y < windowSize.y; y++) {
-            for (int x = 0; x < windowSize.x; x++) {
-                currentPixel = new Vec2(x, y);
-                RgbColor outputColor = RgbColor.BLUE;
-
-                //run a for each loop over our shapelist //we'll prob have another foreach loop in this or around later for all lights
-                for (Shape currentShape : mScene.getShapes()) {
-                    Ray ray = camera.getRayForPixel(currentPixel, windowSize);
-                    Intersection currentIntersection;
-                    currentShape.intersect(ray);
-                    currentIntersection = currentShape.getIntersectionData();
-                    if(currentIntersection.isHit())
-                        outputColor = mScene.shade(currentIntersection); //shade method instead
-                } 
-
-                //set the pixel with the adjusted color :)
-                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
-            }
+        if (hit == null) {
+            return mBackgroundColor;
         }
-    }*/
+
+        Material material = hit.getShape().getMaterial();
+        RgbColor color = material.getColor(hit, _ray, _scene, mAmbientLight, _depth);
+
+        if(hit.getOutRay() != null && material.getShinyness() != 0) {
+            RgbColor reflectedColor = shade(hit.getOutRay(), _depth+1, _scene);
+            color = color.multScalar(1-material.getShinyness()).add(reflectedColor.multScalar(material.getShinyness()));
+        }
+
+        return color;
+    }
     
-    /* auskommentiert to avoid errors from changed code in inner workings 
-    private void circle_radius1 () {
-
-        Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
-        Vec2 currentPixel;
-
-        PerspCam camera = new PerspCam (new Vec3(0,0,4),
-                                        new Vec3(0,0,0),
-                                        new Vec3(0,1,0),
-                                        70,
-                                        (windowSize.x/windowSize.y)
-                                        );
-        
-        Sphere mySphere = new Sphere(new Vec3(0,0,0), 1);
-        Intersection intersectionData;
-
-        for (int y = 0; y < windowSize.y; y++) {
-            for (int x = 0; x < windowSize.x; x++) {
-                currentPixel = new Vec2(x, y);
-
-                Ray ray = camera.getRayForPixel(currentPixel, windowSize);
-
-                //get the intersection info of our sphere object
-                intersectionData = new Intersection();
-                mySphere.intersect(intersectionData, ray);
-
-
-                //check if we hit the sphere make pixel green, else make it blue
-                RgbColor outputColor;
-                if(intersectionData.isHit()){
-                    outputColor = RgbColor.GREEN;
-                }else{
-                    outputColor = RgbColor.BLUE;
-                }
-                
-
-                //set the pixel with the adjusted color :)
-                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
-            }
-        }
-    } */
-
-    private void raytrace_backgroundOnly () {
-
-        Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
-        Vec2 currentPixel;
-
-        PerspCam camera = new PerspCam (new Vec3(0,0,17),
-                                        new Vec3(0,0,0),
-                                        new Vec3(0,1,0),
-                                        170,
-                                        (windowSize.x/windowSize.y)
-                                        );
-
-        for (int y = 0; y < windowSize.y; y++) {
-            for (int x = 0; x < windowSize.x; x++) {
-                currentPixel = new Vec2(x, y);
-
-                Ray ray = camera.getRayForPixel(currentPixel, windowSize);
-                Vec3 ray_RGB_values = ray.ray_colorRGB();
-
-                //convert Vec3 to RgbColor
-                RgbColor outputColor = new RgbColor(ray_RGB_values);
-
-                //set the pixel with the adjusted color :)
-                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
-            }
-        }
-    }
-
-
-
-    private void colorGradient(){
-        // Base Color
-        int windowWidth = mBufferedImage.getWidth();
-        int windowHeight = mBufferedImage.getHeight();
-
-        Vec2 currentPixel;
-        RgbColor currentGradiantRGB;
-        float currentGradiant;
-
-        for(int x = 1; x < windowWidth; x++){
-
-            currentGradiant = (float) (x) / windowWidth;
-            currentGradiantRGB = new RgbColor((1f-currentGradiant), 0f, currentGradiant);
-
-            for(int y = 1; y < windowHeight; y++){
-
-                currentPixel = new Vec2(x, y);
-                mRenderWindow.setPixel(mBufferedImage, currentGradiantRGB, currentPixel);
-
-            }
-        }
-    }
-
-
-    private void colorCircle(){
-    // Screen Info
-        int windowWidth = mBufferedImage.getWidth();
-        int windowHeight = mBufferedImage.getHeight();
-
-        // Color and Position variables
-        Vec3 startPoint = new Vec3(windowWidth/2, windowHeight/2, 0);
-        Vec3 normStart = startPoint.normalize();
-        Vec3 currentPoint;
-        Vec3 direction;
-        RgbColor outputColor;
-
-
-        //this is just a helper for understanding how the numbers look in top left quadrant
-        Vec2 currentPixel;
-        System.out.println(new Vec3(10, 10, 0).sub(startPoint).normalize().toString());
-
-        for(int x = 1; x < windowWidth; x++){
-
-            for(int y = 1; y < windowHeight; y++){
-                //save current pixel position in a Vec2 and Vec3
-                currentPixel = new Vec2(x, y);
-                currentPoint = new Vec3(x, y, 0);
-                //setup direction vector from starting middle point to our current pixel
-                direction = currentPoint.sub(startPoint);
-                direction = direction.normalize(); 
-                
-
-                //adjust z depending on position in correlation to middlepoint
-                if(direction.x < 0 && direction.y < 0){
-                    direction.z += direction.x * -1 + direction.y *-1;
-                }else{
-                    if(direction.x < 0){
-                        direction.z += direction.x *-1;
-                    }
-                    if(direction.y < 0){
-                        direction.z += direction.y *-1;
-                    }
-                }
-
-                //readjusting offset!
-                direction.x += normStart.x;
-                direction.y += normStart.y;
-                direction = direction.normalize(); //yes 2nd .normalize is needed!
-
-                direction = direction.add(new Vec3(0.1f,0,0.2f));
-                
-                //convert Vec3 to RgbColor
-                outputColor = new RgbColor(direction);
-
-                //set the pixel with the adjusted color :)
-                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
-            }
-        }
-    }
 }
 
 
