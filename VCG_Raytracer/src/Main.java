@@ -146,7 +146,7 @@ public class Main {
         //we can technically just set it here and then get it in raytracer but then we'd need to manually set the screen width/height in here
         //and that doesnt seem that great to me but eh fuck it we'll do it for now
         Vec2 windowSize = new Vec2(800, 600);
-        PerspCam camera = new PerspCam (new Vec3(0,0,5),
+        PerspCam camera = new PerspCam (new Vec3(0,0,10),
                                         new Vec3(0,0,0),
                                         new Vec3(0,1,0),
                                         70,
@@ -164,7 +164,7 @@ public class Main {
 
         // Objects
         renderScene.createSphere(new Vec3(1.5f,1,0), 1.25f, mat_phong);
-        renderScene.createSphere(new Vec3(-1.5f,-0.5f,0), 0.75f, mat_phong2);
+        renderScene.createSphere(new Vec3(-1.5f,-4.25f,0), 0.75f, mat_phong2);
 
         //testing shadow projection
         //renderScene.createSphere(new Vec3(1f, 0,0), 0.75f, mat_phong);
@@ -182,13 +182,13 @@ public class Main {
             //there should be a square to make symbolise the lightsource position
         Material mat_lambert2 = new Lambert(RgbColor.WHITE);
         //left
-        renderScene.createPlane(new Vec3(-5,0,0), new Vec3(1f,0f,0f), new Lambert(RgbColor.RED));
+        //renderScene.createPlane(new Vec3(-5,0,0), new Vec3(1f,0f,0f), new Lambert(RgbColor.RED));
         //right
-        renderScene.createPlane(new Vec3(5,0,0), new Vec3(-1f,0f,0f), new Lambert(RgbColor.BLUE));
+        //renderScene.createPlane(new Vec3(5,0,0), new Vec3(-1f,0f,0f), new Lambert(RgbColor.BLUE));
         //bot, top, back
         renderScene.createPlane(new Vec3(0,-5,0), new Vec3(0f,1f,0f), new Lambert(RgbColor.WHITE));
-        renderScene.createPlane(new Vec3(0,5,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));
-        renderScene.createPlane(new Vec3(0,0,-5), new Vec3(0f,0f,1f), new Lambert(RgbColor.WHITE)); 
+        //renderScene.createPlane(new Vec3(0,5,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));
+        //renderScene.createPlane(new Vec3(0,0,-5), new Vec3(0f,0f,1f), new Lambert(RgbColor.WHITE)); 
     }
 
     /** Create our personal renderer and give it all of our items and prefs to calculate our scene **/
