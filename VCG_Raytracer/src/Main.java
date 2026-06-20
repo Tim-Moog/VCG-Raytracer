@@ -28,6 +28,7 @@ import ui.Window;
 import scene.Scene;
 import scene.camera.PerspCam;
 import scene.material.Lambert;
+import scene.material.LambertLamp;
 import scene.material.Material;
 import scene.material.Phong;
 import utils.RgbColor;
@@ -158,16 +159,18 @@ public class Main {
         Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
         Material mat_phong2 = new Phong(RgbColor.GRAY, RgbColor.WHITE, 18);
 
+        Material mat_lamp = new LambertLamp();
+
         // Objects
         renderScene.createSphere(new Vec3(1.5f,1.25f,-1), 1.25f, mat_phong);
-        //renderScene.createSphere(new Vec3(-1.5f,-4.25f,0), 0.75f, mat_phong2);
+        renderScene.createSphere(new Vec3(-1.5f,0.75f,-2), 0.75f, mat_phong2);
 
         //roof  square
-        renderScene.createSquare(1, new Vec3(0f, 5.99f, 0f), new Vec3(0f, -1f, 0f), new Lambert(RgbColor.WHITE));
+        renderScene.createSquare(1, new Vec3(0f, 5.99999f, 0f), new Vec3(0f, -1f, 0f), mat_lamp);
 
         //testing square
         //renderScene.createSquare(2, new Vec3(-1.5f, 3.5f, 0f), new Vec3(1f, 0.5f, 0.5f), new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
-        renderScene.createCube(1f, new Vec3(-2.5f, 1f, 1f),new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
+        //renderScene.createCube(1f, new Vec3(-2.5f, 1f, 1f),new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
 
         //testing shadow projection
         //renderScene.createSphere(new Vec3(1f, 0,0), 0.75f, mat_phong);

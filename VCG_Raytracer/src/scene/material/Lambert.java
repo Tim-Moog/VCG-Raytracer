@@ -3,10 +3,10 @@ package scene.material;
 import raytracer.Ray;
 import scene.Scene;
 import scene.light.Light;
-import scene.light.PointLight;
 import scene.shape.Intersection;
 import utils.RgbColor;
 import utils.algebra.Vec3;
+
 // Calculates the Diffuse Aspect of Lighting
 public class Lambert extends Material {
 
