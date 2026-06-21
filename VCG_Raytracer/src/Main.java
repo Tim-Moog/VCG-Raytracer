@@ -175,6 +175,9 @@ public class Main {
         //renderScene.createCube(1f, new Vec3(-2.5f, 2.5f, -2f),new Phong(RgbColor.CYAN, new RgbColor(0.8f, 0.8f, 0.8f), 8));
         //renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2.5f),mat_shiny);
 
+        //cube tower test
+        //renderScene.createCubeTower(1f, new Vec3(-2, 0.5f, -1.5f), mat_lambert);
+
         //testing shadow projection
         //renderScene.createSphere(new Vec3(1f, 0,0), 0.75f, mat_phong);
         //renderScene.createSphere(new Vec3(-2f, 0,0), 1, mat_phong);

@@ -6,6 +6,7 @@ import raytracer.Ray;
 import scene.camera.Camera;
 import scene.light.Light;
 import scene.light.PointLight;
+import scene.material.Lambert;
 import scene.material.Material;
 import scene.shape.Cube;
 import scene.shape.Intersection;
@@ -49,6 +50,19 @@ public class Scene {
     public void createCube(float _size, Vec3 _pos, Material _Material){
         Square newCube = new Cube(_size, _pos, _Material);
         shapeList.add(newCube);
+    }
+
+    //careful dont set size too high else we'll stack a lot
+    public void createCubeTower(float _size, Vec3 _pos, Material _mat){
+        float current_size = _size;
+        float last_size;
+
+        while(current_size > 0.1f){ //dont set this condition too low else you'll stack a loooong time
+            createCube(current_size, _pos, _mat);
+            last_size = current_size;
+            current_size = current_size/1.5f;//how different we want the stacking cubes to be in size
+            _pos = new Vec3(_pos.x, _pos.y + last_size/2 + current_size/2, _pos.z);
+        }
     }
 
     public void createPointLight(Vec3 _position, RgbColor _color){
