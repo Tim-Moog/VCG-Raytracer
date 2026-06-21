@@ -71,7 +71,7 @@ public class Main {
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
 
     //DONT SET HEIGHT TO EXACT SAME VALUE AS ROOF PLANE ELSE YOULL SUMMON A DEMON!!!
-    static final Vec3 LIGHT_POSITION = new Vec3(0,5.9f,0); 
+    static final Vec3 LIGHT_POSITION = new Vec3(0,5.9f,0); //ignore for task 3 this is light position for CornellBox
     static final short AREA_LIGHT_SIZE = 2;
 
     /** GI **/
@@ -88,7 +88,7 @@ public class Main {
 
     /** CAMERA **/
 
-    static final Vec3 CAM_POS = new Vec3(0,3,6);
+    static final Vec3 CAM_POS = new Vec3(0,3,4);
     static final Vec3 LOOK_AT = new Vec3(0,3,0);
     static final Vec3 UP_VECTOR = new Vec3(0,1,0);
 
@@ -120,7 +120,7 @@ public class Main {
     private static void setupScene(Scene renderScene){
         setupCameras(renderScene);
 
-        setupCornellBox(renderScene);
+        //setupCornellBox(renderScene);
 
         setupObjects(renderScene);
 
@@ -129,12 +129,12 @@ public class Main {
 
     private static void setupLights(Scene renderScene) {
         // Lights - task 3
-        //renderScene.createPointLight(new Vec3 (-2.5f,2.5f,4), new RgbColor(0.3f,0.7f,0.3f));
-        //renderScene.createPointLight(new Vec3 (3f,2.5f,3), new RgbColor(0.7f,0.3f,0.3f));
-        //renderScene.createPointLight(new Vec3 (-2.5f,5f,2), new RgbColor(0.3f,0.3f,0.7f));
+        renderScene.createPointLight(new Vec3 (-2.5f,2.5f,4), new RgbColor(0.3f,0.7f,0.3f));
+        renderScene.createPointLight(new Vec3 (3f,2.5f,4), new RgbColor(0.7f,0.3f,0.3f));
+        renderScene.createPointLight(new Vec3 (-2.5f,-2.5f,4), new RgbColor(0.3f,0.3f,0.7f));
 
         // Lights - task 4
-        renderScene.createPointLight(LIGHT_POSITION, new RgbColor(0.7f,0.7f,0.7f));
+        //renderScene.createPointLight(LIGHT_POSITION, new RgbColor(0.7f,0.7f,0.7f));
 
 
         //testing shadow projection
@@ -153,31 +153,12 @@ public class Main {
 
     private static void setupObjects(Scene renderScene) {
          // Materials
-        Material mat_lambert = new Lambert(new RgbColor(0.6f,0.2f,0.5f));
-        Material mat_lambert_shiny = new Lambert(RgbColor.PURPLE,0.6f);
-
-        Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
-        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 0.2f);
-
-        Material mat_lamp = new LambertLamp();
+        Material mat_lambert = new Lambert(new RgbColor(0.6f,0.6f,0.6f));
+        Material mat_lambert2 = new Lambert(RgbColor.PURPLE);
 
         // Objects
-        renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_lambert_shiny);
-        renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong_shiny);
-
-        //roof  square
-        renderScene.createSquare(1, new Vec3(0f, 5.99999f, 0f), new Vec3(0f, -1f, 0f), mat_lamp);
-
-        //testing square
-        //renderScene.createSquare(2, new Vec3(-1.5f, 3.5f, 0f), new Vec3(1f, 0.5f, 0.5f), new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
-        //renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2f),new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
-        //renderScene.createCube(1f, new Vec3(-2.5f, 1.5f, -2f),mat_phong);
-        //renderScene.createCube(1f, new Vec3(-2.5f, 2.5f, -2f),new Phong(RgbColor.CYAN, new RgbColor(0.8f, 0.8f, 0.8f), 8));
-        //renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2.5f),mat_shiny);
-
-        //testing shadow projection
-        //renderScene.createSphere(new Vec3(1f, 0,0), 0.75f, mat_phong);
-        //renderScene.createSphere(new Vec3(-2f, 0,0), 1, mat_phong);
+        renderScene.createSphere(new Vec3(0.75f,3f,0f), 1.25f, mat_lambert);
+        renderScene.createSphere(new Vec3(-1.5f,1.8f,0f), 0.75f, mat_lambert2);
         
     }
 
