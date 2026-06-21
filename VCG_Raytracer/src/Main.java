@@ -96,7 +96,7 @@ public class Main {
 
     /** DEBUG **/
     //this gets rid of the debug info on the bottom of the window
-    static final boolean SHOW_PARAM_LABEL = false;
+    static final boolean SHOW_PARAM_LABEL = true;
 
 
     /** Initial method. This is where the show begins. **/
@@ -128,17 +128,8 @@ public class Main {
     }
 
     private static void setupLights(Scene renderScene) {
-        // Lights - task 3
-        //renderScene.createPointLight(new Vec3 (-2.5f,2.5f,4), new RgbColor(0.3f,0.7f,0.3f));
-        //renderScene.createPointLight(new Vec3 (3f,2.5f,3), new RgbColor(0.7f,0.3f,0.3f));
-        //renderScene.createPointLight(new Vec3 (-2.5f,5f,2), new RgbColor(0.3f,0.3f,0.7f));
-
         // Lights - task 4
         renderScene.createPointLight(LIGHT_POSITION, new RgbColor(0.7f,0.7f,0.7f));
-
-
-        //testing shadow projection
-        //renderScene.createPointLight(new Vec3(50,0,0), RgbColor.WHITE);
     }
 
     private static void setupCameras(Scene renderScene) {
@@ -153,32 +144,24 @@ public class Main {
 
     private static void setupObjects(Scene renderScene) {
          // Materials
-        Material mat_lambert = new Lambert(new RgbColor(0.6f,0.2f,0.5f));
-        Material mat_lambert_shiny = new Lambert(RgbColor.PURPLE,0.6f);
+        Material mat_phong_purple = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 5);
+        Material mat_phong_red = new Phong(RgbColor.ROYAL_RED, new RgbColor(0.8f, 0.8f, 0.8f), 8);
+        Material mat_phong_green = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 0.8f, 0.8f), 8);
+        Material mat_lambert_green = new Lambert(RgbColor.GREEN);
 
-        Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
-        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 0.2f);
-
+        //we made a custom material to have a similiar look for it as in the example picture
         Material mat_lamp = new LambertLamp();
 
         // Objects
-        renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_lambert_shiny);
-        renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong_shiny);
+        renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_phong_purple);
+        renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong_red);
+        //as a bonus we made a cube :D -> however not very optimized for now
+        //commented out right now due to current implementation HEAVILY tanking render time
+        //renderScene.createCubeTower(new Vec3(-2f,0.5f,-2f));
+
 
         //roof  square
         renderScene.createSquare(1, new Vec3(0f, 5.99999f, 0f), new Vec3(0f, -1f, 0f), mat_lamp);
-
-        //testing square
-        //renderScene.createSquare(2, new Vec3(-1.5f, 3.5f, 0f), new Vec3(1f, 0.5f, 0.5f), new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
-        //renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2f),new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
-        //renderScene.createCube(1f, new Vec3(-2.5f, 1.5f, -2f),mat_phong);
-        //renderScene.createCube(1f, new Vec3(-2.5f, 2.5f, -2f),new Phong(RgbColor.CYAN, new RgbColor(0.8f, 0.8f, 0.8f), 8));
-        //renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2.5f),mat_shiny);
-
-        //testing shadow projection
-        //renderScene.createSphere(new Vec3(1f, 0,0), 0.75f, mat_phong);
-        //renderScene.createSphere(new Vec3(-2f, 0,0), 1, mat_phong);
-        
     }
 
     private static void setupCornellBox(Scene renderScene) {
@@ -199,7 +182,7 @@ public class Main {
         renderScene.createPlane(new Vec3(0,0,0), new Vec3(0f,1f,0f), new Lambert(RgbColor.WHITE));
         renderScene.createPlane(new Vec3(0,6,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));
         renderScene.createPlane(new Vec3(0,0,-4), new Vec3(0f,0f,1f), new Lambert(RgbColor.WHITE)); 
-        //behind cam
+        //behind cam -> to avoid infinite hallway in reflection(Task 5)
         renderScene.createPlane(new Vec3(0,0,6), new Vec3(0f,0f,-1f), new Lambert(RgbColor.WHITE)); 
     }
 

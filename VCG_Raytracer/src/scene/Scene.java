@@ -6,6 +6,7 @@ import raytracer.Ray;
 import scene.camera.Camera;
 import scene.light.Light;
 import scene.light.PointLight;
+import scene.material.Lambert;
 import scene.material.Material;
 import scene.shape.Cube;
 import scene.shape.Intersection;
@@ -49,6 +50,16 @@ public class Scene {
     public void createCube(float _size, Vec3 _pos, Material _Material){
         Square newCube = new Cube(_size, _pos, _Material);
         shapeList.add(newCube);
+    }
+
+    public void createCubeTower(Vec3 _pos){
+        createCube(1, _pos, new Lambert(RgbColor.GREEN));
+        _pos = new Vec3(_pos.x, _pos.y + 0.5f + 0.75f/2f, _pos.z);
+        createCube(0.75f, _pos, new Lambert(RgbColor.CYAN));
+        _pos = new Vec3(_pos.x, _pos.y + 0.75f/2f + 0.25f, _pos.z);
+        createCube(0.5f, _pos, new Lambert(RgbColor.MAGENTA));
+        _pos = new Vec3(_pos.x, _pos.y + 0.25f + 0.125f, _pos.z);
+        createCube(0.25f, _pos, new Lambert(RgbColor.RED));
     }
 
     public void createPointLight(Vec3 _position, RgbColor _color){
