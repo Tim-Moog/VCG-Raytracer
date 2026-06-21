@@ -96,7 +96,7 @@ public class Main {
 
     /** DEBUG **/
     //this gets rid of the debug info on the bottom of the window
-    static final boolean SHOW_PARAM_LABEL = false;
+    static final boolean SHOW_PARAM_LABEL = true;
 
 
     /** Initial method. This is where the show begins. **/
