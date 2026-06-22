@@ -107,13 +107,20 @@ public class Raytracer {
         this.exportRendering();
     }
 
-    //Shade Method that calculates Color per Pixel
+    /**
+     * Handles the Intersection of Rays and the color of that Point including the primary and secondary rays
+     * @param _ray Ray currently looked at (primary / secundary)
+     * @param _depth Amount of times this Method has been called on in recursion
+     * @param _scene Scene that is being traced and displayed
+     * @return color of the Point
+     */
     private RgbColor shade (Ray _ray, int _depth, Scene _scene) {
-        //Only can be called so many Times in succession
+        //Method can only can be called so many Times in succession
         if(_depth >= this.mMaxRecursions) {
             return RgbColor.BLACK;
         }
 
+        //The intersected point that is nearest
         Intersection hit = _scene.findClosestIntersection(_ray);
 
         //if no shape has been hit
@@ -122,6 +129,7 @@ public class Raytracer {
         }
 
         Material material = hit.getShape().getMaterial();
+        //basic coloring
         RgbColor color = material.getColor(hit, _ray, _scene, mAmbientLight, _depth);
 
         //getOutRay is the ReflectionRay; if one has been set, the material reflects and needs to cast secondaryRays

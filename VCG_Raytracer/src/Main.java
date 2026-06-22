@@ -154,10 +154,10 @@ public class Main {
     private static void setupObjects(Scene renderScene) {
          // Materials
         Material mat_lambert = new Lambert(new RgbColor(0.6f,0.2f,0.5f));
-        Material mat_lambert_shiny = new Lambert(RgbColor.PURPLE,0.6f);
+        Material mat_lambert_shiny = new Lambert(RgbColor.PURPLE,0.6f, 0f);
 
         Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
-        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 0.2f);
+        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 0.2f, 0);
 
         Material mat_lamp = new LambertLamp();
 

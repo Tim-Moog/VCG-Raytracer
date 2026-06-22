@@ -7,7 +7,9 @@ import scene.shape.Intersection;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 
-// Calculates the Diffuse Aspect of Lighting
+/**
+ * Phong Material
+ */
 public class Phong extends Material {
 
     public Phong (RgbColor _diffuseK, RgbColor _specularK, int _specularExponent) {
@@ -16,8 +18,8 @@ public class Phong extends Material {
         this.specularExponent = _specularExponent;
     }
 
-    public Phong (RgbColor _diffuseK, RgbColor _specularK, int _specularExponent, float _shinyness) {
-        super(_shinyness);
+    public Phong (RgbColor _diffuseK, RgbColor _specularK, int _specularExponent, float _shinyness, float _transparency) {
+        super(_shinyness, _transparency);
         this.diffuseK = _diffuseK;
         this.specularK = _specularK;
         this.specularExponent = _specularExponent;
@@ -28,10 +30,12 @@ public class Phong extends Material {
 
         Float r,g,b;
 
+        // AMBIENT
         r = _ambient.red() * diffuseK.red();
         g = _ambient.green() * diffuseK.green();
         b = _ambient.blue() * diffuseK.blue();
 
+        //calculates color for every light in the scene
         for (Light light : _scene.getLights()) {
 
             Vec3 intersectionPosition = _intersection.getIntersectionPoint();
@@ -39,6 +43,7 @@ public class Phong extends Material {
             //Viewvector
             Vec3 vCam = _ray.getDirection().multScalar(-1).normalize();
 
+            //calculates surface color aslong as the object is not obscured by another in the scene
             if (!_scene.isInShadow(_intersection, light)) {
 
                 Vec3 lightPosition = light.getPosition();
@@ -66,11 +71,21 @@ public class Phong extends Material {
             
             }
 
+            //always calculated, are not impacted by shadows!
+
+            //calculates the ray for the reflection
+            //BROKEN FOR MULTIPLE LIGHTS!
             if (this.shinyness != 0) {
                 Vec3 vOutReflection = vNormal.multScalar(2 * (vCam.scalar(vNormal))).sub(vCam).normalize();
 
                 Ray reflectRay = new Ray(intersectionPosition.add(_intersection.getNormal().multScalar(0.0001f)), vOutReflection);
                 _intersection.setOutRay(reflectRay);
+            }
+
+            //we require multiple outRays or another way to let Raytracer know into what direction
+            //a secondary ray has to be sent
+            if (this.transparency != 0) {
+                
             }
 
         }

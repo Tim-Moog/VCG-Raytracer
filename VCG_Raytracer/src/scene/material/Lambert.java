@@ -7,7 +7,9 @@ import scene.shape.Intersection;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 
-// Calculates the Diffuse Aspect of Lighting
+/** 
+ * Lambert Material
+ */
 public class Lambert extends Material {
 
     // diffuse factor is set on instantiation
@@ -15,8 +17,8 @@ public class Lambert extends Material {
         this.diffuseK = _diffuse_k;
     }
 
-    public Lambert (RgbColor _diffuse_k, float _shinyness) {
-        super(_shinyness);
+    public Lambert (RgbColor _diffuse_k, float _shinyness, float _transparency) {
+        super(_shinyness, _transparency);
         this.diffuseK = _diffuse_k;
     }
     
