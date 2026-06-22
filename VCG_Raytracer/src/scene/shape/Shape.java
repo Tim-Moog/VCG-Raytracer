@@ -7,7 +7,6 @@ import utils.algebra.Vec3;
 
 public abstract class Shape extends SceneObject {
 
-    protected Intersection intersectionData;
     protected Vec3 position;
     protected Material material;
 
@@ -15,7 +14,6 @@ public abstract class Shape extends SceneObject {
     public Shape (Vec3 _position, Material _material) {
         this.position = _position;
         this.material = _material;
-        this.intersectionData = new Intersection();
     }
 
     
@@ -25,9 +23,5 @@ public abstract class Shape extends SceneObject {
     public Material getMaterial(){
         return this.material;
     };
-
-    public Intersection getIntersectionData() {
-        return this.intersectionData;
-    }
 
 }

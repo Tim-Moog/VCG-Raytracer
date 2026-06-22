@@ -176,7 +176,7 @@ public class Main {
         //renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2.5f),mat_shiny);
 
         //cube tower test
-        //renderScene.createCubeTower(1f, new Vec3(-2, 0.5f, -1.5f), mat_lambert);
+        renderScene.createCubeTower(1f, new Vec3(-2, 0.5f, -1.5f), mat_lambert);
 
         //testing shadow projection
         //renderScene.createSphere(new Vec3(1f, 0,0), 0.75f, mat_phong);

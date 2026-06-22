@@ -25,7 +25,6 @@ public class Sphere extends Shape{
         this.myTransformationMatrix = new Matrix4x4();
         this.setupMatrix(pos, radius);
         this.myInverseMatrix = myTransformationMatrix.invert();
-        intersectionData.setShape(this);
     }
 
     public void setupMatrix(Vec3 _pos, float _rad){
