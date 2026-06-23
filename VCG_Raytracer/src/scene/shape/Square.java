@@ -4,9 +4,10 @@ import raytracer.Ray;
 import scene.material.Material;
 import utils.algebra.Vec3;
 
-//this will prob extend Plane
+//a square is just a cutout section of a plane
 public class Square extends Plane{
 
+    //default size
     protected float size = 1;
 
     public Square(float _size, Vec3 pos, Vec3 normal, Material material) {
@@ -15,12 +16,14 @@ public class Square extends Plane{
     }
 
     public Intersection intersect(Ray ray){
+        //get intersection info with the plane this square is based on
         Intersection intersection = super.intersect(ray);
 
+        //if the ray doesnt hit the plane then we can immediately stop
         if(intersection == null)
             return null;
 
-       //check hit position und dann maybe super intersect methode aufrufen
+       //compare hit position with where the square lies and its size
         boolean inSquare = true;
         Vec3 intersectionPoint = intersection.getIntersectionPoint();
 
@@ -31,6 +34,7 @@ public class Square extends Plane{
         float minZ = this.position.z - size/2;
         float maxZ = this.position.z + size/2;
 
+        //if one of the hit coordinates are outside our intended position then we adjust it to not show a hit
         if(intersectionPoint.x > maxX || intersectionPoint.x < minX)
             inSquare = false;
         if(intersectionPoint.y > maxY || intersectionPoint.y < minY)
