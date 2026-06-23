@@ -1,5 +1,6 @@
 package scene.light;
 
+import scene.Scene;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 
@@ -7,20 +8,23 @@ import utils.algebra.Vec3;
 //actually nvm for now will do simply way thatll only work for horizontal lights
 public class AreaLight extends Light {
 
-    Vec3[] cornerPositions;
-    Vec3 position;
-    RgbColor color;
-    float size;
+    private PointLight[] cornerLights;
+    private Vec3 position;
+    private RgbColor color;
+    private float size;
 
-    public AreaLight(float _size, Vec3 _pos, RgbColor _color){
+
+    public AreaLight(Scene _scene, float _size, Vec3 _pos, RgbColor _color){
         this.size = _size;
         this.position = _pos;
         this.color = _color;
-        this.cornerPositions = new Vec3[4];
-        cornerPositions[0] = new Vec3(position.x - size/2, position.y, position.z - size/2);
-        cornerPositions[1] = new Vec3(position.x - size/2, position.y, position.z + size/2);
-        cornerPositions[2] = new Vec3(position.x + size/2, position.y, position.z - size/2);
-        cornerPositions[3] = new Vec3(position.x + size/2, position.y, position.z + size/2);
+        this.cornerLights = new PointLight[4];
+        cornerLights[0] = new PointLight(new Vec3(position.x - size/2, position.y, position.z - size/2), _color);
+        cornerLights[1] = new PointLight(new Vec3(position.x - size/2, position.y, position.z + size/2), _color);
+        cornerLights[2] = new PointLight(new Vec3(position.x + size/2, position.y, position.z - size/2), _color);
+        cornerLights[3] = new PointLight(new Vec3(position.x + size/2, position.y, position.z + size/2), _color);
+
+        _scene.addCornerLights(cornerLights);
     }
     
     public RgbColor getColor(){
@@ -31,8 +35,8 @@ public class AreaLight extends Light {
         return this.position;
     }
 
-    public Vec3[] getCorners(){
-        return cornerPositions;
+    public PointLight[] getCornerLights(){
+        return this.cornerLights;
     }
 
 }

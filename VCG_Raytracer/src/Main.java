@@ -137,7 +137,14 @@ public class Main {
         //renderScene.createPointLight(LIGHT_POSITION, LIGHT_COLOR);
 
         // Lights - task 6
-        renderScene.createAreaLight(AREA_LIGHT_SIZE, LIGHT_POSITION, LIGHT_COLOR);
+        renderScene.createAreaLight(renderScene, AREA_LIGHT_SIZE, LIGHT_POSITION, LIGHT_COLOR);
+          /* 
+        renderScene.createPointLight(new Vec3(LIGHT_POSITION.x-0.5f, LIGHT_POSITION.y, LIGHT_POSITION.z-0.5f), new RgbColor(0.3f,0.3f,0.3f));
+        renderScene.createPointLight(new Vec3(LIGHT_POSITION.x-0.5f, LIGHT_POSITION.y, LIGHT_POSITION.z+0.5f), new RgbColor(0.3f,0.3f,0.3f));
+        renderScene.createPointLight(new Vec3(LIGHT_POSITION.x+0.5f, LIGHT_POSITION.y, LIGHT_POSITION.z-0.5f), new RgbColor(0.3f,0.3f,0.3f));
+        renderScene.createPointLight(new Vec3(LIGHT_POSITION.x+0.5f, LIGHT_POSITION.y, LIGHT_POSITION.z+0.5f), new RgbColor(0.3f,0.3f,0.3f));
+        */
+        
     }
 
     private static void setupCameras(Scene renderScene) {
@@ -178,7 +185,7 @@ public class Main {
         //renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2.5f),mat_shiny);
 
         //cube tower test
-        renderScene.createCubeTower(1f, new Vec3(-2, 0.5f, -1.5f), mat_lambert);
+        //renderScene.createCubeTower(1f, new Vec3(-2, 0.5f, -1.5f), mat_lambert);
 
         //testing shadow projection
         //renderScene.createSphere(new Vec3(1f, 0,0), 0.75f, mat_phong);

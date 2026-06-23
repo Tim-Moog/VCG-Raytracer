@@ -40,11 +40,12 @@ public class Lambert extends Material {
             Vec3 vCam = _ray.getDirection().multScalar(-1).normalize();
 
 
-            //basically what we need for areaLight is to make the isInShadow method check each if its corners/how many of the corners are blocked by sth in the way 
-            float shadowPercent = _scene.isInShadow(_intersection, light);
-            if (shadowPercent != 0) {
+            if (!(_scene.isInShadow(_intersection, light))) {
 
                 Vec3 lightPosition = light.getPosition();
+                float distance = lightPosition.sub(intersectionPosition).length();
+                if(distance < 1) //setting this as a min distance to avoid big white light circles on ceiling
+                    distance = 1;
 
                 Vec3 vLight = lightPosition.sub(intersectionPosition).normalize();
                 Float scalar_normal_light = vNormal.scalar(vLight);
@@ -52,9 +53,9 @@ public class Lambert extends Material {
                 RgbColor lightColor = light.getColor();
 
                 // DIFFUSE
-                r += lightColor.red() * diffuseK.red() * scalar_normal_light * shadowPercent;
-                g += lightColor.green() * diffuseK.green() * scalar_normal_light * shadowPercent;
-                b += lightColor.blue() * diffuseK.blue() * scalar_normal_light * shadowPercent;
+                r += lightColor.red() * diffuseK.red() * scalar_normal_light * (1/distance);
+                g += lightColor.green() * diffuseK.green() * scalar_normal_light * (1/distance);
+                b += lightColor.blue() * diffuseK.blue() * scalar_normal_light * (1/distance);
                 
                 
 
