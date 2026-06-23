@@ -29,7 +29,7 @@ public abstract class Material {
     }
 
     /**
-     * Material with specific effects like Reflaction and Refraction
+     * Material with specific effects like Reflection and Refraction
      * @param _shinyness between 0-1, how much this object reflects the environment
      * @param _transparency between 0-1, how much this object lets through
      */
