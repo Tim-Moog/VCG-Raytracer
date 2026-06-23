@@ -48,8 +48,7 @@ public abstract class Material {
      * @param _depth Current Recursion this Method has been called on 
      * @return Color of the Point in question
      */
-    public abstract RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, RgbColor _ambient, int _depth);
-    //public abstract RgbColor getColorPhong(Vec3 _camPos, Vec3 _position, Vec3 _normal, Light _light);
+    public abstract RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, RgbColor _ambient, int _depth); //why dont we set scene and ambient as statics and have a setter to set it? that way less param clutter
 
     public float getShinyness () {
         return this.shinyness;

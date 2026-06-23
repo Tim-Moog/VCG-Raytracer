@@ -4,6 +4,7 @@ import raytracer.Ray;
 import scene.Scene;
 import scene.light.Light;
 import scene.shape.Intersection;
+import scene.shape.Plane;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 
@@ -38,7 +39,10 @@ public class Lambert extends Material {
             //Viewvector
             Vec3 vCam = _ray.getDirection().multScalar(-1).normalize();
 
-            if (!_scene.isInShadow(_intersection, light)) {
+
+            //basically what we need for areaLight is to make the isInShadow method check each if its corners/how many of the corners are blocked by sth in the way 
+            float shadowPercent = _scene.isInShadow(_intersection, light);
+            if (shadowPercent != 0) {
 
                 Vec3 lightPosition = light.getPosition();
 
@@ -48,9 +52,11 @@ public class Lambert extends Material {
                 RgbColor lightColor = light.getColor();
 
                 // DIFFUSE
-                r += lightColor.red() * diffuseK.red() * scalar_normal_light;
-                g += lightColor.green() * diffuseK.green() * scalar_normal_light;
-                b += lightColor.blue() * diffuseK.blue() * scalar_normal_light;
+                r += lightColor.red() * diffuseK.red() * scalar_normal_light * shadowPercent;
+                g += lightColor.green() * diffuseK.green() * scalar_normal_light * shadowPercent;
+                b += lightColor.blue() * diffuseK.blue() * scalar_normal_light * shadowPercent;
+                
+                
 
             }
 

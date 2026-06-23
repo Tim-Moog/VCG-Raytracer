@@ -22,4 +22,9 @@ public class PointLight extends Light {
         return this.position;
     }
 
+    public Vec3[] getCorners(){
+        System.err.println("ERROR COULDNT FIND CORNERS OF POINTLIGHT!!!");
+        return null;
+    }
+
 }

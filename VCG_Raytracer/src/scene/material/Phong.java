@@ -44,7 +44,8 @@ public class Phong extends Material {
             Vec3 vCam = _ray.getDirection().multScalar(-1).normalize();
 
             //calculates surface color aslong as the object is not obscured by another in the scene
-            if (!_scene.isInShadow(_intersection, light)) {
+            float shadowPercent = _scene.isInShadow(_intersection, light);
+            if (shadowPercent != 0) {
 
                 Vec3 lightPosition = light.getPosition();
 
@@ -54,9 +55,9 @@ public class Phong extends Material {
                 RgbColor lightColor = light.getColor();
 
                 // DIFFUSE
-                r += lightColor.red() * diffuseK.red() * scalar_normal_light;
-                g += lightColor.green() * diffuseK.green() * scalar_normal_light;
-                b += lightColor.blue() * diffuseK.blue() * scalar_normal_light;
+                r += lightColor.red() * diffuseK.red() * scalar_normal_light * shadowPercent;
+                g += lightColor.green() * diffuseK.green() * scalar_normal_light * shadowPercent;
+                b += lightColor.blue() * diffuseK.blue() * scalar_normal_light * shadowPercent;
 
                 // reflectionvector for highlight
                 Vec3 vReflection = vNormal.multScalar(2 * scalar_normal_light).sub(vLight);
@@ -65,9 +66,9 @@ public class Phong extends Material {
                 Float scalar_view_reflection = vReflection.scalar(vCam);
                 
                 // SPECULAR
-                r += (float) (lightColor.red() * (specularK.red() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent)));
-                g += (float) (lightColor.green() * (specularK.green() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent)));
-                b += (float) (lightColor.blue() * (specularK.blue() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent)));
+                r += (float) (lightColor.red() * (specularK.red() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent))) * shadowPercent;
+                g += (float) (lightColor.green() * (specularK.green() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent))) * shadowPercent;
+                b += (float) (lightColor.blue() * (specularK.blue() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent))) * shadowPercent;
             
             }
 

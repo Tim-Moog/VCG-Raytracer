@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import raytracer.Ray;
 import scene.camera.Camera;
+import scene.light.AreaLight;
 import scene.light.Light;
 import scene.light.PointLight;
 import scene.material.Lambert;
@@ -21,13 +22,13 @@ import utils.io.Log;
 public class Scene {
 
     private ArrayList<Shape> shapeList;
-    private ArrayList<PointLight> lightList;
+    private ArrayList<Light> lightList;
     private Camera sceneCamera;
 
     public Scene() 
     {
         shapeList = new ArrayList<Shape>();
-        lightList = new ArrayList<PointLight>();
+        lightList = new ArrayList<Light>();
         Log.print(this, "Init");
     }
 
@@ -70,11 +71,16 @@ public class Scene {
         lightList.add(newLight);
     }
 
+    public void createAreaLight(float _size, Vec3 _position, RgbColor _color){
+        AreaLight newLight = new AreaLight(_size, _position, _color);
+        lightList.add(newLight);
+    }
+
     public ArrayList<Shape> getShapes(){
         return shapeList;
     }
     
-    public ArrayList<PointLight> getLights(){
+    public ArrayList<Light> getLights(){
         return lightList;
     }
 
@@ -104,26 +110,66 @@ public class Scene {
         return closest;
     }
 
-    public boolean isInShadow(Intersection _intersection, Light _light) {
+    //this can receive arealights too, so we gotta check if its an arealight
+    //i think we should change return type from bool to float and adjust how we handle it
+    //pointLight -> in shadow: return 1 // not in shadow: return 0
+    //areaLight: return value depends on how many lights are blocked to tell us if its core shadow or not
+    //0 corners blocked -> return 0
+    //1 corner blocked -> return 0.25f
+    //scale up by 0.25f till all corners blcoked = return 1 due to being coreshadow
+    public float isInShadow(Intersection _intersection, Light _light) {
 
-        // intersection towards light
-        Vec3 vToLight = _light.getPosition().sub(_intersection.getIntersectionPoint()).normalize();
-        // offset to prevent ray starting inside the object
-        Vec3 origin = _intersection.getIntersectionPoint().add(vToLight.multScalar(0.01f));
-        Ray shadowRay = new Ray(origin, vToLight);
-        Intersection hit = this.findClosestIntersection(shadowRay);
+        //yes I know this if else aint fancy for now, but for now it works for testing
+        //pointLight case
+        if(_light instanceof PointLight){
 
-        // Nothing hit or own shape hit -> no shadow
-        if (hit == null) {
-            return false;
+            // intersection towards light
+            Vec3 vToLight = _light.getPosition().sub(_intersection.getIntersectionPoint()).normalize();
+            // offset to prevent ray starting inside the object
+            Vec3 origin = _intersection.getIntersectionPoint().add(vToLight.multScalar(0.01f));
+            Ray shadowRay = new Ray(origin, vToLight);
+            Intersection hit = this.findClosestIntersection(shadowRay);
+
+            // Nothing hit or own shape hit -> no shadow
+            if (hit == null) {
+                return 0f;
+            }
+
+            // only if object is infront of light -> shadow
+            float distanceToLight = _light.getPosition().sub(origin).length();
+            float distanceToHit = hit.getIntersectionPoint().sub(origin).length();
+            //distanceToHit = hit.getDistance();
+
+            if(distanceToHit < distanceToLight){
+                return 0; //was originally 1//swapped 0 and 1 due to material calc for testing if wonky change back for this
+            }else{
+                return 1; //was originally 0 -> yep needs to be 1
+            }
+
+        }else{
+            //areaLightcase
+            float shadowPercent = 1f;
+            for (Vec3 corner : _light.getCorners()) {
+                // intersection towards light
+                Vec3 vToLight = corner.sub(_intersection.getIntersectionPoint()).normalize();
+                // offset to prevent ray starting inside the object
+                Vec3 origin = _intersection.getIntersectionPoint().add(vToLight.multScalar(0.01f));
+                Ray shadowRay = new Ray(origin, vToLight);
+                Intersection hit = this.findClosestIntersection(shadowRay);
+
+                // only if object is infront of light -> shadow
+                float distanceToLight = _light.getPosition().sub(origin).length();
+                float distanceToHit = hit.getIntersectionPoint().sub(origin).length();
+
+                //for each corner blocked we'll remove 0.25f 
+                if(distanceToHit < distanceToLight)
+                    shadowPercent -= 0.25f;
+            }
+
+            //return % of shadow
+            return shadowPercent;
         }
-
-        // only if object is infront of light -> shadow
-        float distanceToLight = _light.getPosition().sub(origin).length();
-        float distanceToHit = hit.getIntersectionPoint().sub(origin).length();
-        //distanceToHit = hit.getDistance();
-
-        return distanceToHit < distanceToLight;
+        
     }
 
 }

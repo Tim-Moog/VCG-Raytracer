@@ -72,14 +72,14 @@ public class Main {
 
     //DONT SET HEIGHT TO EXACT SAME VALUE AS ROOF PLANE ELSE YOULL SUMMON A DEMON!!!
     static final Vec3 LIGHT_POSITION = new Vec3(0,5.9f,0); 
-    static final short AREA_LIGHT_SIZE = 2;
+    static final short AREA_LIGHT_SIZE = 1;
 
     /** GI **/
     static final boolean USE_GI = false;
     static final int GI_LEVEL = 0;
     static final int GI_SAMPLES = 0;
 
-    static final RgbColor LIGHT_COLOR = null;
+    static final RgbColor LIGHT_COLOR = new RgbColor(0.7f,0.7f,0.7f);
     static final RgbColor AMBIENT_LIGHT = new RgbColor(0.1f, 0.1f, 0.15f);
 
     static final boolean USE_AO = false;
@@ -134,11 +134,10 @@ public class Main {
         //renderScene.createPointLight(new Vec3 (-2.5f,5f,2), new RgbColor(0.3f,0.3f,0.7f));
 
         // Lights - task 4
-        renderScene.createPointLight(LIGHT_POSITION, new RgbColor(0.7f,0.7f,0.7f));
+        //renderScene.createPointLight(LIGHT_POSITION, LIGHT_COLOR);
 
-
-        //testing shadow projection
-        //renderScene.createPointLight(new Vec3(50,0,0), RgbColor.WHITE);
+        // Lights - task 6
+        renderScene.createAreaLight(AREA_LIGHT_SIZE, LIGHT_POSITION, LIGHT_COLOR);
     }
 
     private static void setupCameras(Scene renderScene) {
@@ -164,6 +163,9 @@ public class Main {
         // Objects
         renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_lambert_shiny);
         renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong_shiny);
+
+        //renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_lambert);
+        //renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong);
 
         //roof  square
         renderScene.createSquare(1, new Vec3(0f, 5.99999f, 0f), new Vec3(0f, -1f, 0f), mat_lamp);
