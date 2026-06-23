@@ -146,8 +146,6 @@ public class Main {
          // Materials
         Material mat_phong_purple = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 5);
         Material mat_phong_red = new Phong(RgbColor.ROYAL_RED, new RgbColor(0.8f, 0.8f, 0.8f), 8);
-        Material mat_phong_green = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 0.8f, 0.8f), 8);
-        Material mat_lambert_green = new Lambert(RgbColor.GREEN);
 
         //we made a custom material to have a similiar look for it as in the example picture
         Material mat_lamp = new LambertLamp();
@@ -155,9 +153,8 @@ public class Main {
         // Objects
         renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_phong_purple);
         renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong_red);
-        //as a bonus we made a cube :D -> however not very optimized for now
-        //commented out right now due to current implementation HEAVILY tanking render time
-        //renderScene.createCubeTower(new Vec3(-2f,0.5f,-2f));
+        //as a bonus we made a cube and built a tower out of em :D
+        renderScene.createCubeTower(new Vec3(-2f,0.5f,-2f));
 
 
         //roof  square
