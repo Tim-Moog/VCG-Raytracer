@@ -227,5 +227,6 @@ public class Main {
                 SHOW_PARAM_LABEL);
 
         raytracer.renderScene();
+        //raytracer.renderSceneWithAA(4);
     }
 }
