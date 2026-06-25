@@ -17,6 +17,7 @@
 package raytracer;
 
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import org.w3c.dom.css.RGBColor;
 
@@ -83,27 +84,20 @@ public class Raytracer {
         //Scene gets prepared inside of main.java
         Log.print(this, "Prepare rendering at " + String.valueOf(stopTime(tStart)));
 
-        //INFO: if we adjust screensize we also gotta change it in main to not fuck over the camera
-        Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
-        Vec2 currentPixel;
-
-        Camera camera = mScene.getSceneCamera();
-
-        for (int y = 0; y < windowSize.y; y++) {
-            for (int x = 0; x < windowSize.x; x++) {
-                currentPixel = new Vec2(x, y);
-
-                Ray ray = camera.getRayForPixel(currentPixel, windowSize);
-                RgbColor outputColor = shade(ray,0, mScene);
-
-                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
-            }
+        //INFO: moved everything into sub methods to adjust based on AA input
+        switch(mAntiAliasingSamples){
+            case 1:
+                //single ray we use the same method as before
+                renderScene1xAA();
+                break;
+            case 4,9,16,25,36,49,64,81,100: //thats sqr root results from 2-10 so should be plenty
+                //if AA amount is sqr Root-abl
+                renderSceneAAsqrRootAbleNbr();
+                break;
+            default:
+                //else print error to avoid confusion when nothing happens
+                System.err.println("INVALID AA AMOUNT REQUESTED");
         }
-        // Here trace the rays ...
-
-        // Primary rays ...
-
-        // Later secondary rays ...
 
         // Yeeaahhh, raytracing is so much fun ...  d=====(￣▽￣*)b
         this.exportRendering();
@@ -146,19 +140,38 @@ public class Raytracer {
     }
 
 
-    /**  This is where our scene is actually ray-traced **/
-    public void renderSceneWithAA(int amountAA){
-        //for now simply trying this with a variable will prob adjust to a param if it works
-        int rowColStepCount = amountAA/2;
-
-        //Scene gets prepared inside of main.java
-        Log.print(this, "Prepare rendering at " + String.valueOf(stopTime(tStart)));
-
+    /**  This is our default single ray Raytracing **/
+    public void renderScene1xAA(){
         //INFO: if we adjust screensize we also gotta change it in main to not fuck over the camera
         Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
         Vec2 currentPixel;
 
         Camera camera = mScene.getSceneCamera();
+
+        for (int y = 0; y < windowSize.y; y++) {
+            for (int x = 0; x < windowSize.x; x++) {
+                currentPixel = new Vec2(x, y);
+
+                Ray ray = camera.getRayForPixel(currentPixel, windowSize);
+                RgbColor outputColor = shade(ray,0, mScene);
+
+                mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
+            }
+        }
+    }
+
+
+    public void renderSceneAAsqrRootAbleNbr(){
+        int samplesPerRowCol = (int)Math.sqrt(mAntiAliasingSamples);
+        float subPixelSize = 1f/samplesPerRowCol;
+
+        Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
+        Vec2 currentPixel;
+
+        Camera camera = mScene.getSceneCamera();
+
+        //seed for controlled testing
+        Random numberGenerator = new Random(67);
 
         for (float y = 0; y < windowSize.y; y+=1) {
             for (float x = 0; x < windowSize.x; x+=1) {
@@ -168,11 +181,22 @@ public class Raytracer {
                 //so we gotta create the color before the rays and then add the results onto em
                 RgbColor outputColor = new RgbColor(0,0,0);
 
-                for(float row = 1f/rowColStepCount; row < 1; row += 1f/rowColStepCount){
-                    for(float col = 1f/rowColStepCount; col < 1; col += 1f/rowColStepCount){
-                        Vec2 adjustedPixel = new Vec2(currentPixel.x + row, currentPixel.y + col);
+                for(float row = 0; row < samplesPerRowCol; row++){
+                    for(float col = 0; col < samplesPerRowCol; col++){
+
+                        //make new random values for ray position inside of subpixel
+                        float randomX = numberGenerator.nextFloat();
+                        float randomY = numberGenerator.nextFloat();
+
+                        //get the actual offset of our subpixel using the rdm generated float and the current subpixel position based on AA sample amount
+                        float offsetX = (col + randomX) * subPixelSize;
+                        float offsetY = (row + randomY) * subPixelSize;
+
+                        //adjust position for the subpixel and send ray there
+                        Vec2 adjustedPixel = new Vec2(currentPixel.x + offsetX, currentPixel.y + offsetY);
                         Ray ray = camera.getRayForPixel(adjustedPixel, windowSize);
-                        outputColor = outputColor.add(shade(ray,0, mScene).multScalar(1f/amountAA));
+                        outputColor = outputColor.add(shade(ray,0, mScene).multScalar(1f/mAntiAliasingSamples));
+                        //mult the color we add by 1/sample amount cuz we want the sum of all samples to have the same brightness as our usual image
                     }
                 }
                 
@@ -180,8 +204,6 @@ public class Raytracer {
                 mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
             }
         }
-        // Yeeaahhh, raytracing is so much fun ...  d=====(￣▽￣*)b
-        this.exportRendering();
     }
     
 }
