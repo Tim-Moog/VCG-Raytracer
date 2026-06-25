@@ -93,7 +93,8 @@ public class Raytracer {
             case 4,9,16,25,36,49,64,81,100: //thats sqr root results from 2-10 so should be plenty
                 //if AA amount is sqr Root-abl
                 //renderSceneAAsqrRootAbleNbr();
-                multiThread4x();
+                //multiThread4x();
+                multiThread9x();
                 break;
             default:
                 //else print error to avoid confusion when nothing happens
@@ -233,6 +234,66 @@ public class Raytracer {
             two.join();
             three.join();
             four.join();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void multiThread9x(){
+        Vec2 windowSize = new Vec2(mBufferedImage.getWidth(), mBufferedImage.getHeight());
+
+        //COLUMN ONE
+        RenderThread one = new RenderThread();
+        one.setup(new Vec2(0,windowSize.x/3), new Vec2(0, windowSize.y/3));
+        one.start();
+
+        RenderThread two = new RenderThread();
+        two.setup(new Vec2(0,windowSize.x/3), new Vec2(windowSize.y/3, (windowSize.y/3) * 2));
+        two.start();
+
+        RenderThread three = new RenderThread();
+        three.setup(new Vec2(0 , windowSize.x/3), new Vec2((windowSize.y/3) * 2, windowSize.y));
+        three.start();
+
+        //COLUMN TWO
+        RenderThread four = new RenderThread();
+        four.setup(new Vec2(windowSize.x/3, (windowSize.x/3) * 2), new Vec2(0, windowSize.y/3));
+        four.start();
+
+        RenderThread five = new RenderThread();
+        five.setup(new Vec2(windowSize.x/3, (windowSize.x/3) * 2), new Vec2(windowSize.y/3, (windowSize.y/3) * 2));
+        five.start();
+
+        RenderThread six = new RenderThread();
+        six.setup(new Vec2(windowSize.x/3, (windowSize.x/3) * 2), new Vec2((windowSize.y/3) * 2, windowSize.y));
+        six.start();
+
+        //COLUMN THREE
+        RenderThread seven = new RenderThread();
+        seven.setup(new Vec2((windowSize.x/3) * 2, windowSize.x), new Vec2(0, windowSize.y/3));
+        seven.start();
+
+        RenderThread eight = new RenderThread();
+        eight.setup(new Vec2((windowSize.x/3) * 2, windowSize.x), new Vec2(windowSize.y/3, (windowSize.y/3) * 2));
+        eight.start();
+
+        RenderThread nine = new RenderThread();
+        nine.setup(new Vec2((windowSize.x/3) * 2, windowSize.x), new Vec2((windowSize.y/3) * 2, windowSize.y));
+        nine.start();
+
+        try {
+            //this is to wait for all the threads to be done before we print the info of time it took to render
+            //without it it insta printed with 0.006sec rendertime and then got overwritten sdhfgsdfgshdgf
+            one.join();
+            two.join();
+            three.join();
+            four.join();
+            five.join();
+            six.join();
+            seven.join();
+            eight.join();
+            nine.join();
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
