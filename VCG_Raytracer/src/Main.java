@@ -61,7 +61,7 @@ public class Main {
     /** RAYTRACER **/
 
     static final int RECURSIONS = 4;
-    static final int ANTI_ALIASING = 16; //only valid AA values are 1 and any number whose sqr root results a number from 1-10
+    static final int ANTI_ALIASING = (int)Math.pow(1, 2); //only valid AA values are 1 and any number whose sqr root results a number from 1-10
     static final boolean USE_SOFT_SHADOWS = false;
 
     /** LIGHT **/

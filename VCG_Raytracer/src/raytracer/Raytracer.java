@@ -85,20 +85,13 @@ public class Raytracer {
         Log.print(this, "Prepare rendering at " + String.valueOf(stopTime(tStart)));
 
         //INFO: moved everything into sub methods to adjust based on AA input
-        switch(mAntiAliasingSamples){
-            case 1:
-                //single ray we use the same method as before
-                renderScene1xAA();
-                break;
-            case 4,9,16,25,36,49,64,81,100: //thats sqr root results from 2-10 so should be plenty
-                //if AA amount is sqr Root-abl
-                //renderSceneAAsqrRootAbleNbr();
-                //multiThread4x();
-                multiThread9x();
-                break;
-            default:
-                //else print error to avoid confusion when nothing happens
-                System.err.println("INVALID AA AMOUNT REQUESTED");
+        if(Math.sqrt(mAntiAliasingSamples) % 1 == 0){
+            //decider for whether we use mid pixel(1xAA) or rdm position subpixel(any other square rootable number xAA) now happens inside of the threads
+            //multiThread4x();
+            multiThread9x();
+        }else{
+            System.err.println("INVALID AA AMOUNT REQUESTED");
+            System.err.println("SQUARE ROOT OF VALUE MUST BE A WHOLE NUMBER(1,4,9,16 etc.)");
         }
 
         // Yeeaahhh, raytracing is so much fun ...  d=====(￣▽￣*)b
@@ -142,6 +135,7 @@ public class Raytracer {
     }
 
 
+    //this method is a remain of when we didnt use multithreading and did everything here
     /**  This is our default single ray Raytracing **/
     public void renderScene1xAA(){
         //INFO: if we adjust screensize we also gotta change it in main to not fuck over the camera
@@ -162,7 +156,7 @@ public class Raytracer {
         }
     }
 
-
+    //this method is a remain of when we didnt do multithreading and did everything here
     public void renderSceneAAsqrRootAbleNbr(){
         int samplesPerRowCol = (int)Math.sqrt(mAntiAliasingSamples);
         float subPixelSize = 1f/samplesPerRowCol;
@@ -201,102 +195,87 @@ public class Raytracer {
                         //mult the color we add by 1/sample amount cuz we want the sum of all samples to have the same brightness as our usual image
                     }
                 }
-                
-
                 mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
             }
         }
     }
 
+
+    //renders our scene with 4 Threads at once
     public void multiThread4x(){
         Vec2 windowSize = new Vec2(mBufferedImage.getWidth(), mBufferedImage.getHeight());
+        //presetup all the x and y ranges to make the Thread setup cleaner
+        Vec2[] xRanges={new Vec2(0, windowSize.x/2),
+                        new Vec2(0, windowSize.x/2),
+                        new Vec2(windowSize.x/2, windowSize.x),
+                        new Vec2(windowSize.x/2, windowSize.x)
+        };
 
-        RenderThread one = new RenderThread();
-        one.setup(new Vec2(0,windowSize.x/2), new Vec2(0, windowSize.y/2));
-        one.start();
+        Vec2[] yRanges={new Vec2(0, windowSize.y/2),
+                        new Vec2(windowSize.y/2, windowSize.y),
+                        new Vec2(0, windowSize.y/2),
+                        new Vec2(windowSize.y/2, windowSize.y),
+        };
 
-        RenderThread two = new RenderThread();
-        two.setup(new Vec2(0,windowSize.x/2), new Vec2(windowSize.y/2, windowSize.y));
-        two.start();
+        //start all threads each responsible for their own section of our render
+        RenderThread[] threads = new RenderThread[4];
+        for(int index = 0; index < 4; index++){
+            threads[index] = new RenderThread();
+            threads[index].setup(xRanges[index], yRanges[index]);
+            threads[index].start();
+        }
 
-        RenderThread three = new RenderThread();
-        three.setup(new Vec2(windowSize.x/2, windowSize.x), new Vec2(0, windowSize.y/2));
-        three.start();
-
-        RenderThread four = new RenderThread();
-        four.setup(new Vec2(windowSize.x/2, windowSize.x), new Vec2(windowSize.y/2, windowSize.y));
-        four.start();
-
-        try {
-            //this is to wait for all the threads to be done before we print the info of time it took to render
-            //without it it insta printed with 0.006sec rendertime and then got overwritten sdhfgsdfgshdgf
-            one.join();
-            two.join();
-            three.join();
-            four.join();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        //wait for all threads to be done before printing the info at the bottom of the screen
+        for (RenderThread renderThread : threads) {
+            try {
+                renderThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    //renders our scene with 9 Threads at once(assuming the PC running it has that many available)
     public void multiThread9x(){
         Vec2 windowSize = new Vec2(mBufferedImage.getWidth(), mBufferedImage.getHeight());
+        //presetup all the x and y ranges to make the Thread setup cleaner
+        Vec2[] xRanges={new Vec2(0, windowSize.x/3),
+                        new Vec2(0, windowSize.x/3),
+                        new Vec2(0, windowSize.x/3),
+                        new Vec2(windowSize.x/3, (windowSize.x/3) * 2),
+                        new Vec2(windowSize.x/3, (windowSize.x/3) * 2),
+                        new Vec2(windowSize.x/3, (windowSize.x/3) * 2),
+                        new Vec2((windowSize.x/3) * 2, windowSize.x),
+                        new Vec2((windowSize.x/3) * 2, windowSize.x),
+                        new Vec2((windowSize.x/3) * 2, windowSize.x),
+        };
 
-        //COLUMN ONE
-        RenderThread one = new RenderThread();
-        one.setup(new Vec2(0,windowSize.x/3), new Vec2(0, windowSize.y/3));
-        one.start();
+        Vec2[] yRanges={new Vec2(0, windowSize.y/3),
+                        new Vec2(windowSize.y/3, (windowSize.y/3) * 2),
+                        new Vec2((windowSize.y/3) * 2, windowSize.y),
+                        new Vec2(0, windowSize.y/3),
+                        new Vec2(windowSize.y/3, (windowSize.y/3) * 2),
+                        new Vec2((windowSize.y/3) * 2, windowSize.y),
+                        new Vec2(0, windowSize.y/3),
+                        new Vec2(windowSize.y/3, (windowSize.y/3) * 2),
+                        new Vec2((windowSize.y/3) * 2, windowSize.y)
+        };
 
-        RenderThread two = new RenderThread();
-        two.setup(new Vec2(0,windowSize.x/3), new Vec2(windowSize.y/3, (windowSize.y/3) * 2));
-        two.start();
+        //start all threads each responsible for their own section of our render
+        RenderThread[] threads = new RenderThread[9];
+        for(int index = 0; index < 9; index++){
+            threads[index] = new RenderThread();
+            threads[index].setup(xRanges[index], yRanges[index]);
+            threads[index].start();
+        }
 
-        RenderThread three = new RenderThread();
-        three.setup(new Vec2(0 , windowSize.x/3), new Vec2((windowSize.y/3) * 2, windowSize.y));
-        three.start();
-
-        //COLUMN TWO
-        RenderThread four = new RenderThread();
-        four.setup(new Vec2(windowSize.x/3, (windowSize.x/3) * 2), new Vec2(0, windowSize.y/3));
-        four.start();
-
-        RenderThread five = new RenderThread();
-        five.setup(new Vec2(windowSize.x/3, (windowSize.x/3) * 2), new Vec2(windowSize.y/3, (windowSize.y/3) * 2));
-        five.start();
-
-        RenderThread six = new RenderThread();
-        six.setup(new Vec2(windowSize.x/3, (windowSize.x/3) * 2), new Vec2((windowSize.y/3) * 2, windowSize.y));
-        six.start();
-
-        //COLUMN THREE
-        RenderThread seven = new RenderThread();
-        seven.setup(new Vec2((windowSize.x/3) * 2, windowSize.x), new Vec2(0, windowSize.y/3));
-        seven.start();
-
-        RenderThread eight = new RenderThread();
-        eight.setup(new Vec2((windowSize.x/3) * 2, windowSize.x), new Vec2(windowSize.y/3, (windowSize.y/3) * 2));
-        eight.start();
-
-        RenderThread nine = new RenderThread();
-        nine.setup(new Vec2((windowSize.x/3) * 2, windowSize.x), new Vec2((windowSize.y/3) * 2, windowSize.y));
-        nine.start();
-
-        try {
-            //this is to wait for all the threads to be done before we print the info of time it took to render
-            //without it it insta printed with 0.006sec rendertime and then got overwritten sdhfgsdfgshdgf
-            one.join();
-            two.join();
-            three.join();
-            four.join();
-            five.join();
-            six.join();
-            seven.join();
-            eight.join();
-            nine.join();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        //wait for all threads to be done before printing the info at the bottom of the screen
+        for (RenderThread renderThread : threads) {
+            try {
+                renderThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -309,48 +288,72 @@ public class Raytracer {
         }
 
         public void run() {
-            int samplesPerRowCol = (int)Math.sqrt(mAntiAliasingSamples);
-            float subPixelSize = 1f/samplesPerRowCol;
+            //check if we want multiple samples or not
+            //using this method with random position(due to us wanting to implement path tracing) inside of subpixel for 1x AA makes weird results so we use old method for 1x
+            if(mAntiAliasingSamples != 1){
+                int samplesPerRowCol = (int)Math.sqrt(mAntiAliasingSamples);
+                float subPixelSize = 1f/samplesPerRowCol;
 
-            Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
-            Vec2 currentPixel;
+                Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
+                Vec2 currentPixel;
 
-            Camera camera = mScene.getSceneCamera();
+                Camera camera = mScene.getSceneCamera();
 
-            //seed for controlled testing
-            Random numberGenerator = new Random(67);
+                //seed for controlled testing
+                Random numberGenerator = new Random(67);
 
-            for (float y = fromToY.x; y < fromToY.y; y+=1) {
-                for (float x = fromToX.x; x < fromToX.y; x+=1) {
-                    currentPixel = new Vec2(x, y); //we want to adjust the color for each pixel so we keep these as normal pixel coordinates
+                for (float y = fromToY.x; y < fromToY.y; y+=1) {
+                    for (float x = fromToX.x; x < fromToX.y; x+=1) {
+                        currentPixel = new Vec2(x, y); //we want to adjust the color for each pixel so we keep these as normal pixel coordinates
 
-                    //then we prob have to calc color for each subpixel part and then do a mix for output color
-                    //so we gotta create the color before the rays and then add the results onto em
-                    RgbColor outputColor = new RgbColor(0,0,0);
+                        //then we prob have to calc color for each subpixel part and then do a mix for output color
+                        //so we gotta create the color before the rays and then add the results onto em
+                        RgbColor outputColor = new RgbColor(0,0,0);
 
-                    for(float row = 0; row < samplesPerRowCol; row++){
-                        for(float col = 0; col < samplesPerRowCol; col++){
+                        for(float row = 0; row < samplesPerRowCol; row++){
+                            for(float col = 0; col < samplesPerRowCol; col++){
 
-                            //make new random values for ray position inside of subpixel
-                            float randomX = numberGenerator.nextFloat();
-                            float randomY = numberGenerator.nextFloat();
+                                //make new random values for ray position inside of subpixel
+                                float randomX = numberGenerator.nextFloat();
+                                float randomY = numberGenerator.nextFloat();
 
-                            //get the actual offset of our subpixel using the rdm generated float and the current subpixel position based on AA sample amount
-                            float offsetX = (col + randomX) * subPixelSize;
-                            float offsetY = (row + randomY) * subPixelSize;
+                                //get the actual offset of our subpixel using the rdm generated float and the current subpixel position based on AA sample amount
+                                float offsetX = (col + randomX) * subPixelSize;
+                                float offsetY = (row + randomY) * subPixelSize;
 
-                            //adjust position for the subpixel and send ray there
-                            Vec2 adjustedPixel = new Vec2(currentPixel.x + offsetX, currentPixel.y + offsetY);
-                            Ray ray = camera.getRayForPixel(adjustedPixel, windowSize);
-                            outputColor = outputColor.add(shade(ray,0, mScene).multScalar(1f/mAntiAliasingSamples));
-                            //mult the color we add by 1/sample amount cuz we want the sum of all samples to have the same brightness as our usual image
+                                //adjust position for the subpixel and send ray there
+                                Vec2 adjustedPixel = new Vec2(currentPixel.x + offsetX, currentPixel.y + offsetY);
+                                Ray ray = camera.getRayForPixel(adjustedPixel, windowSize);
+                                outputColor = outputColor.add(shade(ray,0, mScene).multScalar(1f/mAntiAliasingSamples));
+                                //mult the color we add by 1/sample amount cuz we want the sum of all samples to have the same brightness as our usual image
+                            }
                         }
-                    }
-                    
+                        
 
-                    mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
+                        mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
+                    }
+                }
+            }else{
+                //else block is scenario for 1x AA where we shoot in the middle of each pixel to avoid weird looking results
+
+                //INFO: if we adjust screensize we also gotta change it in main to not fuck over the camera
+                Vec2 windowSize = new Vec2 (mBufferedImage.getWidth(), mBufferedImage.getHeight());
+                Vec2 currentPixel;
+
+                Camera camera = mScene.getSceneCamera();
+
+                for (float y = fromToY.x; y < fromToY.y; y++) {
+                    for (float x = fromToX.x; x < fromToX.y; x++) {
+                        currentPixel = new Vec2(x, y);
+
+                        Ray ray = camera.getRayForPixel(currentPixel, windowSize);
+                        RgbColor outputColor = shade(ray,0, mScene);
+
+                        mRenderWindow.setPixel(mBufferedImage, outputColor, currentPixel);
+                    }
                 }
             }
+            
         }
     }
     
