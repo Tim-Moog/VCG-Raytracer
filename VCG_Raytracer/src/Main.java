@@ -61,12 +61,12 @@ public class Main {
     /** RAYTRACER **/
 
     static final int RECURSIONS = 4;
-    static final int ANTI_ALIASING = (int)Math.pow(1, 2); //only valid AA values are 1 and any number whose sqr root results a number from 1-10
+    static final int ANTI_ALIASING = (int)Math.pow(3, 2); //only valid AA values are 1 and any number whose sqr root results a whole number
     static final boolean USE_SOFT_SHADOWS = false;
 
     /** LIGHT **/
     static final short LIGHT_DENSITY = 20;
-    static final short LIGHT_SAMPLES = 40;
+    static final short LIGHT_SAMPLES = (short)Math.pow(3, 2);//only valid AA values are 1 and any number whose sqr root results a whole number
 
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
 
@@ -137,7 +137,7 @@ public class Main {
         //renderScene.createPointLight(LIGHT_POSITION, LIGHT_COLOR);
 
         // Lights - task 6
-        renderScene.createAreaLight(renderScene, AREA_LIGHT_SIZE, LIGHT_POSITION, LIGHT_COLOR);
+        renderScene.createAreaLight(renderScene, LIGHT_SAMPLES, AREA_LIGHT_SIZE, LIGHT_POSITION, LIGHT_COLOR);
         
     }
 
@@ -217,6 +217,5 @@ public class Main {
                 SHOW_PARAM_LABEL);
 
         raytracer.renderScene();
-        //raytracer.renderSceneWithAA(4);
     }
 }
