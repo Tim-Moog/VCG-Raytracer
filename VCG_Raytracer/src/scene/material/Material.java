@@ -8,18 +8,13 @@ import utils.RgbColor;
 // Abstract class for all Materials, only knows the light Factors (k's)
 public abstract class Material {
 
-    //Not pretty, these could be in Main instead, but making them known to our Materials would be a pain in the ass
-    //So our Material class is just that smart instead :)
-    //I think thats fair, as ONLY Material has to know these...
-    protected static final float DENS_AIR = 1.2f;
-    protected static final float DENS_WATER = 1.0f;
-
     //Traits potentially shared across different Materials, reduces having to write them for every class...
     protected RgbColor diffuseK;
     protected RgbColor specularK;
     protected int specularExponent;
     protected float shinyness = 0; //between 0 and 1
     protected float transparency = 0; //between 0 and 1
+    protected float refrective_index = 1; // final variables set in Main, provided at instantiation
 
     /** 
      * Standard Material class without any added effects
@@ -33,9 +28,10 @@ public abstract class Material {
      * @param _shinyness between 0-1, how much this object reflects the environment
      * @param _transparency between 0-1, how much this object lets through
      */
-    protected Material (float _shinyness, float _transparency) {
-        this.shinyness = this.correctProcentualValue(_shinyness);
-        this.transparency = this.correctProcentualValue(_transparency);
+    protected Material (float _shinyness, float _transparency, float _refrective_index) {
+        this.setShinyness(_shinyness);
+        this.setTransparency(_transparency);
+        this.setRefrectiveIndex(_refrective_index);
     }
     
     /**
@@ -58,21 +54,70 @@ public abstract class Material {
         return this.transparency;
     }
 
+    public float getRefrectiveIndex () {
+        return this.refrective_index;
+    }
+
     /**
-     * Checks if Float is actually between 0 and 1 for accurate procentual usecase
+     * Checks if Float is actually between 0 and 1 for accurate procentual usecase for shinyness
      * If not, sets out of bound values to the direct next bound
      * @param _value Float we check the validity of
-     * @return Value between 0 and 1
      */
-    private float correctProcentualValue (float _value) {
+    private void setShinyness (float _value) {
         // Our procentual values are all between 0 and 1, so set cases to these extremes in case they happen
         // F.e. Shinyness = 5 -> 1
         if(_value > 1) {
-            return 1;
+            System.err.println("Provided value of Shinyness: " + _value 
+                                + "\nCaution! Value has to be between 0 and 1"
+                                + "Value has been corrected to 1");
+            this.shinyness = 1;
         }else if(_value < 0) {
-            return 0;
+            System.err.println("Provided value of Shinyness: " + _value 
+                                + "\nCaution! Value has to be between 0 and 1"
+                                + "Value has been corrected to 0");
+            this.shinyness = 0;
+        }else{
+            this.shinyness = _value;
         }
-        return _value;
+    }
+
+    /**
+     * Checks if Float is actually between 0 and 1 for accurate procentual usecase for transparency
+     * If not, sets out of bound values to the direct next bound 
+     * @param _value Float we check the validity of
+     */
+    private void setTransparency (float _value) {
+        // Our procentual values are all between 0 and 1, so set cases to these extremes in case they happen
+        // F.e. Shinyness = 5 -> 1
+        if(_value > 1) {
+            System.err.println("Provided value of Transparency: " + _value 
+                                + "\nCaution! Value has to be between 0 and 1"
+                                + "Value has been corrected to 1");
+            this.transparency = 1;
+        }else if(_value < 0) {
+            System.err.println("Provided value of Transparency or Shinyness: " + _value 
+                                + "\nCaution! Value has to be between 0 and 1"
+                                + "Value has been corrected to 0");
+            this.transparency = 0;
+        }else{
+            this.transparency = _value;
+        }
+    }
+
+    /**
+     * Checks if Float is above 0, Index cannot be below
+     * If not, sets out of bound values to the assumed standard 1 (AIR)
+     * @param _value Float we check the validity of
+     */
+    private void setRefrectiveIndex (float _value) {
+        if(_value < 0) {
+            System.err.println("Provided value of Refrective Index: " + _value 
+                                + "\nCaution! Value has to be above 0"
+                                + "Value has been corrected to 1 (AIR)");
+            this.refrective_index = 1; //AIR
+        } else {
+            this.refrective_index = _value;
+        }
     }
 
 }

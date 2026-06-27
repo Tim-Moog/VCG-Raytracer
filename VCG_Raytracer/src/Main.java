@@ -94,6 +94,13 @@ public class Main {
 
     static final float VIEW_ANGLE = 70;
 
+    /** MATERIAL - REFRECTIVE INDICES **/
+
+    protected static final float AIR = 1.0f;
+    protected static final float WATER = 1.33f;
+    protected static final float GLASS = 1.5f;
+    protected static final float DIAMOND = 2.4f;
+
     /** DEBUG **/
     //this gets rid of the debug info on the bottom of the window
     static final boolean SHOW_PARAM_LABEL = true;
@@ -154,10 +161,10 @@ public class Main {
     private static void setupObjects(Scene renderScene) {
          // Materials
         Material mat_lambert = new Lambert(new RgbColor(0.6f,0.2f,0.5f));
-        Material mat_lambert_shiny = new Lambert(RgbColor.PURPLE,0.6f, 0f);
+        Material mat_lambert_shiny = new Lambert(RgbColor.PURPLE,0.6f, 0f, GLASS);
 
         Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
-        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 0.2f, 0);
+        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 0.2f, 0, GLASS);
 
         Material mat_lamp = new LambertLamp();
 

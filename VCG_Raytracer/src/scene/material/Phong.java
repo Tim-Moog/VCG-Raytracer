@@ -18,8 +18,8 @@ public class Phong extends Material {
         this.specularExponent = _specularExponent;
     }
 
-    public Phong (RgbColor _diffuseK, RgbColor _specularK, int _specularExponent, float _shinyness, float _transparency) {
-        super(_shinyness, _transparency);
+    public Phong (RgbColor _diffuseK, RgbColor _specularK, int _specularExponent, float _shinyness, float _transparency, float _refrective_index) {
+        super(_shinyness, _transparency, _refrective_index);
         this.diffuseK = _diffuseK;
         this.specularK = _specularK;
         this.specularExponent = _specularExponent;
