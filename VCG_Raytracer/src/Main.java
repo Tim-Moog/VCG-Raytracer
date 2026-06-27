@@ -66,7 +66,7 @@ public class Main {
 
     /** LIGHT **/
     static final short LIGHT_DENSITY = 20;
-    static final short LIGHT_SAMPLES = (short)Math.pow(3, 2);//only valid AA values are 1 and any number whose sqr root results a whole number
+    static final short LIGHT_SAMPLES = (short)Math.pow(2, 2);//only valid AA values are 1 and any number whose sqr root results a whole number
 
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
 
@@ -161,16 +161,18 @@ public class Main {
     private static void setupObjects(Scene renderScene) {
          // Materials
         Material mat_lambert = new Lambert(new RgbColor(0.6f,0.2f,0.5f));
-        Material mat_lambert_shiny = new Lambert(RgbColor.PURPLE,0.6f, 0f, GLASS);
+        Material mat_lambert_shiny = new Lambert(RgbColor.PURPLE,0.6f, 0f);
 
         Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
-        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 0.2f, 0, GLASS);
+        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 0.2f, 0);
 
         Material mat_lamp = new LambertLamp();
 
+        Material mat_phong_transparent = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0f, 1f, GLASS);
+
         // Objects
-        renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_lambert_shiny);
-        renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong_shiny);
+        renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_phong_transparent);
+        renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong_transparent);
 
         //renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_lambert);
         //renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong);

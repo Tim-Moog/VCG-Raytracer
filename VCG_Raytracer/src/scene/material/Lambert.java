@@ -18,6 +18,11 @@ public class Lambert extends Material {
         this.diffuseK = _diffuse_k;
     }
 
+    public Lambert (RgbColor _diffuse_k, float _shinyness, float _transparency) {
+        super(_shinyness, _transparency);
+        this.diffuseK = _diffuse_k;
+    }
+
     public Lambert (RgbColor _diffuse_k, float _shinyness, float _transparency, float _refrective_index) {
         super(_shinyness, _transparency, _refrective_index);
         this.diffuseK = _diffuse_k;

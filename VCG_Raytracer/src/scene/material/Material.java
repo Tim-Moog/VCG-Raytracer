@@ -28,6 +28,17 @@ public abstract class Material {
      * @param _shinyness between 0-1, how much this object reflects the environment
      * @param _transparency between 0-1, how much this object lets through
      */
+    protected Material (float _shinyness, float _transparency) {
+        this.setShinyness(_shinyness);
+        this.setTransparency(_transparency);
+    }
+
+    /**
+     * Material with specific effects like Reflection and Refraction
+     * @param _shinyness between 0-1, how much this object reflects the environment
+     * @param _transparency between 0-1, how much this object lets through
+     * @param _refrective_index > 0, Index of what kind of Material is inside (Fixed values provided in main.java)
+     */
     protected Material (float _shinyness, float _transparency, float _refrective_index) {
         this.setShinyness(_shinyness);
         this.setTransparency(_transparency);
@@ -50,7 +61,7 @@ public abstract class Material {
         return this.shinyness;
     }
 
-    public float getTransperency () {
+    public float getTransparency () {
         return this.transparency;
     }
 
