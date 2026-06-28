@@ -2,7 +2,6 @@ package scene.material;
 
 import raytracer.Ray;
 import scene.Scene;
-import scene.light.Light;
 import scene.shape.Intersection;
 import utils.RgbColor;
 import utils.algebra.Vec3;
@@ -60,7 +59,7 @@ public abstract class Material {
      * @param _depth Current Recursion this Method has been called on 
      * @return Color of the Point in question
      */
-    public abstract RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, int _depth); //why dont we set scene and ambient as statics and have a setter to set it? that way less param clutter
+    public abstract RgbColor getColor(Intersection _intersection, Scene _scene, int _depth); //why dont we set scene and ambient as statics and have a setter to set it? that way less param clutter
 
     public static void setAmbientK(RgbColor ambientK) {
         Material.ambientK = ambientK;

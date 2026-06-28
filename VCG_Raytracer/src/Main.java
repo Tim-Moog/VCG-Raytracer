@@ -32,7 +32,6 @@ import scene.material.Solid;
 import scene.material.Material;
 import scene.material.Phong;
 import utils.RgbColor;
-import utils.algebra.Vec2;
 import utils.algebra.Vec3;
 
 /*

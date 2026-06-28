@@ -19,18 +19,13 @@ package raytracer;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
-import org.w3c.dom.css.RGBColor;
-
 import scene.Scene;
 import scene.camera.*;
 import scene.material.Material;
 import scene.shape.Intersection;
-import scene.shape.Shape;
-import scene.shape.Sphere;
 import ui.Window;
 import utils.RgbColor;
 import utils.algebra.Vec2;
-import utils.algebra.Vec3;
 import utils.io.Log;
 
 public class Raytracer {
@@ -121,7 +116,7 @@ public class Raytracer {
 
         Material material = hit.getShape().getMaterial();
         //basic coloring
-        RgbColor color = material.getColor(hit, _ray, _scene, _depth);
+        RgbColor color = material.getColor(hit, _scene, _depth);
 
         // Reflection
         if (material.getReflection() > 0 && hit.getReflectionRay() != null) {

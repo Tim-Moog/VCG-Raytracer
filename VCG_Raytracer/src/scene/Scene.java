@@ -7,7 +7,6 @@ import scene.camera.Camera;
 import scene.light.AreaLight;
 import scene.light.Light;
 import scene.light.PointLight;
-import scene.material.Lambert;
 import scene.material.Material;
 import scene.shape.Cube;
 import scene.shape.Intersection;
@@ -111,6 +110,7 @@ public class Scene {
                 // Only sets the Clostest hit if Closest is yet empty, or a hit that is nearer is found
                 if (closest == null || hit.getDistance() < closest.getDistance()) {
                 closest = hit;
+                closest.setInRay(ray);
                 }
             }
         }

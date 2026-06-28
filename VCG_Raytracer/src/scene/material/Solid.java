@@ -17,7 +17,7 @@ public class Solid extends Material {
     }
     
     @Override
-    public RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, int _depth){
+    public RgbColor getColor(Intersection _intersection, Scene _scene, int _depth){
         return this.colorOverride;
     }
 }

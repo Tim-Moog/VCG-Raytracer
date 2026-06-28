@@ -33,7 +33,7 @@ public class Phong extends Material {
     }
 
     @Override
-    public RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, int _depth){
+    public RgbColor getColor(Intersection _intersection, Scene _scene, int _depth){
 
         // AMBIENT
         RgbColor output = Material.ambientK.multRGB(this.diffuseK);
@@ -42,6 +42,7 @@ public class Phong extends Material {
         for (Light light : _scene.getLights()) {
 
             Vec3 intersectionPosition = _intersection.getIntersectionPoint();
+            Ray inRay = _intersection.getInRay();
             Vec3 vNormal = _intersection.getNormal().normalize();
 
             //calculates surface color aslong as the object is not obscured by another in the scene
@@ -64,7 +65,7 @@ public class Phong extends Material {
                 Vec3 vReflection = vNormal.multScalar(2 * scalar_normal_light).sub(vLight);
                 vReflection = vReflection.normalize();
                 //Viewvector
-                Vec3 vCam = _ray.getDirection().multScalar(-1).normalize();
+                Vec3 vCam = inRay.getDirection().multScalar(-1).normalize();
                 float scalar_view_reflection = vReflection.scalar(vCam);
                 
                 // SPECULAR
@@ -77,12 +78,12 @@ public class Phong extends Material {
 
             // REFLECTION
             if (this.reflection != 0) {
-                this.calculateReflectionRay(_ray, vNormal, _intersection);
+                this.calculateReflectionRay(inRay, vNormal, _intersection);
             }
 
             // TRANSMISSION
             if (this.transmission != 0) {
-               this.calculateTransmissionRay(_ray, vNormal, _intersection);
+               this.calculateTransmissionRay(inRay, vNormal, _intersection);
             }
 
         }

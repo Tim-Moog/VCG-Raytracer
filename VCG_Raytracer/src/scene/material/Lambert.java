@@ -4,7 +4,6 @@ import raytracer.Ray;
 import scene.Scene;
 import scene.light.Light;
 import scene.shape.Intersection;
-import scene.shape.Plane;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 
@@ -29,7 +28,7 @@ public class Lambert extends Material {
     }
     
     @Override
-    public RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, int _depth){
+    public RgbColor getColor(Intersection _intersection, Scene _scene, int _depth){
         // AMBIENT
         RgbColor output = Material.ambientK.multRGB(this.diffuseK);
 
@@ -37,6 +36,7 @@ public class Lambert extends Material {
         for (Light light : _scene.getLights()) {
 
             Vec3 intersectionPosition = _intersection.getIntersectionPoint();
+            Ray inRay = _intersection.getInRay();
             Vec3 vNormal = _intersection.getNormal().normalize();
 
             //calculates surface color aslong as the object is not obscured by another in the scene
@@ -60,12 +60,12 @@ public class Lambert extends Material {
 
             // REFLECTION
             if (this.reflection != 0) {
-                this.calculateReflectionRay(_ray, vNormal, _intersection);
+                this.calculateReflectionRay(inRay, vNormal, _intersection);
             }
 
             // TRANSMISSION
             if (this.transmission != 0) {
-               this.calculateTransmissionRay(_ray, vNormal, _intersection);
+               this.calculateTransmissionRay(inRay, vNormal, _intersection);
             }
 
         }
