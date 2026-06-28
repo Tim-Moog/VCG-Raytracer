@@ -29,22 +29,17 @@ public class Lambert extends Material {
     }
     
     @Override
-    public RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, RgbColor _ambient, int _depth){
+    public RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, int _depth){
+        // AMBIENT
+        RgbColor output = Material.ambientK.multRGB(this.diffuseK);
 
-        Float r,g,b;
-
-        r = _ambient.red() * diffuseK.red();
-        g = _ambient.green() * diffuseK.green();
-        b = _ambient.blue() * diffuseK.blue();
-
+        //calculates color for every light in the scene
         for (Light light : _scene.getLights()) {
 
             Vec3 intersectionPosition = _intersection.getIntersectionPoint();
             Vec3 vNormal = _intersection.getNormal().normalize();
-            //Viewvector
-            Vec3 vCam = _ray.getDirection().multScalar(-1).normalize();
 
-
+            //calculates surface color aslong as the object is not obscured by another in the scene
             if (!(_scene.isInShadow(_intersection, light))) {
 
                 Vec3 lightPosition = light.getPosition();
@@ -53,26 +48,27 @@ public class Lambert extends Material {
                     distance = 1;
 
                 Vec3 vLight = lightPosition.sub(intersectionPosition).normalize();
-                Float scalar_normal_light = vNormal.scalar(vLight);
+                float scalar_normal_light = vNormal.scalar(vLight);
 
                 RgbColor lightColor = light.getColor();
 
                 // DIFFUSE
-                r += lightColor.red() * diffuseK.red() * scalar_normal_light * (1/distance);
-                g += lightColor.green() * diffuseK.green() * scalar_normal_light * (1/distance);
-                b += lightColor.blue() * diffuseK.blue() * scalar_normal_light * (1/distance);
-                
-                
-
+                output = output.add(lightColor.multRGB(diffuseK).multScalar(scalar_normal_light * 1/distance));
             }
 
+            //always calculated, are not impacted by shadows!
+
+            // REFLECTION
             if (this.reflection != 0) {
-                Vec3 vOutReflection = vNormal.multScalar(2 * (vCam.scalar(vNormal))).sub(vCam).normalize();
-
-                Ray reflectRay = new Ray(intersectionPosition.add(_intersection.getNormal().multScalar(0.0001f)), vOutReflection);
-                _intersection.setOutRay(reflectRay);
+                this.calculateReflectionRay(_ray, vNormal, _intersection);
             }
+
+            // TRANSMISSION
+            if (this.transmission != 0) {
+               this.calculateTransmissionRay(_ray, vNormal, _intersection);
+            }
+
         }
-        return new RgbColor(r,g,b);
+        return output;
     }
 }

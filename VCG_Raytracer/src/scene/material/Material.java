@@ -2,12 +2,16 @@ package scene.material;
 
 import raytracer.Ray;
 import scene.Scene;
+import scene.light.Light;
 import scene.shape.Intersection;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 
 // Abstract class for all Materials, only knows the light Factors (k's)
 public abstract class Material {
+
+    //Only has to be set once, or is using it's standard Rgb
+    protected static RgbColor ambientK = new RgbColor(0.1f, 0.1f, 0.1f);
 
     //Traits potentially shared across different Materials, reduces having to write them for every class...
     protected RgbColor diffuseK;
@@ -56,7 +60,11 @@ public abstract class Material {
      * @param _depth Current Recursion this Method has been called on 
      * @return Color of the Point in question
      */
-    public abstract RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, RgbColor _ambient, int _depth); //why dont we set scene and ambient as statics and have a setter to set it? that way less param clutter
+    public abstract RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, int _depth); //why dont we set scene and ambient as statics and have a setter to set it? that way less param clutter
+
+    public static void setAmbientK(RgbColor ambientK) {
+        Material.ambientK = ambientK;
+    }
 
     public float getReflection () {
         return this.reflection;

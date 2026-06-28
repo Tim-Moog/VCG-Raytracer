@@ -121,7 +121,7 @@ public class Raytracer {
 
         Material material = hit.getShape().getMaterial();
         //basic coloring
-        RgbColor color = material.getColor(hit, _ray, _scene, mAmbientLight, _depth);
+        RgbColor color = material.getColor(hit, _ray, _scene, _depth);
 
         // Reflection
         if (material.getReflection() > 0 && hit.getReflectionRay() != null) {

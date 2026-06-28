@@ -33,22 +33,16 @@ public class Phong extends Material {
     }
 
     @Override
-    public RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, RgbColor _ambient, int _depth){
-
-        Float r,g,b;
+    public RgbColor getColor(Intersection _intersection, Ray _ray, Scene _scene, int _depth){
 
         // AMBIENT
-        r = _ambient.red() * diffuseK.red();
-        g = _ambient.green() * diffuseK.green();
-        b = _ambient.blue() * diffuseK.blue();
+        RgbColor output = Material.ambientK.multRGB(this.diffuseK);
 
         //calculates color for every light in the scene
         for (Light light : _scene.getLights()) {
 
             Vec3 intersectionPosition = _intersection.getIntersectionPoint();
             Vec3 vNormal = _intersection.getNormal().normalize();
-            //Viewvector
-            Vec3 vCam = _ray.getDirection().multScalar(-1).normalize();
 
             //calculates surface color aslong as the object is not obscured by another in the scene
             if (!(_scene.isInShadow(_intersection, light))) {
@@ -59,39 +53,40 @@ public class Phong extends Material {
                     distance = 1;
 
                 Vec3 vLight = lightPosition.sub(intersectionPosition).normalize();
-                Float scalar_normal_light = vNormal.scalar(vLight);
+                float scalar_normal_light = vNormal.scalar(vLight);
 
                 RgbColor lightColor = light.getColor();
 
                 // DIFFUSE
-                r += lightColor.red() * diffuseK.red() * scalar_normal_light * (1/distance);
-                g += lightColor.green() * diffuseK.green() * scalar_normal_light * (1/distance);
-                b += lightColor.blue() * diffuseK.blue() * scalar_normal_light * (1/distance);
+                output = output.add(lightColor.multRGB(diffuseK).multScalar(scalar_normal_light * 1/distance));
 
                 // reflectionvector for highlight
                 Vec3 vReflection = vNormal.multScalar(2 * scalar_normal_light).sub(vLight);
                 vReflection = vReflection.normalize();
-
-                Float scalar_view_reflection = vReflection.scalar(vCam);
+                //Viewvector
+                Vec3 vCam = _ray.getDirection().multScalar(-1).normalize();
+                float scalar_view_reflection = vReflection.scalar(vCam);
                 
                 // SPECULAR
-                r += (float) (lightColor.red() * (specularK.red() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent))) * (1/distance);
-                g += (float) (lightColor.green() * (specularK.green() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent))) * (1/distance);
-                b += (float) (lightColor.blue() * (specularK.blue() * Math.pow(Math.max(0, scalar_view_reflection), specularExponent))) * (1/distance);
-            
+                float specularFactor = (float) Math.pow(Math.max(0, scalar_view_reflection), specularExponent);
+                RgbColor specular = lightColor.multRGB(specularK).multScalar(specularFactor * (1.0f / distance)); 
+                output = output.add(specular);
             }
 
             //always calculated, are not impacted by shadows!
 
+            // REFLECTION
             if (this.reflection != 0) {
                 this.calculateReflectionRay(_ray, vNormal, _intersection);
             }
+
+            // TRANSMISSION
             if (this.transmission != 0) {
                this.calculateTransmissionRay(_ray, vNormal, _intersection);
             }
 
         }
-        return new RgbColor(r,g,b);
+        return output;
     }
 
 }

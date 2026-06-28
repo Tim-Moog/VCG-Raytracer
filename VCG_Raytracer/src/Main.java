@@ -28,7 +28,7 @@ import ui.Window;
 import scene.Scene;
 import scene.camera.PerspCam;
 import scene.material.Lambert;
-import scene.material.LambertLamp;
+import scene.material.Solid;
 import scene.material.Material;
 import scene.material.Phong;
 import utils.RgbColor;
@@ -125,6 +125,9 @@ public class Main {
 
     /** Setup all components that we want to see in our scene **/
     private static void setupScene(Scene renderScene){
+        // IMPORTANT: ALWAYS HAS TO BE SET ONCE
+        Material.setAmbientK(AMBIENT_LIGHT);
+
         setupCameras(renderScene);
 
         setupCornellBox(renderScene);
@@ -159,16 +162,17 @@ public class Main {
     }
 
     private static void setupObjects(Scene renderScene) {
-         // Materials
+
+        // Materials
         Material mat_lambert = new Lambert(new RgbColor(0.6f,0.2f,0.5f));
         Material mat_lambert_shiny = new Lambert(RgbColor.PURPLE,0.6f, 0f);
 
         Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
-        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 1f, 0);
+        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 0.3f, 0);
 
-        Material mat_lamp = new LambertLamp();
+        Material mat_lamp = new Solid();
 
-        Material mat_phong_transparent = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0f, 0.8f, GLASS);
+        Material mat_phong_transparent = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0f, 1f, DIAMOND);
 
         // Objects
         renderScene.createSphere(new Vec3(1.2f,1f,-1.5f), 1f, mat_phong_shiny);
