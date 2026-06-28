@@ -18,13 +18,13 @@ public class Lambert extends Material {
         this.diffuseK = _diffuse_k;
     }
 
-    public Lambert (RgbColor _diffuse_k, float _shinyness, float _transparency) {
-        super(_shinyness, _transparency);
+    public Lambert (RgbColor _diffuse_k, float _reflection, float _transmission) {
+        super(_reflection, _transmission);
         this.diffuseK = _diffuse_k;
     }
 
-    public Lambert (RgbColor _diffuse_k, float _shinyness, float _transparency, float _refrective_index) {
-        super(_shinyness, _transparency, _refrective_index);
+    public Lambert (RgbColor _diffuse_k, float _reflection, float _transmission, float _transmission_index) {
+        super(_reflection, _transmission, _transmission_index);
         this.diffuseK = _diffuse_k;
     }
     
@@ -66,7 +66,7 @@ public class Lambert extends Material {
 
             }
 
-            if (this.shinyness != 0) {
+            if (this.reflection != 0) {
                 Vec3 vOutReflection = vNormal.multScalar(2 * (vCam.scalar(vNormal))).sub(vCam).normalize();
 
                 Ray reflectRay = new Ray(intersectionPosition.add(_intersection.getNormal().multScalar(0.0001f)), vOutReflection);

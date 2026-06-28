@@ -18,15 +18,15 @@ public class Phong extends Material {
         this.specularExponent = _specularExponent;
     }
 
-    public Phong (RgbColor _diffuseK, RgbColor _specularK, int _specularExponent, float _shinyness, float _transparency) {
-        super(_shinyness, _transparency);
+    public Phong (RgbColor _diffuseK, RgbColor _specularK, int _specularExponent, float _reflection, float _transmission) {
+        super(_reflection, _transmission);
         this.diffuseK = _diffuseK;
         this.specularK = _specularK;
         this.specularExponent = _specularExponent;
     }
 
-    public Phong (RgbColor _diffuseK, RgbColor _specularK, int _specularExponent, float _shinyness, float _transparency, float _refrective_index) {
-        super(_shinyness, _transparency, _refrective_index);
+    public Phong (RgbColor _diffuseK, RgbColor _specularK, int _specularExponent, float _reflection, float _transmission, float _transmission_index) {
+        super(_reflection, _transmission, _transmission_index);
         this.diffuseK = _diffuseK;
         this.specularK = _specularK;
         this.specularExponent = _specularExponent;
@@ -83,32 +83,11 @@ public class Phong extends Material {
 
             //always calculated, are not impacted by shadows!
 
-            //calculates the ray for the reflection
-            //BROKEN FOR MULTIPLE LIGHTS!
-            if (this.shinyness != 0) {
-                Vec3 vOutReflection = vNormal.multScalar(2 * (vCam.scalar(vNormal))).sub(vCam).normalize();
-
-                Ray reflectRay = new Ray(intersectionPosition.add(_intersection.getNormal().multScalar(0.0001f)), 
-                                            vOutReflection);
-                _intersection.setOutRay(reflectRay);
+            if (this.reflection != 0) {
+                this.calculateReflectionRay(_ray, vNormal, _intersection);
             }
-
-            //Needed: IncRay, Surface Normal, Material Index from IncRay and this Material
-            if (this.transparency != 0) {
-                // Both Material Indices
-                // snellius: sin a / sin b = n1 / n2
-                float n1 = 1f; // Surrounding (Air)
-                float n2 = this.refrective_index; //from Shape
-                // cos a = N * I
-                float cos_a = vNormal.scalar(vCam);
-                // cos b = sqrt(1-(n1/n2)^2 * (1-(N*I))^2)
-                float cos_b = (float) Math.sqrt(1 - Math.pow((n1/n2), 2) * (1 - Math.pow(cos_a, 2)));
-                // T = sin b/sin a * (N * cos a - I) - N * cos b
-                Vec3 vOutRefrect = vNormal.multScalar(cos_a).sub(vCam).multScalar(n2/n1).sub(vNormal.multScalar(cos_b));
-
-                Ray reflectRay = new Ray(intersectionPosition.add(_intersection.getNormal().multScalar(-0.0001f)), 
-                                            vOutRefrect);
-                _intersection.setOutRay(reflectRay);
+            if (this.transmission != 0) {
+               this.calculateTransmissionRay(_ray, vNormal, _intersection);
             }
 
         }

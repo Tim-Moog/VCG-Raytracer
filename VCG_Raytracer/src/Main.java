@@ -164,15 +164,15 @@ public class Main {
         Material mat_lambert_shiny = new Lambert(RgbColor.PURPLE,0.6f, 0f);
 
         Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
-        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 0.2f, 0);
+        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 1f, 0);
 
         Material mat_lamp = new LambertLamp();
 
-        Material mat_phong_transparent = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0f, 1f, GLASS);
+        Material mat_phong_transparent = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0f, 0.8f, GLASS);
 
         // Objects
-        renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_phong_transparent);
-        renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong_transparent);
+        renderScene.createSphere(new Vec3(1.2f,1f,-1.5f), 1f, mat_phong_shiny);
+        renderScene.createSphere(new Vec3(-1f,1.0f,0f), 1.0f, mat_phong_transparent);
 
         //renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_lambert);
         //renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong);

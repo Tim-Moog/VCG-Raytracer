@@ -10,10 +10,24 @@ public class Intersection { //for now ive just added basic setters and getters f
     private Vec3 normal;
     private Ray inRay;
     private Ray outRay;
+    private Ray reflectionRay;
+    private Ray transmissionRay;
     private Shape shape;
     private float distance;
     private boolean hit;
 
+    public Ray getReflectionRay() {
+        return reflectionRay;
+    }
+    public void setReflectionRay(Ray reflectionRay) {
+        this.reflectionRay = reflectionRay;
+    }
+    public Ray getTransmissionRay() {
+        return transmissionRay;
+    }
+    public void setTransmissionRay(Ray transmissionRay) {
+        this.transmissionRay = transmissionRay;
+    }
     public Vec3 getIntersectionPoint() {
         return intersectionPoint;
     }

@@ -123,18 +123,18 @@ public class Raytracer {
         //basic coloring
         RgbColor color = material.getColor(hit, _ray, _scene, mAmbientLight, _depth);
 
-        // TEMPORARY: ONLY ONE OF BOTH IS POSSIBLE
-        //getOutRay is the ReflectionRay; if one has been set, the material reflects and needs to cast secondaryRays
-        if(hit.getOutRay() != null && material.getShinyness() != 0) {
-            //recursive shade call for secondaryRays (what color is the environment that is reflected)
-            RgbColor reflectedColor = shade(hit.getOutRay(), _depth+1, _scene);
-            //shinyness from 0-1 (float) determines how much diffuse / specular coloring is added
-            color = color.multScalar(1-material.getShinyness()).add(reflectedColor.multScalar(material.getShinyness()));
-        } else if(hit.getOutRay() != null && material.getTransparency() != 0) {
-            //recursive shade call for secondaryRays (what color is the environment that is reflected)
-            RgbColor reflectedColor = shade(hit.getOutRay(), _depth+1, _scene);
-            //shinyness from 0-1 (float) determines how much diffuse / specular coloring is added
-            color = color.multScalar(1-material.getTransparency()).add(reflectedColor.multScalar(material.getTransparency()));
+        // Reflection
+        if (material.getReflection() > 0 && hit.getReflectionRay() != null) {
+            RgbColor r = shade(hit.getReflectionRay(), _depth+1, _scene);
+            color = color.multScalar(1 - material.getReflection())
+                        .add(r.multScalar(material.getReflection()));
+        }
+
+        // Transmission
+        if (material.getTransmission() > 0 && hit.getTransmissionRay() != null) {
+            RgbColor t = shade(hit.getTransmissionRay(), _depth+1, _scene);
+            color = color.multScalar(1 - material.getTransmission())
+                        .add(t.multScalar(material.getTransmission()));
         }
 
         return color;
