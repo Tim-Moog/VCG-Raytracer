@@ -65,7 +65,7 @@ public class Main {
 
     /** LIGHT **/
     static final short LIGHT_DENSITY = 20;
-    static final short LIGHT_SAMPLES = (short)Math.pow(5, 2);//only valid AA values are 1 and any number whose sqr root results a whole number
+    static final short LIGHT_SAMPLES = (short)Math.pow(2, 2);//only valid AA values are 1 and any number whose sqr root results a whole number
 
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
 
@@ -146,7 +146,7 @@ public class Main {
         //renderScene.createPointLight(LIGHT_POSITION, LIGHT_COLOR);
 
         // Lights - task 6
-        renderScene.createAreaLight(renderScene, LIGHT_SAMPLES, AREA_LIGHT_SIZE, LIGHT_POSITION, LIGHT_COLOR);
+        renderScene.createAreaLight(renderScene, LIGHT_SAMPLES, AREA_LIGHT_SIZE, LIGHT_POSITION, LIGHT_COLOR, 3.5f);
         
     }
 

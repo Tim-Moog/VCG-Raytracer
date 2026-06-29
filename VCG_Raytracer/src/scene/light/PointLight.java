@@ -9,9 +9,10 @@ public class PointLight extends Light {
     protected Vec3 position;
     protected RgbColor color;
     
-    public PointLight (Vec3 _position, RgbColor _color) {
+    public PointLight (Vec3 _position, RgbColor _color, float _intensity) {
         this.position = _position;
         this.color = _color;
+        this.intensity = _intensity;
     }
     
     public RgbColor getColor() {
@@ -22,4 +23,7 @@ public class PointLight extends Light {
         return this.position;
     }
 
+    public float getIntensity(){
+        return this.intensity;
+    }
 }

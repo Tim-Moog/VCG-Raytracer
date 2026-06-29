@@ -59,7 +59,7 @@ public class Phong extends Material {
                 RgbColor lightColor = light.getColor();
 
                 // DIFFUSE
-                output = output.add(lightColor.multRGB(diffuseK).multScalar(scalar_normal_light * 1/distance));
+                output = output.add(lightColor.multRGB(diffuseK).multScalar(scalar_normal_light * light.getIntensity()/distance));
 
                 // reflectionvector for highlight
                 Vec3 vReflection = vNormal.multScalar(2 * scalar_normal_light).sub(vLight);
@@ -70,7 +70,7 @@ public class Phong extends Material {
                 
                 // SPECULAR
                 float specularFactor = (float) Math.pow(Math.max(0, scalar_view_reflection), specularExponent);
-                RgbColor specular = lightColor.multRGB(specularK).multScalar(specularFactor * (1.0f / distance)); 
+                RgbColor specular = lightColor.multRGB(specularK).multScalar(specularFactor * (light.getIntensity() / distance)); 
                 output = output.add(specular);
             }
 

@@ -53,7 +53,7 @@ public class Lambert extends Material {
                 RgbColor lightColor = light.getColor();
 
                 // DIFFUSE
-                output = output.add(lightColor.multRGB(diffuseK).multScalar(scalar_normal_light * 1/distance));
+                output = output.add(lightColor.multRGB(diffuseK).multScalar(scalar_normal_light * light.getIntensity()/distance));
             }
 
             //always calculated, are not impacted by shadows!

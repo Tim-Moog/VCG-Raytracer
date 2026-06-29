@@ -65,13 +65,13 @@ public class Scene {
         }
     }
 
-    public void createPointLight(Vec3 _position, RgbColor _color){
-        PointLight newLight = new PointLight(_position, _color);
+    public void createPointLight(Vec3 _position, RgbColor _color, float _intensity){
+        PointLight newLight = new PointLight(_position, _color, _intensity);
         lightList.add(newLight);
     }
 
-    public void createAreaLight(Scene _scene, short _light_samples, float _size, Vec3 _position, RgbColor _color){
-        AreaLight newLight = new AreaLight(_scene, _light_samples, _size, _position, _color);
+    public void createAreaLight(Scene _scene, short _light_samples, float _size, Vec3 _position, RgbColor _color, float _intensity){
+        AreaLight newLight = new AreaLight(_scene, _light_samples, _size, _position, _color, _intensity);
         //no need to add it to the list here since we do that with the inner pointlights
     }
 

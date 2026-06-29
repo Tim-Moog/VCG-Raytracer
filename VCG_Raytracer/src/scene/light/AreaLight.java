@@ -18,12 +18,14 @@ public class AreaLight extends Light {
     private float size;
 
 
-    public AreaLight(Scene _scene, short _light_samples,  float _size, Vec3 _pos, RgbColor _color){
+    public AreaLight(Scene _scene, short _light_samples,  float _size, Vec3 _pos, RgbColor _color, float _intensity){
         this.size = _size;
         this.position = _pos;
         this.color = _color;
         this.lights = new PointLight[_light_samples];
-        _color = _color.multScalar(3f/_light_samples);
+        this.intensity = _intensity;
+        _color = _color.multScalar(1f/_light_samples);
+
 
         int samplesPerRowCol = (int)Math.sqrt(_light_samples);
         float subSectionSize = size/samplesPerRowCol;
@@ -41,7 +43,7 @@ public class AreaLight extends Light {
                 float offsetZ = (row + 0.5f) * subSectionSize;
 
                 Vec3 adjustedPosition = new Vec3(position.x - size/2 + offsetX, position.y,  position.z - size/2 + offsetZ);
-                lights[index++] = new PointLight(adjustedPosition, _color);
+                lights[index++] = new PointLight(adjustedPosition, _color, _intensity);
             }
         }
         _scene.addCornerLights(lights);
@@ -57,6 +59,10 @@ public class AreaLight extends Light {
 
     public PointLight[] getLights(){
         return this.lights;
+    }
+
+    public float getIntensity(){
+        return this.intensity;
     }
 
 }
