@@ -167,7 +167,7 @@ public class Main {
         Material mat_lambert_shiny = new Lambert(RgbColor.PURPLE,0.6f, 0f);
 
         Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
-        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 0.3f, 0);
+        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 1f, 0);
 
         Material mat_lamp = new Solid();
 
@@ -185,7 +185,7 @@ public class Main {
 
         //testing square
         //renderScene.createSquare(2, new Vec3(-1.5f, 3.5f, 0f), new Vec3(1f, 0.5f, 0.5f), new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
-        //renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2f),new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
+        //renderScene.createCube(1f, new Vec3(-2f, 0.5f, 0f));
         //renderScene.createCube(1f, new Vec3(-2.5f, 1.5f, -2f),mat_phong);
         //renderScene.createCube(1f, new Vec3(-2.5f, 2.5f, -2f),new Phong(RgbColor.CYAN, new RgbColor(0.8f, 0.8f, 0.8f), 8));
         //renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2.5f),mat_shiny);
@@ -214,7 +214,7 @@ public class Main {
         renderScene.createPlane(new Vec3(0,6,0), new Vec3(0f,-1f,0f), new Lambert(RgbColor.WHITE));
         renderScene.createPlane(new Vec3(0,0,-4), new Vec3(0f,0f,1f), new Lambert(RgbColor.WHITE)); 
         //behind cam
-        renderScene.createPlane(new Vec3(0,0,6), new Vec3(0f,0f,-1f), new Lambert(RgbColor.WHITE)); 
+        renderScene.createPlane(new Vec3(0,0,6), new Vec3(0f,0f,-1f), new Lambert(RgbColor.WHITE));
     }
 
     /** Create our personal renderer and give it all of our items and prefs to calculate our scene **/

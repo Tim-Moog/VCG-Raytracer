@@ -131,7 +131,7 @@ public abstract class Material {
     private void setRefrectiveIndex (float _value) {
         if(_value < 0) {
             System.err.println("Provided value of Refrective Index: " + _value 
-                                + "\nCaution! Value has to be above 0"
+                                + "\nCaution! Value has to be greater than or equal 0"
                                 + "Value has been corrected to 1 (AIR)");
             this.transmission_index = 1; //AIR
         } else {
