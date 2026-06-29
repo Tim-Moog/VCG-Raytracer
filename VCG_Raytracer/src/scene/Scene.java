@@ -11,6 +11,7 @@ import scene.material.Material;
 import scene.shape.Cube;
 import scene.shape.Intersection;
 import scene.shape.Plane;
+import scene.shape.Polygon;
 import scene.shape.Shape;
 import scene.shape.Sphere;
 import scene.shape.Square;
@@ -45,6 +46,11 @@ public class Scene {
     public void createSquare(float _size, Vec3 _pos, Vec3 _normal, Material _Material){
         Square newSquare = new Square(_size, _pos, _normal, _Material);
         shapeList.add(newSquare);
+    }
+
+    public void createPolygon(Vec3 pos1, Vec3 pos2, Vec3 pos3, Material material){
+        Polygon newPolygon = new Polygon(pos1, pos2, pos3, material);
+        shapeList.add(newPolygon);
     }
 
     public void createCube(float _size, Vec3 _pos, Material _Material){
