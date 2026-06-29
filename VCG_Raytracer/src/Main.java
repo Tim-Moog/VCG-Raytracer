@@ -65,7 +65,7 @@ public class Main {
 
     /** LIGHT **/
     static final short LIGHT_DENSITY = 20;
-    static final short LIGHT_SAMPLES = (short)Math.pow(2, 2);//only valid AA values are 1 and any number whose sqr root results a whole number
+    static final short LIGHT_SAMPLES = (short)Math.pow(5, 2);//only valid AA values are 1 and any number whose sqr root results a whole number
 
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
 
@@ -226,6 +226,7 @@ public class Main {
                 BACKGROUND_COLOR,
                 AMBIENT_LIGHT,
                 ANTI_ALIASING,
+                LIGHT_SAMPLES,
                 SHOW_PARAM_LABEL);
 
         raytracer.renderScene();

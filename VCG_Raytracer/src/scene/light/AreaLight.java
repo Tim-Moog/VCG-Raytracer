@@ -23,6 +23,7 @@ public class AreaLight extends Light {
         this.position = _pos;
         this.color = _color;
         this.lights = new PointLight[_light_samples];
+        _color = _color.multScalar(3f/_light_samples);
 
         int samplesPerRowCol = (int)Math.sqrt(_light_samples);
         float subSectionSize = size/samplesPerRowCol;

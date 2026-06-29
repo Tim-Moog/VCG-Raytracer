@@ -41,18 +41,20 @@ public class Raytracer {
     private RgbColor mAmbientLight;
 
     private int mAntiAliasingSamples;
+    private short mLightSamples;
 
     private boolean mDebug;
     private long tStart;
 
     /**  Constructor **/
-    public Raytracer(Scene scene, Window renderWindow, int recursions, RgbColor backColor, RgbColor ambientLight, int antiAliasingSamples, boolean debugOn){
+    public Raytracer(Scene scene, Window renderWindow, int recursions, RgbColor backColor, RgbColor ambientLight, int antiAliasingSamples, short light_samples, boolean debugOn){
         Log.print(this, "Init");
         mMaxRecursions = recursions;
 
         mBufferedImage = renderWindow.getBufferedImage();
 
         mAntiAliasingSamples = antiAliasingSamples;
+        mLightSamples = light_samples;
 
         mBackgroundColor = backColor;
         mAmbientLight = ambientLight;
@@ -64,7 +66,7 @@ public class Raytracer {
 
     /**  Send the created window to the frame delivered by JAVA to display our result **/
     public void exportRendering(){
-        mRenderWindow.exportRendering(String.valueOf(stopTime(tStart)), mMaxRecursions, mAntiAliasingSamples, mDebug);
+        mRenderWindow.exportRendering(String.valueOf(stopTime(tStart)), mMaxRecursions, mAntiAliasingSamples, mLightSamples, mDebug);
     }
 
     /**  Stop time of rendering **/
@@ -315,8 +317,8 @@ public class Raytracer {
                             for(float col = 0; col < samplesPerRowCol; col++){
 
                                 //make new random values for ray position inside of subpixel
-                                float randomX = numberGenerator.nextFloat();
-                                float randomY = numberGenerator.nextFloat();
+                                float randomX = (float) numberGenerator.nextGaussian();
+                                float randomY = (float) numberGenerator.nextGaussian();
 
                                 //get the actual offset of our subpixel using the rdm generated float and the current subpixel position based on AA sample amount
                                 float offsetX = (col + randomX) * subPixelSize;
