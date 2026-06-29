@@ -12,6 +12,7 @@ public class Intersection { //for now ive just added basic setters and getters f
     private Ray outRay;
     private Ray reflectionRay;
     private Ray transmissionRay;
+    private float fresnel;
     private Shape shape;
     private float distance;
     private boolean hit;
@@ -69,6 +70,12 @@ public class Intersection { //for now ive just added basic setters and getters f
     }
     public void setHit(boolean hit) {
         this.hit = hit;
+    }
+    public float getFresnel() {
+        return fresnel;
+    }
+    public void setFresnel(float fresnel) {
+        this.fresnel = fresnel;
     }
 
     

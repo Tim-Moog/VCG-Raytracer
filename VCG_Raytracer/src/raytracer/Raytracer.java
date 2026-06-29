@@ -26,6 +26,7 @@ import scene.shape.Intersection;
 import ui.Window;
 import utils.RgbColor;
 import utils.algebra.Vec2;
+import utils.algebra.Vec3;
 import utils.io.Log;
 
 public class Raytracer {
@@ -118,21 +119,27 @@ public class Raytracer {
 
         Material material = hit.getShape().getMaterial();
         //basic coloring
-        RgbColor color = material.getColor(hit, _scene, _depth);
+        RgbColor diffuseColor = material.getColor(hit, _scene, _depth);
+        RgbColor reflectColor = RgbColor.BLACK;
+        float reflectionFactor = 0;
+        RgbColor transmissColor = RgbColor.BLACK;
+        float transmissionFactor = 0;
 
         // Reflection
         if (material.getReflection() > 0 && hit.getReflectionRay() != null) {
-            RgbColor r = shade(hit.getReflectionRay(), _depth+1, _scene);
-            color = color.multScalar(1 - material.getReflection())
-                        .add(r.multScalar(material.getReflection()));
+            reflectColor = shade(hit.getReflectionRay(), _depth+1, _scene);
+            reflectionFactor = hit.getFresnel() * material.getReflection();
         }
 
         // Transmission
         if (material.getTransmission() > 0 && hit.getTransmissionRay() != null) {
-            RgbColor t = shade(hit.getTransmissionRay(), _depth+1, _scene);
-            color = color.multScalar(1 - material.getTransmission())
-                        .add(t.multScalar(material.getTransmission()));
+            transmissColor = shade(hit.getTransmissionRay(), _depth+1, _scene);
+            transmissionFactor = (1 - hit.getFresnel()) * material.getTransmission();
         }
+
+        RgbColor color = diffuseColor.multScalar(Math.max(0,1-reflectionFactor-transmissionFactor))
+                        .add(reflectColor.multScalar(reflectionFactor))
+                        .add(transmissColor.multScalar(transmissionFactor));
 
         return color;
     }

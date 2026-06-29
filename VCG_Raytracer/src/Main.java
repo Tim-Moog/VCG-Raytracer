@@ -171,17 +171,17 @@ public class Main {
 
         Material mat_lamp = new Solid();
 
-        Material mat_phong_transparent = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0f, 1f, DIAMOND);
+        Material mat_phong_transparent = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 1f, 1f, GLASS);
 
         // Objects
-        renderScene.createSphere(new Vec3(1.2f,1f,-1.5f), 1f, mat_phong_shiny);
+        //renderScene.createSphere(new Vec3(1.2f,1f,-1.5f), 1f, mat_phong_shiny);
         renderScene.createSphere(new Vec3(-1f,1.0f,0f), 1.0f, mat_phong_transparent);
 
         //renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_lambert);
         //renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong);
 
         //roof  square
-        renderScene.createSquare(1, new Vec3(0f, 5.99999f, 0f), new Vec3(0f, -1f, 0f), mat_lamp);
+        //renderScene.createSquare(1, new Vec3(0f, 5.99999f, 0f), new Vec3(0f, -1f, 0f), mat_lamp);
 
         //testing square
         //renderScene.createSquare(2, new Vec3(-1.5f, 3.5f, 0f), new Vec3(1f, 0.5f, 0.5f), new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
