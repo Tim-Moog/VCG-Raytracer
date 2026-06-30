@@ -82,6 +82,10 @@ public class Scene {
         }
     }
 
+    public void addShape(Shape addMe){
+        shapeList.add(addMe);
+    }
+
     public ArrayList<Shape> getShapes(){
         return shapeList;
     }

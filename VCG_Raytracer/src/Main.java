@@ -65,13 +65,14 @@ public class Main {
 
     /** LIGHT **/
     static final short LIGHT_DENSITY = 20;
-    static final short LIGHT_SAMPLES = (short)Math.pow(2, 2);//only valid AA values are 1 and any number whose sqr root results a whole number
+    static final short LIGHT_SAMPLES = (short)Math.pow(6, 2);//only valid AA values are 1 and any number whose sqr root results a whole number
 
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
 
     //DONT SET HEIGHT TO EXACT SAME VALUE AS ROOF PLANE ELSE YOULL SUMMON A DEMON!!!
+    //careful: now that the square is set inside of AreaLight be careful not to put the light too close to the ceiling, else the square might get placed outside our cornell box
     static final Vec3 LIGHT_POSITION = new Vec3(0,5.9f,0); 
-    static final short AREA_LIGHT_SIZE = 1;
+    static final short AREA_LIGHT_SIZE = 3;
 
     /** GI **/
     static final boolean USE_GI = false;
@@ -179,9 +180,6 @@ public class Main {
 
         //renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_lambert);
         //renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong);
-
-        //roof  square
-        //renderScene.createSquare(1, new Vec3(0f, 5.99999f, 0f), new Vec3(0f, -1f, 0f), mat_lamp);
 
         //testing square
         //renderScene.createSquare(2, new Vec3(-1.5f, 3.5f, 0f), new Vec3(1f, 0.5f, 0.5f), new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
