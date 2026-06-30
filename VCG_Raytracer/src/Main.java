@@ -23,14 +23,21 @@
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 import raytracer.Raytracer;
 import ui.Window;
 import scene.Scene;
 import scene.camera.PerspCam;
 import scene.material.Lambert;
 import scene.material.Solid;
+import scene.shape.PolygonMesh;
 import scene.material.Material;
 import scene.material.Phong;
+import utils.ObjImporter;
 import utils.RgbColor;
 import utils.algebra.Vec3;
 
@@ -172,7 +179,7 @@ public class Main {
 
         Material mat_lamp = new Solid();
 
-        Material mat_phong_transparent = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0.5f, 0.5f, GLASS);
+        Material mat_phong_transparent = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, GLASS);
 
         // Objects
         //renderScene.createSphere(new Vec3(1.2f,1f,-1.5f), 1f, mat_phong_shiny);
@@ -186,13 +193,34 @@ public class Main {
         //renderScene.createCube(1f, new Vec3(-2f, 0.5f, 0f));
         //renderScene.createCube(1f, new Vec3(-2.5f, 1.5f, -2f),mat_phong);
         //renderScene.createCube(1f, new Vec3(-2.5f, 2.5f, -2f),new Phong(RgbColor.CYAN, new RgbColor(0.8f, 0.8f, 0.8f), 8));
-        renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2.5f),mat_phong_transparent);
+        //renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2.5f),mat_phong_transparent);
 
         //cube tower test
         //renderScene.createCubeTower(1f, new Vec3(-2, 0.5f, -1.5f), mat_phong_shiny);
 
-        //renderScene.createPolygon(new Vec3(0.5f,0,0), new Vec3(-2,3,0), new Vec3(1, 1, -3), mat_lambert);
-        
+        renderScene.createPolygon(new Vec3(0.5f,0,0), new Vec3(-2,3,0), new Vec3(1, 1, -3), mat_lambert);
+
+        InputStream inStream;
+        try {
+            inStream = new FileInputStream("VCG_Raytracer/models/utah_teapot.obj");
+            PolygonMesh teapot;
+
+            teapot = ObjImporter.load(
+                    inStream,
+                    new Lambert(RgbColor.GRAY), //mat_phong_transparent;
+                    new Vec3(-1, 1.5f, -1),
+                    new Vec3(45,45,45),
+                    0.5f
+                );
+
+            //renderScene.addShape(teapot); //commented out to make the uploaded version easier to run for now and totally not to hide our masterpiece hehehe
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            System.err.println("Error: somethign went wrong at .obj import");
+        }
+
+        System.err.println(renderScene.getShapes().size());
     }
 
     private static void setupCornellBox(Scene renderScene) {

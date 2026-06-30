@@ -86,6 +86,67 @@ public class Matrix4x4 {
 		return out;
 	}
 
+	public static Matrix4x4 rotationX(double angle) {
+		Matrix4x4 out = new Matrix4x4();
+
+		float cos = (float) Math.cos(angle);
+		float sin = (float) Math.sin(angle);
+
+		out.setValueAt(0, 0, 1);
+		out.setValueAt(1, 1, cos);
+		out.setValueAt(1, 2, -sin);
+		out.setValueAt(2, 1, sin);
+		out.setValueAt(2, 2, cos);
+		out.setValueAt(3, 3, 1);
+
+		return out;
+	}
+
+	public static Matrix4x4 rotationY(double angle) {
+		Matrix4x4 out = new Matrix4x4();
+
+		float cos = (float) Math.cos(angle);
+		float sin = (float) Math.sin(angle);
+
+		out.setValueAt(0, 0, cos);
+		out.setValueAt(0, 2, sin);
+		out.setValueAt(1, 1, 1);
+		out.setValueAt(2, 0, -sin);
+		out.setValueAt(2, 2, cos);
+		out.setValueAt(3, 3, 1);
+
+		return out;
+	}
+
+	public static Matrix4x4 rotationZ(double angle) {
+		Matrix4x4 out = new Matrix4x4();
+
+		float cos = (float) Math.cos(angle);
+		float sin = (float) Math.sin(angle);
+
+		out.setValueAt(0, 0, cos);
+		out.setValueAt(0, 1, -sin);
+		out.setValueAt(1, 0, sin);
+		out.setValueAt(1, 1, cos);
+		out.setValueAt(2, 2, 1);
+		out.setValueAt(3, 3, 1);
+
+		return out;
+	}
+
+	//this method will take a Vec3 as input and use each value for its own axis
+	//input the rotation in degrees like 90° = 90 as input
+	//the change to radians happens inside on its own for easier input
+	public static Matrix4x4 rotation(Vec3 rotation) {
+
+		Matrix4x4 rotationX = Matrix4x4.rotationX(Math.toRadians(rotation.x));
+		Matrix4x4 rotationY = Matrix4x4.rotationY(Math.toRadians(rotation.y));
+		Matrix4x4 rotationZ = Matrix4x4.rotationZ(Math.toRadians(rotation.z));
+
+		//need to be multiplied in reverse order ofc
+		return rotationZ.mult(rotationY).mult(rotationX);
+	}
+
 	/**
 	 Translate Matrix in 4D - watch for the homogeneous coordinate
 	 **/
