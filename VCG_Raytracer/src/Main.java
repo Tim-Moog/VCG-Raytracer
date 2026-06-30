@@ -65,14 +65,14 @@ public class Main {
 
     /** LIGHT **/
     static final short LIGHT_DENSITY = 20;
-    static final short LIGHT_SAMPLES = (short)Math.pow(6, 2);//only valid AA values are 1 and any number whose sqr root results a whole number
+    static final short LIGHT_SAMPLES = (short)Math.pow(2, 2);//only valid AA values are 1 and any number whose sqr root results a whole number
 
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
 
     //DONT SET HEIGHT TO EXACT SAME VALUE AS ROOF PLANE ELSE YOULL SUMMON A DEMON!!!
     //careful: now that the square is set inside of AreaLight be careful not to put the light too close to the ceiling, else the square might get placed outside our cornell box
     static final Vec3 LIGHT_POSITION = new Vec3(0,5.9f,0); 
-    static final short AREA_LIGHT_SIZE = 3;
+    static final short AREA_LIGHT_SIZE = 1;
 
     /** GI **/
     static final boolean USE_GI = false;
@@ -168,15 +168,15 @@ public class Main {
         Material mat_lambert_shiny = new Lambert(RgbColor.PURPLE,0.6f, 0f);
 
         Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
-        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 1f, 0);
+        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 1f, 0f);
 
         Material mat_lamp = new Solid();
 
-        Material mat_phong_transparent = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 1f, 1f, GLASS);
+        Material mat_phong_transparent = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 1f, 0f, GLASS);
 
         // Objects
         //renderScene.createSphere(new Vec3(1.2f,1f,-1.5f), 1f, mat_phong_shiny);
-        //renderScene.createSphere(new Vec3(-1f,1.0f,0f), 1.0f, mat_phong_transparent);
+        renderScene.createSphere(new Vec3(-1f,1.0f,0f), 1.0f, mat_phong_transparent);
 
         //renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_lambert);
         //renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong);
@@ -186,12 +186,12 @@ public class Main {
         //renderScene.createCube(1f, new Vec3(-2f, 0.5f, 0f));
         //renderScene.createCube(1f, new Vec3(-2.5f, 1.5f, -2f),mat_phong);
         //renderScene.createCube(1f, new Vec3(-2.5f, 2.5f, -2f),new Phong(RgbColor.CYAN, new RgbColor(0.8f, 0.8f, 0.8f), 8));
-        //renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2.5f),mat_shiny);
+        renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2.5f),mat_phong_shiny);
 
         //cube tower test
-        //renderScene.createCubeTower(1f, new Vec3(-2, 0.5f, -1.5f), mat_lambert);
+        //renderScene.createCubeTower(1f, new Vec3(-2, 0.5f, -1.5f), mat_phong_shiny);
 
-        renderScene.createPolygon(new Vec3(0.5f,0,0), new Vec3(-2,3,0), new Vec3(1, 1, -3), mat_lambert);
+        //renderScene.createPolygon(new Vec3(0.5f,0,0), new Vec3(-2,3,0), new Vec3(1, 1, -3), mat_lambert);
         
     }
 
