@@ -59,7 +59,7 @@ public class Main {
 
     /** RAYTRACER **/
 
-    static final int RECURSIONS = 4;
+    static final int RECURSIONS = 12;
     static final int ANTI_ALIASING = (int)Math.pow(3, 2); //only valid AA values are 1 and any number whose sqr root results a whole number
     static final boolean USE_SOFT_SHADOWS = false;
 
@@ -80,7 +80,7 @@ public class Main {
     static final int GI_SAMPLES = 0;
 
     static final RgbColor LIGHT_COLOR = new RgbColor(0.7f,0.7f,0.7f);
-    static final RgbColor AMBIENT_LIGHT = new RgbColor(0.1f, 0.1f, 0.15f);
+    static final RgbColor AMBIENT_LIGHT = new RgbColor(0.12f, 0.1f, 0.15f);
 
     static final boolean USE_AO = false;
     static final int NUMBER_OF_AO_SAMPLES = 0;
@@ -168,15 +168,15 @@ public class Main {
         Material mat_lambert_shiny = new Lambert(RgbColor.PURPLE,0.6f, 0f);
 
         Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
-        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 1f, 0f);
+        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 0f, 1f);
 
         Material mat_lamp = new Solid();
 
-        Material mat_phong_transparent = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 1f, 0f, GLASS);
+        Material mat_phong_transparent = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0.5f, 0.5f, GLASS);
 
         // Objects
         //renderScene.createSphere(new Vec3(1.2f,1f,-1.5f), 1f, mat_phong_shiny);
-        renderScene.createSphere(new Vec3(-1f,1.0f,0f), 1.0f, mat_phong_transparent);
+        //renderScene.createSphere(new Vec3(-1f,1.0f,0f), 1.0f, mat_phong_transparent);
 
         //renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_lambert);
         //renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong);
@@ -186,7 +186,7 @@ public class Main {
         //renderScene.createCube(1f, new Vec3(-2f, 0.5f, 0f));
         //renderScene.createCube(1f, new Vec3(-2.5f, 1.5f, -2f),mat_phong);
         //renderScene.createCube(1f, new Vec3(-2.5f, 2.5f, -2f),new Phong(RgbColor.CYAN, new RgbColor(0.8f, 0.8f, 0.8f), 8));
-        renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2.5f),mat_phong_shiny);
+        renderScene.createCube(1f, new Vec3(-2.5f, 0.5f, -2.5f),mat_phong_transparent);
 
         //cube tower test
         //renderScene.createCubeTower(1f, new Vec3(-2, 0.5f, -1.5f), mat_phong_shiny);

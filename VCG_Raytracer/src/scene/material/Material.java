@@ -192,10 +192,10 @@ public abstract class Material {
         float sin_T2 = (float) Math.pow(snellius, 2) * (1 - (float) Math.pow(cos_I, 2));
 
         //Total internal reflection -> sin_T2 has to be smaller or equal to 1, else Snellius doesn't apply
-        //This means that no Reflection is possible! (nothing happens, or reflection)
+        //This means that no Refrection is possible! (nothing happens, or reflection)
         if(sin_T2 > 1) {
-            _intersection.setFresnel(1);
-            _intersection.setTransmissionRay(null);
+            calculateReflectionRay(_incoming, _normal.negate(), _intersection);
+            _intersection.setTransmissionRay(_intersection.getReflectionRay());
             return;
         }
 
@@ -209,15 +209,9 @@ public abstract class Material {
         Vec3 vOutTransmission = vInRay.multScalar(n1/n2)
                                 .add(vNormal.multScalar(n1/n2 * cos_I - cos_T))
                                 .normalize();
-        Vec3 origin = _intersection.getIntersectionPoint().sub(vNormal.multScalar(0.0001f));
+        Vec3 origin = _intersection.getIntersectionPoint().add(vNormal.multScalar(-0.0001f));
         Ray vOutRay = new Ray(origin, vOutTransmission);
         _intersection.setTransmissionRay(vOutRay);
-
-        // FRESNEL
-        // Calculation following Schlick's approximation
-        float r0 = (float) Math.pow((n1 - n2) / (n1 + n2), 2);
-        // R(schlick) = R0 + (1 - R0) * (1 - cos_I) ^5
-        _intersection.setFresnel(r0 + (1 - r0) * (float) Math.pow(1 - cos_I, 5));
     }
 
 }

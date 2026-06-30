@@ -121,20 +121,18 @@ public class Raytracer {
         //basic coloring
         RgbColor diffuseColor = material.getColor(hit, _scene, _depth);
         RgbColor reflectColor = RgbColor.BLACK;
-        float reflectionFactor = 0;
+        float reflectionFactor = material.getReflection();
         RgbColor transmissColor = RgbColor.BLACK;
-        float transmissionFactor = 0;
+        float transmissionFactor = material.getTransmission();
 
         // Reflection
-        if (material.getReflection() > 0 && hit.getReflectionRay() != null) {
+        if (hit.getReflectionRay() != null) {
             reflectColor = shade(hit.getReflectionRay(), _depth+1, _scene);
-            reflectionFactor = hit.getFresnel() * material.getReflection();
         }
 
         // Transmission
-        if (material.getTransmission() > 0 && hit.getTransmissionRay() != null) {
+        if (hit.getTransmissionRay() != null) {
             transmissColor = shade(hit.getTransmissionRay(), _depth+1, _scene);
-            transmissionFactor = (1 - hit.getFresnel()) * material.getTransmission();
         }
 
         RgbColor color = diffuseColor.multScalar(Math.max(0,1-reflectionFactor-transmissionFactor))

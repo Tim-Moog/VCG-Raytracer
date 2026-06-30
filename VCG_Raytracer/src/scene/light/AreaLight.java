@@ -52,7 +52,7 @@ public class AreaLight extends Light {
 
         //additionally we'll set the square shape inside of here to make it attached to the AreaLight
         //we do it here and not in main so that if we scale the lightsize the square scales with it
-        Square mySquare = new Square(_size, new Vec3(_pos.x, _pos.y + 0.01f, _pos.z), new Vec3(0,-1,0), new Solid());
+        Square mySquare = new Square(_size, new Vec3(_pos.x, _pos.y + 0.099f, _pos.z), new Vec3(0,-1,0), new Solid());
         _scene.addShape(mySquare);
     }
     
