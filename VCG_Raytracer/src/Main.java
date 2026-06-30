@@ -176,7 +176,7 @@ public class Main {
 
         // Objects
         //renderScene.createSphere(new Vec3(1.2f,1f,-1.5f), 1f, mat_phong_shiny);
-        renderScene.createSphere(new Vec3(-1f,1.0f,0f), 1.0f, mat_phong_transparent);
+        //renderScene.createSphere(new Vec3(-1f,1.0f,0f), 1.0f, mat_phong_transparent);
 
         //renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_lambert);
         //renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong);
@@ -190,6 +190,8 @@ public class Main {
 
         //cube tower test
         //renderScene.createCubeTower(1f, new Vec3(-2, 0.5f, -1.5f), mat_lambert);
+
+        renderScene.createPolygon(new Vec3(0.5f,0,0), new Vec3(-2,3,0), new Vec3(1, 1, -3), mat_lambert);
         
     }
 
