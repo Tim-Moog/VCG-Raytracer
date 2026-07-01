@@ -62,14 +62,14 @@ public class Main {
 
     /** RAYTRACER **/
 
-    static final int RECURSIONS = 12;
-    static final int ANTI_ALIASING = (int) Math.pow(1, 2); // only valid AA values are 1 and any number whose sqr root
+    static final int RECURSIONS = 5;
+    static final int ANTI_ALIASING = (int) Math.pow(3, 2); // only valid AA values are 1 and any number whose sqr root
                                                            // results a whole number
     static final boolean USE_SOFT_SHADOWS = false;
 
     /** LIGHT **/
     static final short LIGHT_DENSITY = 20;
-    static final short LIGHT_SAMPLES = (short) Math.pow(1, 2);// only valid AA values are 1 and any number whose sqr
+    static final short LIGHT_SAMPLES = (short) Math.pow(3, 2);// only valid AA values are 1 and any number whose sqr
                                                               // root results a whole number
 
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
@@ -185,7 +185,7 @@ public class Main {
 
         Material mat_lamp = new Solid();
 
-        Material mat_phong_transparent = new Phong(RgbColor.RED, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, WATER);
+        Material mat_phong_transparent = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, DIAMOND);
 
         // Objects
         // renderScene.createSphere(new Vec3(1.2f,1f,-1.5f), 1f, mat_phong_shiny);
@@ -207,13 +207,13 @@ public class Main {
         // cube tower test
         // renderScene.createCubeTower(1f, new Vec3(-2, 0.5f, -1.5f), mat_phong_shiny);
 
-        renderScene.createPolygon(new Vec3(0.5f, 0, 0), new Vec3(-2, 3, 0), new Vec3(1, 1, -3), mat_lambert);
+        //renderScene.createPolygon(new Vec3(0.5f, 0, 0), new Vec3(-2, 3, 0), new Vec3(1, 1, -3), mat_lambert);
 
         InputStream inStream;
         try { 
-            //we have stanford bunny as a file but it has 5k faces so would take too long to render and would need to be scaled up massively due to v's being e-3 as an example
+            //we have stanford bunny as a file but it has 5k faces so would take too long to render and would need to be scaled up massively due to v's being e-3 as an example --> needs scaling 18ish
             //we also have a 3k faces duck which loads alone but not great together with stuff and as water doesnt look amazing without AA but looks alright with yellow water
-            inStream = new FileInputStream("VCG_Raytracer/models/duck.obj");
+            inStream = new FileInputStream("VCG_Raytracer/models/duck_3k.obj");
             
 
             PolygonMesh polygonMesh;
@@ -221,11 +221,11 @@ public class Main {
             polygonMesh = ObjImporter.load(
                     inStream,
                     new Phong(RgbColor.YELLOW, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, WATER),
-                    new Vec3(0f, 0f, -1.4f),
+                    new Vec3(0f, 0f, 0f),
                     new Vec3(0, -45, 0),
-                    2f);
+                    1.7f);
 
-            //renderScene.addShape(polygonMesh); //commented out to make the uploaded version easier to run for now and totally not to hide our masterpiece hehehe
+            renderScene.addShape(polygonMesh); //commented out to make the uploaded version easier to run for now and totally not to hide our masterpiece hehehe
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -246,8 +246,8 @@ public class Main {
 
             polygonMesh = ObjImporter.load(
                     inStream,
-                    new Lambert(RgbColor.GRAY),
-                    new Vec3(-3, 0.75f, -3),
+                    new Lambert(RgbColor.GREEN),//new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, AIR),
+                    new Vec3(-2.5f, 0.75f, -2.5f),
                     new Vec3(-45, 20, 0),
                     0.7f);
 
@@ -259,8 +259,8 @@ public class Main {
 
             polygonMesh = ObjImporter.load(
                     inStream,
-                    new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, GLASS),
-                    new Vec3(-4f, 6f, 1),
+                    new Lambert(RgbColor.GREEN),//new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, AIR),
+                    new Vec3(-2f, 3f, 1),
                     new Vec3(40, 0, -45),
                     0.5f);
 
@@ -274,8 +274,8 @@ public class Main {
 
             polygonMesh = ObjImporter.load(
                     inStream,
-                    new Phong(RgbColor.RED, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, DIAMOND),
-                    new Vec3(32f, 1f, -5f),
+                    new Lambert(RgbColor.GREEN),//new Phong(RgbColor.RED, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, AIR),
+                    new Vec3(1f, 0f, 0f),
                     new Vec3(-90, 0, 0),
                     0.03f);
 

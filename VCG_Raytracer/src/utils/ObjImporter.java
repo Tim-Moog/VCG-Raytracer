@@ -1,18 +1,17 @@
 package utils;
 
-import scene.material.Material;
-import scene.shape.Polygon;
-import scene.shape.PolygonMesh;
-import utils.algebra.Matrix4x4;
-import utils.algebra.Vec3;
-import utils.algebra.Vec4;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import scene.material.Material;
+import scene.shape.Polygon;
+import scene.shape.PolygonMesh;
+import utils.algebra.Matrix4x4;
+import utils.algebra.Vec3;
+import utils.algebra.Vec4;
 
 public class ObjImporter {
 
@@ -73,7 +72,9 @@ public class ObjImporter {
 
         //create a transformation matrix to apply on all polygons before saving em
         Vec4 homoPosition = new Vec4(position.x, position.y, position.z, 1);
-        Matrix4x4 transform = new Matrix4x4().translateXYZW(homoPosition).mult(Matrix4x4.rotation(rotation)).multScalar(scale);
+        Matrix4x4 transform = new Matrix4x4().multScalar(scale);
+        transform = transform.mult(Matrix4x4.rotation(rotation));
+        transform = transform.translateXYZW(homoPosition);
 
         //create a mesh to save all polygons inside of, imo cleaner than saving all of em in shapelist
         PolygonMesh polymesh = new PolygonMesh();
