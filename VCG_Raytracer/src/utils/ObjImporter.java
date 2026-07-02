@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import scene.material.Material;
+import scene.shape.BoundingBox;
 import scene.shape.Polygon;
 import scene.shape.PolygonMesh;
 import utils.algebra.Matrix4x4;
@@ -15,7 +16,7 @@ import utils.algebra.Vec4;
 
 public class ObjImporter {
 
-    public static PolygonMesh load(InputStream input, Material material, Vec3 position, Vec3 rotation, float scale) throws IOException {
+    public static BoundingBox load(InputStream input, Material material, Vec3 position, Vec3 rotation, float scale) throws IOException {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 
@@ -79,6 +80,11 @@ public class ObjImporter {
         //create a mesh to save all polygons inside of, imo cleaner than saving all of em in shapelist
         PolygonMesh polymesh = new PolygonMesh();
 
+        //additionally to the Mesh we'll need a bounding box around it to increase performance
+        //the box will be based on the min and max values of all coordinates AFTER transformations(since before wouldnt make sense else box wouldnt be where the model is)
+        Vec3 min = new Vec3();
+        Vec3 max = new Vec3();
+
         //for each face we create a polygon based off of the faces index telling us which vertices belong to it
         //additionally we transform them here since doing it after would be a pain
         for (int[] face : faces) {
@@ -86,16 +92,41 @@ public class ObjImporter {
             Vec3 v2 = transform.multVec3(vertices.get(face[1]), true);
             Vec3 v3 = transform.multVec3(vertices.get(face[2]), true);
 
+            Vec3[] transformedVertices = {v1, v2, v3};
+            updateBoundingBox(min, max, transformedVertices);
+
             polymesh.addPolygon(new Polygon(v1, v2, v3, material));
         }
 
-        return polymesh;
+        //save the bounding box inside of the mesh shape
+        BoundingBox box = new BoundingBox(polymesh, min, max);
+
+        return box;
     }
 
     //reads the index out for us to find out which vertices belong together to form a face
     // used to read stuff like f 302/353/302 (at bottom of .obj)
     private static int parseIndex(String token) {
         return Integer.parseInt(token.split("/")[0]) - 1;
+    }
+
+    private static void updateBoundingBox(Vec3 _min, Vec3 _max, Vec3[] vertices){
+        for (Vec3 vert : vertices) {
+            if(vert.x < _min.x)
+                _min.x = vert.x;
+            if(vert.x > _max.x)
+                _max.x = vert.x;
+
+            if(vert.y < _min.y)
+                _min.y = vert.y;
+            if(vert.y > _max.y)
+                _max.y = vert.y;
+
+            if(vert.z < _min.z)
+                _min.z = vert.z;
+            if(vert.z > _max.z)
+                _max.z = vert.z;
+        }
     }
 
 }

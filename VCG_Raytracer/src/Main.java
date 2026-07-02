@@ -31,7 +31,7 @@ import scene.material.Lambert;
 import scene.material.Material;
 import scene.material.Phong;
 import scene.material.Solid;
-import scene.shape.PolygonMesh;
+import scene.shape.BoundingBox;
 import ui.Window;
 import utils.ObjImporter;
 import utils.RgbColor;
@@ -210,22 +210,21 @@ public class Main {
         //renderScene.createPolygon(new Vec3(0.5f, 0, 0), new Vec3(-2, 3, 0), new Vec3(1, 1, -3), mat_lambert);
 
         InputStream inStream;
-        try { 
+        try {
             //we have stanford bunny as a file but it has 5k faces so would take too long to render and would need to be scaled up massively due to v's being e-3 as an example --> needs scaling 18ish
             //we also have a 3k faces duck which loads alone but not great together with stuff and as water doesnt look amazing without AA but looks alright with yellow water
             inStream = new FileInputStream("VCG_Raytracer/models/duck_3k.obj");
-            
 
-            PolygonMesh polygonMesh;
+            BoundingBox boxIncludingMesh;
 
-            polygonMesh = ObjImporter.load(
+            boxIncludingMesh = ObjImporter.load(
                     inStream,
                     new Phong(RgbColor.YELLOW, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, WATER),
                     new Vec3(0f, 0f, 0f),
                     new Vec3(0, -45, 0),
                     1.7f);
 
-            renderScene.addShape(polygonMesh); //commented out to make the uploaded version easier to run for now and totally not to hide our masterpiece hehehe
+            renderScene.addShape(boxIncludingMesh); //commented out to make the uploaded version easier to run for now and totally not to hide our masterpiece hehehe
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -242,29 +241,29 @@ public class Main {
             //first we put suzanne in the back left corner and make her look slightly up
             inStream = new FileInputStream("VCG_Raytracer/models/blender-suzanne.obj");
 
-            PolygonMesh polygonMesh;
+            BoundingBox boxIncludingMesh;
 
-            polygonMesh = ObjImporter.load(
+            boxIncludingMesh = ObjImporter.load(
                     inStream,
                     new Lambert(RgbColor.GREEN),//new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, AIR),
                     new Vec3(-2.5f, 0.75f, -2.5f),
                     new Vec3(-45, 20, 0),
                     0.7f);
 
-            renderScene.addShape(polygonMesh);
+            renderScene.addShape(boxIncludingMesh);
 
 
             //then we add a floating utah teapot above her
             inStream = new FileInputStream("VCG_Raytracer/models/utah_teapot.obj");
 
-            polygonMesh = ObjImporter.load(
+            boxIncludingMesh = ObjImporter.load(
                     inStream,
                     new Lambert(RgbColor.GREEN),//new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, AIR),
                     new Vec3(-2f, 3f, 1),
                     new Vec3(40, 0, -45),
                     0.5f);
 
-            renderScene.addShape(polygonMesh);
+            renderScene.addShape(boxIncludingMesh);
 
 
             //and finally we'll put a big stanford bunny to the right
@@ -272,14 +271,14 @@ public class Main {
             //normal bunny had too many faces sadly
             inStream = new FileInputStream("VCG_Raytracer/models/Bunny-LowPoly.obj");
 
-            polygonMesh = ObjImporter.load(
+            boxIncludingMesh = ObjImporter.load(
                     inStream,
                     new Lambert(RgbColor.GREEN),//new Phong(RgbColor.RED, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, AIR),
                     new Vec3(1f, 0f, 0f),
                     new Vec3(-90, 0, 0),
                     0.03f);
 
-            renderScene.addShape(polygonMesh);
+            renderScene.addShape(boxIncludingMesh);
 
 
         } catch (Exception e) {

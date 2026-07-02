@@ -10,12 +10,13 @@ public abstract class Shape extends SceneObject {
     protected Vec3 position;
     protected Material material;
 
+    //had to add this for Boundingbox
+    public Shape(){};
 
     public Shape (Vec3 _position, Material _material) {
         this.position = _position;
         this.material = _material;
     }
-
     
     //prob another place for polymorphism
     public abstract Intersection intersect(Ray checkRay);
