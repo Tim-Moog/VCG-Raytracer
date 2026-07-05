@@ -15,6 +15,7 @@ public class Polygon extends Shape{ //cant do extend plane here unless we wanna 
     //optional, used for texture mapping
     protected Vec2 uv1, uv2, uv3;//will for now try and calc a medium between the 3 instead to have 1 color per poly to avoid having to do baryzentric coordinates for now
     //will leave this here for future tho
+    //update: we dont use these for now and instead calc the avg outside and use avg for polygon diffuse color since i didnt wanna rewrite whole intersect method to barycentric coords system for now
 
     public Polygon(Vec3 pos1, Vec3 pos2, Vec3 pos3, Material material) {
         super(pos1, material); //this can be any corner pos shouldnt matter which

@@ -22,18 +22,6 @@ public abstract class Material {
     protected float transmission_index = 1; // final variables set in Main, provided at instantiation
     protected BufferedImage diffuseTextureMap;
 
-    public BufferedImage getDiffuseTextureMap() {
-        return diffuseTextureMap;
-    }
-
-    public void setDiffuseTextureMap(BufferedImage diffuseTextureMap) {
-        this.diffuseTextureMap = diffuseTextureMap;
-    }
-
-    public void setDiffuseK(RgbColor  _diffuseK){
-        this.diffuseK = _diffuseK;
-    }
-
     /** 
      * Standard Material class without any added effects
     */
@@ -228,4 +216,21 @@ public abstract class Material {
         _intersection.setTransmissionRay(vOutRay);
     }
 
+
+    //extra stuff for texture mapping
+    public BufferedImage getDiffuseTextureMap() {
+        return diffuseTextureMap;
+    }
+
+    public void setDiffuseTextureMap(BufferedImage diffuseTextureMap) {
+        this.diffuseTextureMap = diffuseTextureMap;
+    }
+
+    //setter to set full polygon color off of avg UV for now
+    public void setDiffuseK(RgbColor  _diffuseK){
+        this.diffuseK = _diffuseK;
+    }
+
+    //copy method cuz we cant use one mat for each poly we gotta copy it and edit the copy
+    public abstract Material copy();
 }

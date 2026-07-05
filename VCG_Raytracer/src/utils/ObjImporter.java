@@ -45,9 +45,9 @@ public class ObjImporter {
 
                 String[] s = line.split("\\s+");
 
-                float x = (float) Double.parseDouble(s[1]);
-                float y = (float) Double.parseDouble(s[2]);
-                float z = (float) Double.parseDouble(s[3]);
+                float x = Float.parseFloat(s[1]);
+                float y = Float.parseFloat(s[2]);
+                float z = Float.parseFloat(s[3]);
 
                 vertices.add(new Vec3(x, y, z));
             }
@@ -140,8 +140,7 @@ public class ObjImporter {
 
         //need one array for the vertices/corners and one for the faces
         List<Vec3> vertices = new ArrayList<>();
-        List<int[]> faces = new ArrayList<>();
-        //type int[] to pair index slots so that 3 vertices can belong to each face
+        List<String[]> faces = new ArrayList<>();
         List<String> faceMatNames = new ArrayList<>();
         List<Vec2> textureCoords = new ArrayList<>();
         
@@ -170,24 +169,24 @@ public class ObjImporter {
 
             //------ vertice textures ---------------
             //save all vertice textures in another array so that we can go through those with the same index later 
-            if(line.startsWith("vt")){
+            else if(line.startsWith("vt")){
                 String[] s = line.split("\\s+");
 
-                float u = (float) Double.parseDouble(s[1]);
-                float v = (float) Double.parseDouble(s[2]);
+                float u = Float.parseFloat(s[1]);
+                float v = Float.parseFloat(s[2]);
 
                 textureCoords.add(new Vec2(u, v));
             }
 
             //------------ vertices(corners) ---------------------------
             //look for vertices aka lines starting with v
-            if (line.startsWith("v ")) {
+            else if (line.startsWith("v ")) {
 
                 String[] s = line.split("\\s+");
 
-                float x = (float) Double.parseDouble(s[1]);
-                float y = (float) Double.parseDouble(s[2]);
-                float z = (float) Double.parseDouble(s[3]);
+                float x = Float.parseFloat(s[1]);
+                float y = Float.parseFloat(s[2]);
+                float z = Float.parseFloat(s[3]);
 
                 vertices.add(new Vec3(x, y, z));
             }
@@ -202,13 +201,8 @@ public class ObjImporter {
                 if (s.length != 4)
                     continue;
 
-                //grab the index info
-                int i1 = parseIndex(s[1]);
-                int i2 = parseIndex(s[2]);
-                int i3 = parseIndex(s[3]);
-
-                //based on index info we find out which vertices together build a face
-                faces.add(new int[]{i1, i2, i3});
+                //we can grab this directly dont need the inbetween if we save as string and not int
+                faces.add(new String[]{s[1], s[2], s[3]});
                 faceMatNames.add(currentMatName);
             }
         }
@@ -229,50 +223,52 @@ public class ObjImporter {
         Vec3 min = new Vec3();
         Vec3 max = new Vec3();
 
-        //for each face we create a polygon based off of the faces index telling us which vertices belong to it
-        //additionally we transform them here since doing it after would be a pain
-        /*for (int[] face : faces) {
-            Vec3 v1 = transform.multVec3(vertices.get(face[0]), true);
-            Vec3 v2 = transform.multVec3(vertices.get(face[1]), true);
-            Vec3 v3 = transform.multVec3(vertices.get(face[2]), true);
-
-            Vec3[] transformedVertices = {v1, v2, v3};
-            updateBoundingBox(min, max, transformedVertices);
-
-            polymesh.addPolygon(new Polygon(v1, v2, v3, newMat));
-        }*/
 
         //need a different loop here prob a for loop to be able to use the index in both array
         for(int i=0; i < faces.size(); i++){
             //get current face
-            int[] face = faces.get(i);
+            String[] face = faces.get(i);
+
 
             //get current mat
             String matName = faceMatNames.get(i);
-            Material mat = allMats.get(matName);
+            Material mat = allMats.get(matName);//this is the variable we'll base stuff off of
+            Material polygonMat = mat; //this is the variable we'll overwrite again and again
 
             //maybe here try and calc diffuse off of map if map exists
             if(mat.getDiffuseTextureMap() != null){
-                Vec2 uv1 = textureCoords.get(face[0]);
-                Vec2 uv2 = textureCoords.get(face[1]);
-                Vec2 uv3 = textureCoords.get(face[2]);
+
+                int t1 = parseTextureIndex(face[0]);
+                int t2 = parseTextureIndex(face[1]);
+                int t3 = parseTextureIndex(face[2]);
+
+                Vec2 uv1 = textureCoords.get(t1);
+                Vec2 uv2 = textureCoords.get(t2);
+                Vec2 uv3 = textureCoords.get(t3);
                 Vec2 uvAvg = new Vec2((uv1.x + uv2.x + uv3.x) /3f, (uv1.y + uv2.y + uv3.y) /3f);
                 //das sind dann unsere texture coords fürs gesamte polygon
 
+                //we gotta make a copy of the mat since theres only one instance of it and we're basically just copying the save slot marker(think oop)
+                //so hence why we now got a copy method
+                polygonMat = mat.copy();
                 RgbColor colorAtAvg = sampleUV(mat.getDiffuseTextureMap(), uvAvg);
-                mat.setDiffuseK(colorAtAvg);
+                polygonMat.setDiffuseK(colorAtAvg);
             }
             
 
+            // Vertexindizes
+            int i1 = parseVertexIndex(face[0]);
+            int i2 = parseVertexIndex(face[1]);
+            int i3 = parseVertexIndex(face[2]);
 
-            Vec3 v1 = transform.multVec3(vertices.get(face[0]), true);
-            Vec3 v2 = transform.multVec3(vertices.get(face[1]), true);
-            Vec3 v3 = transform.multVec3(vertices.get(face[2]), true);
+            Vec3 v1 = transform.multVec3(vertices.get(i1), true);
+            Vec3 v2 = transform.multVec3(vertices.get(i2), true);
+            Vec3 v3 = transform.multVec3(vertices.get(i3), true);
 
             Vec3[] transformedVertices = {v1, v2, v3};
             updateBoundingBox(min, max, transformedVertices);
 
-            polymesh.addPolygon(new Polygon(v1, v2, v3, mat));
+            polymesh.addPolygon(new Polygon(v1, v2, v3, polygonMat));
         }
 
         //save the bounding box inside of the mesh shape
@@ -283,18 +279,36 @@ public class ObjImporter {
 
     private static RgbColor sampleUV(BufferedImage image, Vec2 uvCoords){
         int x = (int)(uvCoords.x * (image.getWidth() - 1));
-        int y = (int)((1 - uvCoords.y) * (image.getHeight() - 1)); // weil Bilder meist oben beginnen
+        int y = (int)((1 - uvCoords.y) * (image.getHeight() - 1)); 
+        //1 - at start due to pictures starting in top left
 
+        //getRGB method just exists but gives it back as int in Bit form
+        //gives us 32Bit ARGB each 8Bit like in rechner architektur & netze
         int rgb = image.getRGB(x, y);
 
+        //we move the bits to the right to isolate them and then do a & check with 0xFF
+        //0xFF = 00000000 00000000 00000000 11111111 -> result only far right byte gets through so only the color we want
+        //Red is 2nd Byte ^^^^^^^^  so we need to move 16bit right to only look at it
+        //Green is 3rd Byte        ^^^^^^^^ so we need to move 8bit right
+        //Blue is last Byte                 ^^^^^^^^ dont need to move at all 
         int r = (rgb >> 16) & 0xFF;
         int g = (rgb >> 8) & 0xFF;
         int b = rgb & 0xFF;
 
+        //then each divided by 255 due to 8Bit resulting in a max of 255 and we want a float value for our RgbColor
         return new RgbColor(
             r / 255f,
             g / 255f,
             b / 255f
         );
     }
+
+    private static int parseVertexIndex(String token) {
+        return Integer.parseInt(token.split("/")[0]) - 1;
+    }
+
+    private static int parseTextureIndex(String token) {
+        return Integer.parseInt(token.split("/")[1]) - 1;
+    }
+
 }

@@ -90,4 +90,15 @@ public class Phong extends Material {
         return output;
     }
 
+
+    //basic copy method needed for texture mapping
+    public Phong copy(){
+        Phong copy;
+
+        copy = new Phong(diffuseK, specularK, specularExponent, reflection, transmission, transmission_index);
+        if(this.getDiffuseTextureMap() != null)
+            copy.setDiffuseTextureMap(diffuseTextureMap);
+        
+        return copy;
+    }
 }

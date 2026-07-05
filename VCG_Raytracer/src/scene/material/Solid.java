@@ -20,4 +20,8 @@ public class Solid extends Material {
     public RgbColor getColor(Intersection _intersection, Scene _scene, int _depth){
         return this.colorOverride;
     }
+
+    public Material copy(){
+        return new Solid();
+    }
 }

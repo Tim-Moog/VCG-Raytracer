@@ -71,4 +71,15 @@ public class Lambert extends Material {
         }
         return output;
     }
+
+    //basic copy method needed for texture mapping
+    public Lambert copy(){
+        Lambert copy;
+
+        copy = new Lambert(diffuseK, reflection, transmission, transmission_index);
+        if(this.getDiffuseTextureMap() != null)
+            copy.setDiffuseTextureMap(diffuseTextureMap);
+
+        return copy;
+    }
 }
