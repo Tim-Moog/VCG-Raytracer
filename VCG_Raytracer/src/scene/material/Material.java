@@ -1,5 +1,6 @@
 package scene.material;
 
+import java.awt.image.BufferedImage;
 import raytracer.Ray;
 import scene.Scene;
 import scene.shape.Intersection;
@@ -19,6 +20,19 @@ public abstract class Material {
     protected float reflection = 0; //between 0 and 1
     protected float transmission = 0; //between 0 and 1
     protected float transmission_index = 1; // final variables set in Main, provided at instantiation
+    protected BufferedImage diffuseTextureMap;
+
+    public BufferedImage getDiffuseTextureMap() {
+        return diffuseTextureMap;
+    }
+
+    public void setDiffuseTextureMap(BufferedImage diffuseTextureMap) {
+        this.diffuseTextureMap = diffuseTextureMap;
+    }
+
+    public void setDiffuseK(RgbColor  _diffuseK){
+        this.diffuseK = _diffuseK;
+    }
 
     /** 
      * Standard Material class without any added effects

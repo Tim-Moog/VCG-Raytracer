@@ -62,14 +62,14 @@ public class Main {
 
     /** RAYTRACER **/
 
-    static final int RECURSIONS = 5;
-    static final int ANTI_ALIASING = (int) Math.pow(3, 2); // only valid AA values are 1 and any number whose sqr root
+    static final int RECURSIONS = 4;
+    static final int ANTI_ALIASING = (int) Math.pow(1, 2); // only valid AA values are 1 and any number whose sqr root
                                                            // results a whole number
     static final boolean USE_SOFT_SHADOWS = false;
 
     /** LIGHT **/
     static final short LIGHT_DENSITY = 20;
-    static final short LIGHT_SAMPLES = (short) Math.pow(3, 2);// only valid AA values are 1 and any number whose sqr
+    static final short LIGHT_SAMPLES = (short) Math.pow(1, 2);// only valid AA values are 1 and any number whose sqr
                                                               // root results a whole number
 
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
@@ -194,6 +194,9 @@ public class Main {
         // renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_lambert);
         // renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong);
 
+        //renderScene.createSphere(new Vec3(-2.5f, 0.75f, -2f), 0.75f, new Phong(RgbColor.YELLOW, new RgbColor(0.8f, 1f, 0.8f), 18, 0.5f, 0f));
+        //renderScene.createSphere(new Vec3(2.5f, 1.25f, 1f), 1.25f, new Phong(RgbColor.YELLOW, new RgbColor(0.8f, 1f, 0.8f), 18, 1f, 0f));
+
         // testing square
         // renderScene.createSquare(2, new Vec3(-1.5f, 3.5f, 0f), new Vec3(1f, 0.5f,
         // 0.5f), new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
@@ -209,6 +212,7 @@ public class Main {
 
         //renderScene.createPolygon(new Vec3(0.5f, 0, 0), new Vec3(-2, 3, 0), new Vec3(1, 1, -3), mat_lambert);
 
+        /* 
         InputStream inStream;
         try {
             //we have stanford bunny as a file but it has 5k faces so would take too long to render and would need to be scaled up massively due to v's being e-3 as an example --> needs scaling 18ish
@@ -222,6 +226,29 @@ public class Main {
                     new Phong(RgbColor.YELLOW, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, WATER),
                     new Vec3(0f, 0f, 0f),
                     new Vec3(0, -45, 0),
+                    1.7f);
+
+            renderScene.addShape(boxIncludingMesh); //commented out to make the uploaded version easier to run for now and totally not to hide our masterpiece hehehe
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            System.err.println("Error: somethign went wrong at .obj import");
+        }*/
+
+        
+        InputStream inStream;
+        InputStream matInStream;
+        try {
+            inStream = new FileInputStream("VCG_Raytracer/models/duck_test2.obj");
+            matInStream = new FileInputStream("VCG_Raytracer/models/mats/duck_test2.mtl");
+
+            BoundingBox boxIncludingMesh;
+
+            boxIncludingMesh = ObjImporter.loadWithTextures(
+                    inStream,
+                    matInStream,//new Lambert(RgbColor.CYAN),
+                    new Vec3(0f, 0f, -2f),
+                    new Vec3(-90, -45, 0),
                     1.7f);
 
             renderScene.addShape(boxIncludingMesh); //commented out to make the uploaded version easier to run for now and totally not to hide our masterpiece hehehe
@@ -302,7 +329,7 @@ public class Main {
         // right
         renderScene.createPlane(new Vec3(4, 0, 0), new Vec3(-1f, 0f, 0f), new Lambert(RgbColor.BLUE));
         // bot, top, back
-        renderScene.createPlane(new Vec3(0, 0, 0), new Vec3(0f, 1f, 0f), new Lambert(RgbColor.WHITE));
+        renderScene.createPlane(new Vec3(0, 0, 0), new Vec3(0f, 1f, 0f), new Lambert(RgbColor.WHITE));//, 0.5f, 0f));
         renderScene.createPlane(new Vec3(0, 6, 0), new Vec3(0f, -1f, 0f), new Lambert(RgbColor.WHITE));
         renderScene.createPlane(new Vec3(0, 0, -4), new Vec3(0f, 0f, 1f), new Lambert(RgbColor.WHITE));
         // behind cam
