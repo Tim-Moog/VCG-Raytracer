@@ -53,8 +53,8 @@ public class Main {
 
     /** RESOLUTION **/
 
-    static final int IMAGE_WIDTH = 800;
-    static final int IMAGE_HEIGHT = 600;
+    static final int IMAGE_WIDTH = 1920;
+    static final int IMAGE_HEIGHT = 1080;
 
     /** CORNELL_BOX_DIMENSION **/
 
@@ -62,14 +62,14 @@ public class Main {
 
     /** RAYTRACER **/
 
-    static final int RECURSIONS = 4;
-    static final int ANTI_ALIASING = (int) Math.pow(1, 2); // only valid AA values are 1 and any number whose sqr root
+    static final int RECURSIONS = 6;
+    static final int ANTI_ALIASING = (int) Math.pow(5, 2); // only valid AA values are 1 and any number whose sqr root
                                                            // results a whole number
     static final boolean USE_SOFT_SHADOWS = false;
 
     /** LIGHT **/
     static final short LIGHT_DENSITY = 20;
-    static final short LIGHT_SAMPLES = (short) Math.pow(1, 2);// only valid AA values are 1 and any number whose sqr
+    static final short LIGHT_SAMPLES = (short) Math.pow(4, 2);// only valid AA values are 1 and any number whose sqr
                                                               // root results a whole number
 
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
@@ -79,7 +79,7 @@ public class Main {
     // careful: now that the square is set inside of AreaLight be careful not to put
     // the light too close to the ceiling, else the square might get placed outside
     // our cornell box
-    static final Vec3 LIGHT_POSITION = new Vec3(0, 5.9f, 0);
+    static final Vec3 LIGHT_POSITION = new Vec3(0, 5.9f, 1);
     static final short AREA_LIGHT_SIZE = 1;
 
     /** GI **/
@@ -87,7 +87,7 @@ public class Main {
     static final int GI_LEVEL = 0;
     static final int GI_SAMPLES = 0;
 
-    static final RgbColor LIGHT_COLOR = new RgbColor(0.7f, 0.7f, 0.7f);
+    static final RgbColor LIGHT_COLOR = new RgbColor(1f, 0.95f, 1f);
     static final RgbColor AMBIENT_LIGHT = new RgbColor(0.12f, 0.1f, 0.15f);
 
     static final boolean USE_AO = false;
@@ -100,7 +100,7 @@ public class Main {
     static final Vec3 LOOK_AT = new Vec3(0, 3, 0);
     static final Vec3 UP_VECTOR = new Vec3(0, 1, 0);
 
-    static final float VIEW_ANGLE = 70;
+    static final float VIEW_ANGLE = 60;
 
     /** MATERIAL - REFRECTIVE INDICES **/
 
@@ -111,7 +111,7 @@ public class Main {
 
     /** DEBUG **/
     // this gets rid of the debug info on the bottom of the window
-    static final boolean SHOW_PARAM_LABEL = true;
+    static final boolean SHOW_PARAM_LABEL = false;
 
     /** Initial method. This is where the show begins. **/
     public static void main(String[] args) {
@@ -147,18 +147,7 @@ public class Main {
     }
 
     private static void setupLights(Scene renderScene) {
-        // Lights - task 3
-        // renderScene.createPointLight(new Vec3 (-2.5f,2.5f,4), new
-        // RgbColor(0.3f,0.7f,0.3f));
-        // renderScene.createPointLight(new Vec3 (3f,2.5f,3), new
-        // RgbColor(0.7f,0.3f,0.3f));
-        // renderScene.createPointLight(new Vec3 (-2.5f,5f,2), new
-        // RgbColor(0.3f,0.3f,0.7f));
 
-        // Lights - task 4
-        // renderScene.createPointLight(LIGHT_POSITION, LIGHT_COLOR);
-
-        // Lights - task 6
         renderScene.createAreaLight(renderScene, LIGHT_SAMPLES, AREA_LIGHT_SIZE, LIGHT_POSITION, LIGHT_COLOR, 3.5f);
 
     }
@@ -176,66 +165,17 @@ public class Main {
 
     private static void setupObjects(Scene renderScene) {
 
-        // Materials
-        Material mat_lambert = new Lambert(new RgbColor(0.6f, 0.2f, 0.5f));
-        Material mat_lambert_shiny = new Lambert(RgbColor.PURPLE, 0.6f, 0f);
+        Material test = new Lambert(RgbColor.GREEN, 0f, 0f);
 
-        Material mat_phong = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 0.8f, 0.8f), 8);
-        Material mat_phong_shiny = new Phong(RgbColor.GREEN, new RgbColor(0.8f, 1f, 0.8f), 18, 0f, 1f);
+        Material phong_red = new Phong(RgbColor.RED, new RgbColor(1f, 0.8f, 0.8f), 4);
+        Material phong_blue = new Phong(RgbColor.BLUE, new RgbColor(0.8f, 0.8f, 1f), 20, 0.2f, 0f);
 
-        Material mat_lamp = new Solid();
+        Material lambert_trans = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 1, 0f, 0f, GLASS);
 
-        Material mat_phong_transparent = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, DIAMOND);
+        //renderScene.createSphere(new Vec3(-3f, 1f, -1f), 1f, phong_red);
+        //renderScene.createSphere(new Vec3(-1f, 0.75f, -1.5f), 0.75f, phong_blue);
+        //renderScene.createCubeTower(1.2f, new Vec3(1,0.6f,-1), lambert_trans);
 
-        // Objects
-        // renderScene.createSphere(new Vec3(1.2f,1f,-1.5f), 1f, mat_phong_shiny);
-        // renderScene.createSphere(new Vec3(-1f,1.0f,0f), 1.0f, mat_phong_transparent);
-
-        // renderScene.createSphere(new Vec3(1.2f,1f,-1), 1f, mat_lambert);
-        // renderScene.createSphere(new Vec3(-1f,0.5f,0.1f), 0.5f, mat_phong);
-
-        //renderScene.createSphere(new Vec3(-2.5f, 0.75f, -2f), 0.75f, new Phong(RgbColor.YELLOW, new RgbColor(0.8f, 1f, 0.8f), 18, 0.5f, 0f));
-        //renderScene.createSphere(new Vec3(2.5f, 1.25f, 1f), 1.25f, new Phong(RgbColor.YELLOW, new RgbColor(0.8f, 1f, 0.8f), 18, 1f, 0f));
-
-        // testing square
-        // renderScene.createSquare(2, new Vec3(-1.5f, 3.5f, 0f), new Vec3(1f, 0.5f,
-        // 0.5f), new Phong(RgbColor.RED, new RgbColor(0.8f, 0.8f, 0.8f), 8));
-        // renderScene.createCube(1f, new Vec3(-2f, 0.5f, 0f));
-        // renderScene.createCube(1f, new Vec3(-2.5f, 1.5f, -2f),mat_phong);
-        // renderScene.createCube(1f, new Vec3(-2.5f, 2.5f, -2f),new
-        // Phong(RgbColor.CYAN, new RgbColor(0.8f, 0.8f, 0.8f), 8));
-        // renderScene.createCube(1f, new Vec3(-2.5f, 0.5f,
-        // -2.5f),mat_phong_transparent);
-
-        // cube tower test
-        // renderScene.createCubeTower(1f, new Vec3(-2, 0.5f, -1.5f), mat_phong_shiny);
-
-        //renderScene.createPolygon(new Vec3(0.5f, 0, 0), new Vec3(-2, 3, 0), new Vec3(1, 1, -3), mat_lambert);
-
-        /* 
-        InputStream inStream;
-        try {
-            //we have stanford bunny as a file but it has 5k faces so would take too long to render and would need to be scaled up massively due to v's being e-3 as an example --> needs scaling 18ish
-            //we also have a 3k faces duck which loads alone but not great together with stuff and as water doesnt look amazing without AA but looks alright with yellow water
-            inStream = new FileInputStream("VCG_Raytracer/models/duck_3k.obj");
-
-            BoundingBox boxIncludingMesh;
-
-            boxIncludingMesh = ObjImporter.load(
-                    inStream,
-                    new Phong(RgbColor.YELLOW, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, WATER),
-                    new Vec3(0f, 0f, 0f),
-                    new Vec3(0, -45, 0),
-                    1.7f);
-
-            renderScene.addShape(boxIncludingMesh); //commented out to make the uploaded version easier to run for now and totally not to hide our masterpiece hehehe
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            System.err.println("Error: somethign went wrong at .obj import");
-        }*/
-
-        
         InputStream inStream;
         InputStream matInStream;
         try {
@@ -296,7 +236,7 @@ public class Main {
             //and finally we'll put a big stanford bunny to the right
             //notes for low poly bunny - rotate x-90 for it to sit upright and needs to be scaled down to like 0.02f due to it being massive
             //normal bunny had too many faces sadly
-            inStream = new FileInputStream("VCG_Raytracer/models/Bunny-LowPoly.obj");
+            inStream = new FileInputStream("VCG_Raytracer/models/utah_teapot.obj");
 
             boxIncludingMesh = ObjImporter.load(
                     inStream,
@@ -325,13 +265,13 @@ public class Main {
         // there should be a square to make symbolise the lightsource position
 
         // left
-        renderScene.createPlane(new Vec3(-4, 0, 0), new Vec3(1f, 0f, 0f), new Lambert(RgbColor.RED));
+        renderScene.createPlane(new Vec3(-6, 0, 0), new Vec3(1f, 0f, 0f), new Lambert(RgbColor.RED));
         // right
-        renderScene.createPlane(new Vec3(4, 0, 0), new Vec3(-1f, 0f, 0f), new Lambert(RgbColor.BLUE));
+        renderScene.createPlane(new Vec3(6, 0, 0), new Vec3(-1f, 0f, 0f), new Lambert(RgbColor.BLUE));
         // bot, top, back
         renderScene.createPlane(new Vec3(0, 0, 0), new Vec3(0f, 1f, 0f), new Lambert(RgbColor.WHITE));//, 0.5f, 0f));
         renderScene.createPlane(new Vec3(0, 6, 0), new Vec3(0f, -1f, 0f), new Lambert(RgbColor.WHITE));
-        renderScene.createPlane(new Vec3(0, 0, -4), new Vec3(0f, 0f, 1f), new Lambert(RgbColor.WHITE));
+        renderScene.createPlane(new Vec3(0, 0, -3), new Vec3(0f, 0f, 1f), new Lambert(RgbColor.WHITE));
         // behind cam
         renderScene.createPlane(new Vec3(0, 0, 6), new Vec3(0f, 0f, -1f), new Lambert(RgbColor.WHITE));
     }
