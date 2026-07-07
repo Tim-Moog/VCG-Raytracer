@@ -141,7 +141,7 @@ public class Main {
 
         setupObjects(renderScene);
 
-        // setupExtras(renderScene); //dont enable this unless you want slooooowwwwwww
+        //setupExtras(renderScene); //dont enable this unless you want slooooowwwwwww
         // load
 
         setupLights(renderScene);
@@ -278,11 +278,11 @@ public class Main {
         InputStream inStream;
         try {
             // first we put suzanne in the back left corner and make her look slightly up
-            inStream = new FileInputStream("VCG_Raytracer/models/blender-suzanne.obj");
+            //inStream = new FileInputStream("VCG_Raytracer/models/blender-suzanne.obj");
 
             BoundingBox boxIncludingMesh;
 
-            boxIncludingMesh = ObjImporter.load(
+            /*boxIncludingMesh = ObjImporter.load(
                     inStream,
                     new Lambert(RgbColor.GREEN), // new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f,
                                                  // 0.8f, AIR),
@@ -319,7 +319,7 @@ public class Main {
                     new Vec3(-90, 0, 0),
                     0.03f);
 
-            renderScene.addShape(boxIncludingMesh);
+            renderScene.addShape(boxIncludingMesh);*/
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
