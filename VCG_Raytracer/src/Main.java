@@ -63,13 +63,13 @@ public class Main {
     /** RAYTRACER **/
 
     static final int RECURSIONS = 8;
-    static final int ANTI_ALIASING = (int) Math.pow(1, 2); // only valid AA values are 1 and any number whose sqr root
+    static final int ANTI_ALIASING = (int) Math.pow(4, 2); // only valid AA values are 1 and any number whose sqr root
                                                            // results a whole number
     static final boolean USE_SOFT_SHADOWS = false;
 
     /** LIGHT **/
     static final short LIGHT_DENSITY = 20;
-    static final short LIGHT_SAMPLES = (short) Math.pow(1, 2);// only valid AA values are 1 and any number whose sqr
+    static final short LIGHT_SAMPLES = (short) Math.pow(7, 2);// only valid AA values are 1 and any number whose sqr
                                                               // root results a whole number
 
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
@@ -87,7 +87,7 @@ public class Main {
     static final int GI_LEVEL = 0;
     static final int GI_SAMPLES = 0;
 
-    static final RgbColor LIGHT_COLOR = new RgbColor(0.8f, 0.8f, 0.8f);
+    static final RgbColor LIGHT_COLOR = new RgbColor(0.9f, 0.9f, 0.9f);
     static final RgbColor AMBIENT_LIGHT = new RgbColor(0.12f, 0.1f, 0.15f);
 
     static final boolean USE_AO = false;
