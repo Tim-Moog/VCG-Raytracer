@@ -62,8 +62,8 @@ public class Main {
 
     /** RAYTRACER **/
 
-    static final int RECURSIONS = 6;
-    static final int ANTI_ALIASING = (int) Math.pow(1, 2); // only valid AA values are 1 and any number whose sqr root
+    static final int RECURSIONS = 8;
+    static final int ANTI_ALIASING = (int) Math.pow(5, 2); // only valid AA values are 1 and any number whose sqr root
                                                            // results a whole number
     static final boolean USE_SOFT_SHADOWS = false;
 
@@ -213,7 +213,7 @@ public class Main {
 
             BoundingBox boxIncludingMesh;
 
-            /*
+            
             boxIncludingMesh = ObjImporter.load(
                     inStream,
                     new Phong(new RgbColor(0.9f, 0.8f, 0.1f), new RgbColor(1,1,0), 8, 0.15f, 0),
@@ -223,9 +223,9 @@ public class Main {
                     0.7f);
 
             renderScene.addShape(boxIncludingMesh);
-            */
+           
 
-            /* 
+
             //then we add a floating utah teapot above her
             inStream = new FileInputStream("vcg-framework-2026-gruppe-c/VCG_Raytracer/models/utah_teapot.obj");
 
@@ -238,7 +238,7 @@ public class Main {
                     0.5f);
 
             renderScene.addShape(boxIncludingMesh);
-            */
+            
 
             
             //and finally we'll put a big stanford bunny to the right
@@ -248,7 +248,7 @@ public class Main {
 
             boxIncludingMesh = ObjImporter.load(
                     inStream,
-                    new Lambert(new RgbColor(0.5f, 0.25f, 0.1f), 0.3f, 0.2f, DIAMOND),
+                    new Lambert(new RgbColor(0.5f, 0.25f, 0.1f), 0.3f, 0.4f, DIAMOND),
                     //new Lambert(RgbColor.GREEN),//new Phong(RgbColor.RED, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, AIR),
                     new Vec3(1f, 0f, -1.5f),
                     new Vec3(-90, 0, 0),
@@ -278,9 +278,9 @@ public class Main {
         // right
         renderScene.createPlane(new Vec3(6, 0, 0), new Vec3(-1f, 0f, 0f), new Lambert(RgbColor.BLUE, 0f, 0));
         // bot, top, back
-        renderScene.createPlane(new Vec3(0, 0, 0), new Vec3(0f, 1f, 0f), new Lambert(RgbColor.WHITE, 0f, 0f));//, 0.5f, 0f));
+        renderScene.createPlane(new Vec3(0, 0, 0), new Vec3(0f, 1f, 0f), new Lambert(RgbColor.WHITE, 0.25f, 0f));//, 0.5f, 0f));
         renderScene.createPlane(new Vec3(0, 6, 0), new Vec3(0f, -1f, 0f), new Lambert(RgbColor.WHITE));
-        renderScene.createPlane(new Vec3(0, 0, -6), new Vec3(0f, 0f, 1f), new Lambert(RgbColor.WHITE));
+        renderScene.createPlane(new Vec3(0, 0, -6), new Vec3(0f, 0f, 1f), new Lambert(RgbColor.WHITE, 0f, 0));
         // behind cam
         renderScene.createPlane(new Vec3(0, 0, 6), new Vec3(0f, 0f, -1f), new Lambert(RgbColor.WHITE));
     }
