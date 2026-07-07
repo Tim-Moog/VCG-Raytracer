@@ -18,7 +18,7 @@ import utils.algebra.Vec3;
 public class MtlImporter {
 
 
-    public static Map<String, Material> loadMats(InputStream input) throws IOException{
+    public static Map<String, Material> loadMats(InputStream input, String modelName) throws IOException{
 
         Map<String, Material> allMats = new HashMap<>();
 
@@ -130,7 +130,7 @@ public class MtlImporter {
 
                 case "Ni" -> transmission_index = Float.parseFloat(s[1]);
 
-                case "map_Kd" -> textureMap = ImageIO.read(new FileInputStream("VCG_Raytracer/models/mats/" + s[1]));
+                case "map_Kd" -> textureMap = ImageIO.read(new FileInputStream("VCG_Raytracer/models/mats/" + modelName + "/" + s[1]));
             }
         }
 

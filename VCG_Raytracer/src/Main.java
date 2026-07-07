@@ -63,13 +63,13 @@ public class Main {
     /** RAYTRACER **/
 
     static final int RECURSIONS = 4;
-    static final int ANTI_ALIASING = (int) Math.pow(5, 2); // only valid AA values are 1 and any number whose sqr root
+    static final int ANTI_ALIASING = (int) Math.pow(1, 2); // only valid AA values are 1 and any number whose sqr root
                                                            // results a whole number
     static final boolean USE_SOFT_SHADOWS = false;
 
     /** LIGHT **/
     static final short LIGHT_DENSITY = 20;
-    static final short LIGHT_SAMPLES = (short) Math.pow(7, 2);// only valid AA values are 1 and any number whose sqr
+    static final short LIGHT_SAMPLES = (short) Math.pow(1, 2);// only valid AA values are 1 and any number whose sqr
                                                               // root results a whole number
 
     static final RgbColor BACKGROUND_COLOR = RgbColor.BLACK;
@@ -184,12 +184,14 @@ public class Main {
         Material diamond = new Phong(RgbColor.BLUE, new RgbColor(1f, 1f, 1f), 20, 0f, 0.9f, DIAMOND);
         Material reflection = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 1, 1f, 0f);
 
-        renderScene.createSphere(new Vec3(-1.2f, 1f, -2f), 1f, reflection);
-        renderScene.createSphere(new Vec3(1f, 1f, -1f), 1f, glass);
+        renderScene.createSphere(new Vec3(-2.5f, 1f, 0f), 1f, glass);
+        renderScene.createSphere(new Vec3(2.5f, 3f, -1f), 1f, reflection);
         //renderScene.createSphere(new Vec3(-0.1f, 1.8f, 0f), 1f, diamond);
         //renderScene.createSphere(new Vec3(-1f, 0.75f, -1.5f), 0.75f, phong_blue);
         //renderScene.createCubeTower(1.2f, new Vec3(1,0.6f,-1), lambert_trans);
 
+        addEarth(renderScene);
+        
         /* 
         InputStream inStream;
         InputStream matInStream;
@@ -215,6 +217,31 @@ public class Main {
         }*/
 
         System.err.println(renderScene.getShapes().size());
+    }
+
+    public static void addEarth(Scene myScene){
+        InputStream inStream;
+        InputStream matInStream;
+
+        try {
+            inStream = new FileInputStream("VCG_Raytracer/models/earth.obj");
+            matInStream = new FileInputStream("VCG_Raytracer/models/mats/earth/earth.mtl");
+            BoundingBox boxIncMesh;
+
+            boxIncMesh = ObjImporter.loadWithTextures(
+                                        inStream,
+                                        matInStream, 
+                                        "earth",
+                                        new Vec3(0, 2, -1), 
+                                        new Vec3(0, 0, 0), 
+                                        0.01f);
+
+            myScene.addShape(boxIncMesh);
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     // for live showcases change the materials to lambert gray or phong air(fastest

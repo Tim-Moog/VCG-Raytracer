@@ -134,7 +134,7 @@ public class ObjImporter {
 
 
     //trying to make a 2nd version where we dont input material and instead it takes it from a .mtl file
-    public static BoundingBox loadWithTextures(InputStream input, InputStream matInput, Vec3 position, Vec3 rotation, float scale) throws IOException {
+    public static BoundingBox loadWithTextures(InputStream input, InputStream matInput, String modelPathFolderName, Vec3 position, Vec3 rotation, float scale) throws IOException {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 
@@ -145,7 +145,7 @@ public class ObjImporter {
         List<Vec2> textureCoords = new ArrayList<>();
         
 
-        Map<String, Material> allMats = MtlImporter.loadMats(matInput);
+        Map<String, Material> allMats = MtlImporter.loadMats(matInput, modelPathFolderName);
 
         String line;
         String currentMatName = "";
