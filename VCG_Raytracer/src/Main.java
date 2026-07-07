@@ -173,7 +173,7 @@ public class Main {
         Material reflection = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 1, 1f, 0f);
 
         renderScene.createSphere(new Vec3(-1.2f, 1f, -2f), 1f, reflection);
-        renderScene.createSphere(new Vec3(1f, 1f, -1f), 1f, glass);
+        renderScene.createSphere(new Vec3(1f, 1f, -1f), 1f, reflection);
         //renderScene.createSphere(new Vec3(-0.1f, 1.8f, 0f), 1f, diamond);
         //renderScene.createSphere(new Vec3(-1f, 0.75f, -1.5f), 0.75f, phong_blue);
         //renderScene.createCubeTower(1.2f, new Vec3(1,0.6f,-1), lambert_trans);
