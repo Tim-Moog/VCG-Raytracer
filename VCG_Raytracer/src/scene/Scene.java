@@ -82,7 +82,7 @@ public class Scene {
     }
 
     //this is needed since else we cant add the PointLight to our scene list AND save it in AreaLight
-    public void addCornerLights(PointLight[] _lights){
+    public void addPointLightsOfAreaLight(PointLight[] _lights){
         for (PointLight pointLight : _lights) {
             lightList.add(pointLight);
         }

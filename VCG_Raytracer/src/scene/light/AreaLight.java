@@ -31,14 +31,10 @@ public class AreaLight extends Light {
 
         int samplesPerRowCol = (int)Math.sqrt(_light_samples);
         float subSectionSize = size/samplesPerRowCol;
-        Random numberGenerator = new Random(67);
         int index = 0;
 
         for(float row = 0; row < samplesPerRowCol; row++){
             for(float col = 0; col < samplesPerRowCol; col++){
-                //make new random values for ray position inside of subpixel
-                float randomX = numberGenerator.nextFloat();
-                float randomZ = numberGenerator.nextFloat();
 
                 //get the actual offset of our subpixel using the rdm generated float and the current subpixel position based on AA sample amount
                 float offsetX = (col + 0.5f) * subSectionSize;
@@ -48,7 +44,7 @@ public class AreaLight extends Light {
                 lights[index++] = new PointLight(adjustedPosition, _color, _intensity);
             }
         }
-        _scene.addCornerLights(lights);
+        _scene.addPointLightsOfAreaLight(lights);
 
         //additionally we'll set the square shape inside of here to make it attached to the AreaLight
         //we do it here and not in main so that if we scale the lightsize the square scales with it
