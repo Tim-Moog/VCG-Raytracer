@@ -53,8 +53,8 @@ public class Main {
 
     /** RESOLUTION **/
 
-    static final int IMAGE_WIDTH = 1920;
-    static final int IMAGE_HEIGHT = 1080;
+    static final int IMAGE_WIDTH = 800;
+    static final int IMAGE_HEIGHT = 600;
 
     /** CORNELL_BOX_DIMENSION **/
 
@@ -63,7 +63,7 @@ public class Main {
     /** RAYTRACER **/
 
     static final int RECURSIONS = 8;
-    static final int ANTI_ALIASING = (int) Math.pow(5, 2); // only valid AA values are 1 and any number whose sqr root
+    static final int ANTI_ALIASING = (int) Math.pow(1, 2); // only valid AA values are 1 and any number whose sqr root
                                                            // results a whole number
     static final boolean USE_SOFT_SHADOWS = false;
 
@@ -79,7 +79,7 @@ public class Main {
     // careful: now that the square is set inside of AreaLight be careful not to put
     // the light too close to the ceiling, else the square might get placed outside
     // our cornell box
-    static final Vec3 LIGHT_POSITION = new Vec3(0, 5.9f, 1);
+    static final Vec3 LIGHT_POSITION = new Vec3(0, 5.9f, -1);
     static final short AREA_LIGHT_SIZE = 1;
 
     /** GI **/
@@ -87,7 +87,7 @@ public class Main {
     static final int GI_LEVEL = 0;
     static final int GI_SAMPLES = 0;
 
-    static final RgbColor LIGHT_COLOR = new RgbColor(1f, 0.95f, 1f);
+    static final RgbColor LIGHT_COLOR = new RgbColor(0.8f, 0.8f, 0.8f);
     static final RgbColor AMBIENT_LIGHT = new RgbColor(0.12f, 0.1f, 0.15f);
 
     static final boolean USE_AO = false;
@@ -139,9 +139,9 @@ public class Main {
 
         setupCornellBox(renderScene);
 
-        //setupObjects(renderScene);
+        setupObjects(renderScene);
 
-        setupExtras(renderScene); //dont enable this unless you want slooooowwwwwww load
+        //setupExtras(renderScene); //dont enable this unless you want slooooowwwwwww load
 
         setupLights(renderScene);
     }
@@ -165,103 +165,18 @@ public class Main {
 
     private static void setupObjects(Scene renderScene) {
 
-        Material test = new Lambert(RgbColor.GREEN, 0f, 0f);
+        Material test = new Lambert(RgbColor.PURPLE, 0f, 0f);
 
-        Material glass = new Phong(RgbColor.RED, new RgbColor(1f, 1f, 1f), 20, 0f, 0.9f, GLASS);
+        Material glass = new Phong(RgbColor.RED, new RgbColor(1f, 1f, 1f), 20, 0f, 1f, GLASS);
         Material water = new Phong(RgbColor.PURPLE, new RgbColor(1f, 1f, 1f), 20, 0f, 0.9f, WATER);
         Material diamond = new Phong(RgbColor.BLUE, new RgbColor(1f, 1f, 1f), 20, 0f, 0.9f, DIAMOND);
         Material reflection = new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 1, 1f, 0f);
 
-        //renderScene.createSphere(new Vec3(-2f, 4f, 0f), 1f, glass);
-        //renderScene.createSphere(new Vec3(1.8f, 3.3f, 0f), 1f, water);
+        renderScene.createSphere(new Vec3(-1.2f, 1f, -2f), 1f, reflection);
+        renderScene.createSphere(new Vec3(1f, 1f, -1f), 1f, glass);
         //renderScene.createSphere(new Vec3(-0.1f, 1.8f, 0f), 1f, diamond);
         //renderScene.createSphere(new Vec3(-1f, 0.75f, -1.5f), 0.75f, phong_blue);
         //renderScene.createCubeTower(1.2f, new Vec3(1,0.6f,-1), lambert_trans);
-
-
-        InputStream inStream;
-        InputStream matInStream;
-        try {
-            inStream = new FileInputStream("vcg-framework-2026-gruppe-c/VCG_Raytracer/models/utah_teapot.obj");
-            //matInStream = new FileInputStream("/VCG_Raytracer/models/mats/duck_test2.mtl");
-
-            BoundingBox boxIncludingMesh;
-
-            boxIncludingMesh = ObjImporter.load(
-                    inStream,
-                    new Lambert(RgbColor.CYAN),
-                    new Vec3(0f, 3f, -2f),
-                    new Vec3(-90, -45, 0),
-                    1f);
-
-            renderScene.addShape(boxIncludingMesh); //commented out to make the uploaded version easier to run for now and totally not to hide our masterpiece hehehe
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            System.err.println("Error: somethign went wrong at .obj import");
-        }
-
-        System.err.println(renderScene.getShapes().size());
-    }
-
-    //for live showcases change the materials to lambert gray or phong air(fastest phong)
-    public static void setupExtras(Scene renderScene){
-        InputStream inStream;
-        try {
-            //first we put suzanne in the back left corner and make her look slightly up
-            inStream = new FileInputStream("vcg-framework-2026-gruppe-c/VCG_Raytracer/models/blender-suzanne.obj");
-
-            BoundingBox boxIncludingMesh;
-
-            
-            boxIncludingMesh = ObjImporter.load(
-                    inStream,
-                    new Phong(new RgbColor(0.9f, 0.8f, 0.1f), new RgbColor(1,1,0), 8, 0.15f, 0),
-                    //new Lambert(RgbColor.GREEN),//new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, AIR),
-                    new Vec3(-2.5f, 0.3f, -2.5f),
-                    new Vec3(-45, 20, 0),
-                    0.7f);
-
-            renderScene.addShape(boxIncludingMesh);
-           
-
-
-            //then we add a floating utah teapot above her
-            inStream = new FileInputStream("vcg-framework-2026-gruppe-c/VCG_Raytracer/models/utah_teapot.obj");
-
-            boxIncludingMesh = ObjImporter.load(
-                    inStream,
-                    new Lambert(new RgbColor(0, 0.5f, 1f), 0f, 0.7f, GLASS),
-                    //new Lambert(RgbColor.GREEN),//new Phong(RgbColor.PURPLE, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, AIR),
-                    new Vec3(-2f, 3f, 1),
-                    new Vec3(40, 0, -45),
-                    0.5f);
-
-            renderScene.addShape(boxIncludingMesh);
-            
-
-            
-            //and finally we'll put a big stanford bunny to the right
-            //notes for low poly bunny - rotate x-90 for it to sit upright and needs to be scaled down to like 0.02f due to it being massive
-            //normal bunny had too many faces sadly
-            inStream = new FileInputStream("vcg-framework-2026-gruppe-c/VCG_Raytracer/models/Bunny-LowPoly.obj");
-
-            boxIncludingMesh = ObjImporter.load(
-                    inStream,
-                    new Lambert(new RgbColor(0.5f, 0.25f, 0.1f), 0.3f, 0.4f, DIAMOND),
-                    //new Lambert(RgbColor.GREEN),//new Phong(RgbColor.RED, new RgbColor(0.8f, 1f, 0.8f), 18, 0.0f, 0.8f, AIR),
-                    new Vec3(1f, 0f, -1.5f),
-                    new Vec3(-90, 0, 0),
-                    0.03f);
-
-            renderScene.addShape(boxIncludingMesh);
-            
-
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            System.err.println("Error: somethign went wrong at .obj import");
-        }
     }
 
     private static void setupCornellBox(Scene renderScene) {
@@ -274,13 +189,13 @@ public class Main {
         // there should be a square to make symbolise the lightsource position
 
         // left
-        renderScene.createPlane(new Vec3(-6, 0, 0), new Vec3(1f, 0f, 0f), new Lambert(RgbColor.RED, 0f, 0));
+        renderScene.createPlane(new Vec3(-4, 0, 0), new Vec3(1f, 0f, 0f), new Lambert(RgbColor.RED, 0f, 0));
         // right
-        renderScene.createPlane(new Vec3(6, 0, 0), new Vec3(-1f, 0f, 0f), new Lambert(RgbColor.BLUE, 0f, 0));
+        renderScene.createPlane(new Vec3(4, 0, 0), new Vec3(-1f, 0f, 0f), new Lambert(RgbColor.BLUE, 0f, 0));
         // bot, top, back
-        renderScene.createPlane(new Vec3(0, 0, 0), new Vec3(0f, 1f, 0f), new Lambert(RgbColor.WHITE, 0.25f, 0f));//, 0.5f, 0f));
+        renderScene.createPlane(new Vec3(0, 0, 0), new Vec3(0f, 1f, 0f), new Lambert(RgbColor.WHITE, 0f, 0f));//, 0.5f, 0f));
         renderScene.createPlane(new Vec3(0, 6, 0), new Vec3(0f, -1f, 0f), new Lambert(RgbColor.WHITE));
-        renderScene.createPlane(new Vec3(0, 0, -6), new Vec3(0f, 0f, 1f), new Lambert(RgbColor.WHITE, 0f, 0));
+        renderScene.createPlane(new Vec3(0, 0, -4), new Vec3(0f, 0f, 1f), new Lambert(RgbColor.WHITE, 0f, 0));
         // behind cam
         renderScene.createPlane(new Vec3(0, 0, 6), new Vec3(0f, 0f, -1f), new Lambert(RgbColor.WHITE));
     }
